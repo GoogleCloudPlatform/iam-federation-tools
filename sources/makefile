@@ -23,7 +23,7 @@
 # Basic configuration
 #------------------------------------------------------------------------------
 
-PRODUCT_VERSION = 0.1
+PRODUCT_VERSION = 1.0
 CONFIGURATION = Release
 PLATFORM=Any CPU
 
