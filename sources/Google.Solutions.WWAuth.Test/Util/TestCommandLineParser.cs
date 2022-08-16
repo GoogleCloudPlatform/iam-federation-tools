@@ -154,6 +154,12 @@ namespace Google.Solutions.WWAuth.Test.Util
         [Test]
         public void WhenQuotesDisabledAndExecutableContainsSpaces_TnenExecutablePathIsConvertedTo8dot3()
         {
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KOKORO_BUILD_ID")))
+            {
+                Assert.Inconclusive("8.3 filenames are disabled in Kokoro");
+                return;
+            }
+
             var tempFolderPath = Path.Combine(Path.GetTempPath(), "long folder name with spaces");
             Directory.CreateDirectory(tempFolderPath);
 
