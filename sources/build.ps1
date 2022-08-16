@@ -61,6 +61,63 @@ else
 }
 
 #------------------------------------------------------------------------------
+# Find nuget and add to PATH
+#------------------------------------------------------------------------------
+
+if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
+{
+	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+
+	New-Item -ItemType Directory -Force "${PSScriptRoot}\.tools" | Out-Null
+	$Nuget = "${PSScriptRoot}\.tools\nuget.exe"
+	(New-Object System.Net.WebClient).DownloadFile($NugetDownloadUrl, $Nuget)
+	
+	$env:Path += ";${PSScriptRoot}\.tools"
+}
+
+#------------------------------------------------------------------------------
+# Restore packages and make them available in the environment
+#------------------------------------------------------------------------------
+
+if ((Test-Path "*.sln") -and !$args.Contains("clean"))
+{
+    #
+    # Register feed containing pre-built dependencies.
+    #
+    if (Test-Path "${env:KOKORO_GFILE_DIR}\NuGetPackages")
+    {
+        & nuget sources add -Name iap-desktop-dependencies -Source "${env:KOKORO_GFILE_DIR}\NuGetPackages" | Out-Default
+    }
+
+    #
+    # Restore packages for solution.
+    #
+	& $Nmake restore
+	if ($LastExitCode -ne 0)
+	{
+		exit $LastExitCode
+	}
+
+	#
+	# Add all tools to PATH.
+	#
+	$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
+		| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
+		| Select-Object -ExpandProperty FullName)
+
+	$env:Path += ";" + ($ToolsDirectories -join ";")
+
+	#
+	# Add environment variables indicating package versions, for example
+	# $env:Google_Apis_Auth = 1.2.3
+	#
+	(nuget list -Source (Resolve-Path packages)) `
+		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
+}
+
+Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
+
+#------------------------------------------------------------------------------
 # Run nmake.
 #------------------------------------------------------------------------------
 
