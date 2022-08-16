@@ -25,7 +25,7 @@ rem Change to the directory where this script is located in
 cd %~dp0
 
 rem Invoke build.
-nmake
+powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 %*
 
 rem Remove BOM to make file compatible with Sponge.
 set RETURNVALUE=%ERRORLEVEL%
