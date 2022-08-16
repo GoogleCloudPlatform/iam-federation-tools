@@ -37,6 +37,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         private const string SampleRelyingPartyId = "http://rp.example.com/";
         private const string SampleAcs = "http://acs.example.com/";
 
+#if NET472_OR_GREATER
         private static X509Certificate2 CreateSelfSignedCertificate(RSA key)
         {
             return new CertificateRequest(
@@ -48,6 +49,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
                     DateTimeOffset.UtcNow.AddMinutes(-5),
                     DateTimeOffset.UtcNow.AddMinutes(5));
         }
+#endif
 
         //---------------------------------------------------------------------
         // ToString.
@@ -75,6 +77,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         [Test]
         public void WhenCertificateProvided_ThenToStringReturnsSignedAndEncodedRequest()
         {
+#if NET472_OR_GREATER
             using (var key = RSA.Create())
             using (var cert = CreateSelfSignedCertificate(key))
             {
@@ -99,6 +102,9 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
                     StringAssert.Contains("<SignatureValue>", xml);
                 }
             }
+#else
+            Assert.Inconclusive("Test requires .NET 4.7.2+");
+#endif
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Google.Solutions.WWAuth.Util
             }
             else
             {
-                return default;
+                return default(V);
             }
         }
 

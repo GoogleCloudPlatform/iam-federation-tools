@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Workload Authenticator for Windows")]
 [assembly: AssemblyDescription("Pluggable authentication provider for Windows")]
 [assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("Windows Workload Auth")]
+[assembly: AssemblyProduct("Workload Authenticator for Windows")]
 [assembly: AssemblyCopyright("Google 2022")]
 
 [assembly: ComVisible(false)]
