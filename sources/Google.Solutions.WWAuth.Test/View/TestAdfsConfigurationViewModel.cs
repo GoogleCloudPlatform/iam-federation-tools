@@ -35,6 +35,7 @@ namespace Google.Solutions.WWAuth.Test.View
     [TestFixture]
     public class TestAdfsConfigurationViewModel : TestConfigurationViewModelBase
     {
+#if NET472_OR_GREATER
         private static X509Certificate2 CreateSelfSignedCertificate()
         {
             return new CertificateRequest(
@@ -46,6 +47,7 @@ namespace Google.Solutions.WWAuth.Test.View
                     DateTimeOffset.UtcNow.AddMinutes(-5),
                     DateTimeOffset.UtcNow.AddMinutes(5));
         }
+#endif
 
         //---------------------------------------------------------------------
         // IssuerUrl.
@@ -284,6 +286,7 @@ namespace Google.Solutions.WWAuth.Test.View
         [Test]
         public void WhenCommandLineContainsValidCertificate_ThenSigningControlsAreEnabled()
         {
+#if NET472_OR_GREATER
             var config = CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile();
             config.Configuration.Options.Protocol =
                 UnattendedCommandLineOptions.AuthenticationProtocol.AdfsSamlPost;
@@ -306,11 +309,15 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.AreEqual("CN=test", vm.SigningCertificateSubject);
             Assert.AreSame(cert, vm.RequestSigningCertificate);
             Assert.IsTrue(vm.IsViewCertificateMenuItemEnabled);
+#else
+            Assert.Inconclusive("Test requires .NET 4.7.2+");
+#endif
         }
 
         [Test]
         public void WhenDisablingSigning_ThenCertfificateIsSetToNull()
         {
+#if NET472_OR_GREATER
             var config = CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile();
             config.Configuration.Options.Protocol =
                 UnattendedCommandLineOptions.AuthenticationProtocol.AdfsSamlPost;
@@ -346,6 +353,9 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.IsNull(vm.SigningCertificateSubject);
             Assert.IsNull(vm.RequestSigningCertificate);
             Assert.IsFalse(vm.IsViewCertificateMenuItemEnabled);
+#else
+            Assert.Inconclusive("Test requires .NET 4.7.2+");
+#endif
         }
 
         //---------------------------------------------------------------------
