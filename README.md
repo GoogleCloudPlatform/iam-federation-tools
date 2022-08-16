@@ -21,7 +21,7 @@ To let Windows application authenticate using their existing Active Directory cr
     invoke WWAuth every time it needs to authenticate to Google Cloud. This mechanism is 
 	called [executable-sourced credentials](https://google.aip.dev/auth/4117).
 1.  When invoked by the client library, WWAuth uses the application's Kerberos credentials to authenticate to an
-    Active Directory Federation Services (AS FS) instance, and returns an OAuth token
+    Active Directory Federation Services (AD FS) instance, and returns an OAuth token
     or SAML assertion back to the client library.
 1.  The client library exchanges the token or assertion against short-lived Google
     credentials by using workload identity federation.
