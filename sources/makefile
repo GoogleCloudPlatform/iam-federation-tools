@@ -46,7 +46,7 @@ NUNIT_COVERAGE_FILTER = +[Google.Solutions.WWAuth]*
 # Output targets
 #------------------------------------------------------------------------------
 
-default: $(PACKED_ASSEMBLY)
+default: test $(PACKED_ASSEMBLY)
 
 $(MAIN_ASSEMBLY):
 	@echo "========================================================"
