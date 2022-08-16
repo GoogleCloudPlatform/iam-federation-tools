@@ -59,13 +59,19 @@ $(PACKED_ASSEMBLY): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Packing binary                                   ==="
 	@echo "========================================================"
-    packages\ILRepack.2.0.18\tools\ILRepack.exe \
+    ILRepack.exe \
         /ver:$(BINARY_VERSION).0 \
         /out:$(PACKED_ASSEMBLY) \
         /lib:$(ASSEMBLY_DIR) \
         /wildcards \
         $(MAIN_ASSEMBLY) \
         $(ASSEMBLY_DIR)\*.dll
+restore:
+	@echo "========================================================"
+	@echo "=== Restoring nuget packages                         ==="
+	@echo "========================================================"
+
+	nuget restore
 
 build: $(PACKED_ASSEMBLY)
 
@@ -75,16 +81,16 @@ test: $(MAIN_ASSEMBLY)
 	@echo "=== Testing solution                                 ==="
 	@echo "========================================================"
 
-	packages\OpenCover.4.6.519\tools\OpenCover.Console.exe \
+	OpenCover.Console.exe \
 		-register:user \
 		-returntargetcode \
-		-target:packages\NUnit.ConsoleRunner.3.15.2\tools\nunit3-console.exe \
+		-target:nunit3-console.exe \
 		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1" \
 		-filter:"$(NUNIT_COVERAGE_FILTER)" \
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
 
-	packages\ReportGenerator.5.1.9\tools\net47\ReportGenerator.exe \
+	ReportGenerator.exe \
 		-reports:opencovertests.xml \
 		-targetdir:coveragereport \
 		-reporttypes:HTML
