@@ -14,6 +14,8 @@ To let Windows application authenticate using their existing Active Directory cr
 [integrated windows authentication](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
 (IWA) and [workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation):
 
+![Architecture](doc/images/architecture.svg)
+
 1.  You configure an application to use WWAuth by pointing the environment variable
     `GOOGLE_APPLICATION_CREDENTIALS` to an WWAuth-enabled credential configuration file.
 1.  The credential configuration file instructs the client library (which is built into the application) to 
@@ -26,8 +28,6 @@ To let Windows application authenticate using their existing Active Directory cr
     credentials by using workload identity federation.
 1.  The application uses the short-lived Google Credentials to access resources
     on Google Cloud.
-
-![Architecture](doc/images/architecture.svg)
 
 ## Configuration
 
