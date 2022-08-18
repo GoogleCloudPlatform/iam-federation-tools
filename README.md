@@ -2,8 +2,7 @@
 
 Workload Authenticator for Windows (WWAuth) lets Windows applications authenticate to Google Cloud using their 
 Active Directory Kerberos credentials. Using WWAuth is an alternative to using service account keys
-that doesn't require you to manage and store any secrets or keys.
-
+and doesn't require you to manage and store any secrets or keys.
 
 WWAuth acts as a plugin for `gcloud`, `terraform`, and other applications
 that use [Google Cloud client libraries](https://cloud.google.com/apis/docs/cloud-client-libraries)
@@ -14,6 +13,8 @@ and requires no code changes in the application.
 To let Windows application authenticate using their existing Active Directory credentials, WWAuth combines
 [integrated windows authentication](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
 (IWA) and [workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation):
+
+![Architecture](doc/images/architecture.svg)
 
 1.  You configure an application to use WWAuth by pointing the environment variable
     `GOOGLE_APPLICATION_CREDENTIALS` to an WWAuth-enabled credential configuration file.
@@ -27,8 +28,6 @@ To let Windows application authenticate using their existing Active Directory cr
     credentials by using workload identity federation.
 1.  The application uses the short-lived Google Credentials to access resources
     on Google Cloud.
-
-![Architecture](doc/images/architecture.png)
 
 ## Configuration
 
