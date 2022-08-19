@@ -8,6 +8,8 @@ WWAuth acts as a plugin for `gcloud`, `terraform`, and other applications
 that use [Google Cloud client libraries](https://cloud.google.com/apis/docs/cloud-client-libraries)
 and requires no code changes in the application.
 
+[<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iam-windows-authenticator/releases/latest/download/wwauth.exe)
+
 ## Authentication
 
 To let Windows application authenticate using their existing Active Directory credentials, WWAuth combines
