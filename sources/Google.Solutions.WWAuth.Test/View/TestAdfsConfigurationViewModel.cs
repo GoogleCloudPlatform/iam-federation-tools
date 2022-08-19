@@ -522,5 +522,25 @@ namespace Google.Solutions.WWAuth.Test.View
             vm.ApplyChanges(null);
             StringAssert.EndsWith("/changed", vm.RelyingPartyId);
         }
+
+        //---------------------------------------------------------------------
+        // ResetExecutable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenExecutableReset_ThenEventIsRaisedAndDirtyIsSet()
+        {
+            var vm = new AdfsConfigurationViewModel(
+                CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile(),
+                new Mock<IShellAdapter>().Object,
+                new Mock<ICertificateStoreAdapter>().Object);
+
+            PropertyAssert.RaisesPropertyChangeNotification(
+                vm,
+                m => m.IsDirty,
+                () => vm.ResetExecutable());
+
+            Assert.IsTrue(vm.IsDirty);
+        }
     }
 }

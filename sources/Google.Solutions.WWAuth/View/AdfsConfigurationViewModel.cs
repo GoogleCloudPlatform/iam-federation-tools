@@ -227,9 +227,17 @@ namespace Google.Solutions.WWAuth.View
         public bool IsViewCertificateMenuItemEnabled
             => this.RequestSigningCertificate != null;
 
+        public string Executable => this.File.Configuration.Options.Executable;
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
+
+        public void ResetExecutable()
+        {
+            this.File.Configuration.ResetExecutable();
+            this.IsDirty = true;
+        }
 
         public void ReapplyProtocolDefaults()
         {

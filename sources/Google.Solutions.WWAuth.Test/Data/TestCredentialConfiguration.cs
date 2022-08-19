@@ -24,6 +24,7 @@ using Google.Solutions.WWAuth.Data;
 using Google.Solutions.WWAuth.Util;
 using NUnit.Framework;
 using System;
+using System.IO;
 
 namespace Google.Solutions.WWAuth.Test.Data
 {
@@ -432,6 +433,21 @@ namespace Google.Solutions.WWAuth.Test.Data
             StringAssert.Contains(
                 ".exe",
                 configuration.Options.Executable);
+        }
+
+        //---------------------------------------------------------------------
+        // ResetExecutable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenExutableInvalid_ThenResetExecutableUpdatesPath()
+        {
+            var configuration = CredentialConfiguration.NewWorkloadIdentityConfiguration();
+            configuration.Options.Executable = "doesnotexist.exe";
+
+            configuration.ResetExecutable();
+
+            Assert.True(File.Exists(configuration.Options.Executable));
         }
     }
 }

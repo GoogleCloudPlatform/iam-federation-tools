@@ -22,6 +22,7 @@
 using Google.Solutions.WWAuth.Adapters;
 using Google.Solutions.WWAuth.Data;
 using Google.Solutions.WWAuth.Util;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Google.Solutions.WWAuth.View
@@ -140,6 +141,22 @@ namespace Google.Solutions.WWAuth.View
                 this.viewModel,
                 m => m.IsViewCertificateMenuItemEnabled,
                 this.Container);
+
+            this.Load += (s, e) =>
+            {
+                if (!File.Exists(viewModel.Executable) &&
+                    MessageBox.Show(
+                        this,
+                        "The credential configuration contains points to a copy of WWAuth " +
+                            "that does not exist anymore. Do you want to update the configuration " +
+                            "to use the current path instead?",
+                        "Executable path",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    viewModel.ResetExecutable();
+                }
+            };
         }
 
         public IPropertiesSheetViewModel ViewModel => this.viewModel;
