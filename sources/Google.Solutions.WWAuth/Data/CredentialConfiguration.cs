@@ -94,6 +94,11 @@ namespace Google.Solutions.WWAuth.Data
             this.PoolConfiguration.Validate();
         }
 
+        public void ResetExecutable()
+        {
+            this.Options.Executable = Assembly.GetExecutingAssembly().Location;
+        }
+
         //---------------------------------------------------------------------
         // Factory methods.
         //---------------------------------------------------------------------
