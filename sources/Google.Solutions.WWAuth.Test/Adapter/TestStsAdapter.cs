@@ -97,7 +97,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
+        public async Task WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
         {
             var adapter = new StsAdapter(
                 "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
@@ -108,10 +108,18 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 },
                 new NullLogger());
 
-            ExceptionAssert.ThrowsAggregateException<TokenExchangeException>(
-                () => adapter.IntrospectTokenAsync(
+            try
+            { 
+                await adapter.IntrospectTokenAsync(
                     "notatoken",
-                    CancellationToken.None).Wait());
+                    CancellationToken.None)
+                    .ConfigureAwait(false);
+                Assert.Fail("Expected exception");
+            }
+            catch (TokenExchangeException e)
+            {
+                StringAssert.Contains("Request has invalid basic authentication credentials.", e.Message);
+            }
         }
     }
 }

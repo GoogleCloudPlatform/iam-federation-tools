@@ -69,6 +69,15 @@ namespace Google.Solutions.WWAuth.Adapters
 
         public string Audience { get; }
 
+        private CloudSecurityTokenService CreateService()
+        {
+            return new CloudSecurityTokenService(
+                new Apis.Services.BaseClientService.Initializer()
+                {
+                    ApplicationName = UserAgent.Default.ToString()
+                });
+        }
+
         public StsAdapter(
             string audience,
             ClientSecrets clientSecrets,
@@ -90,11 +99,7 @@ namespace Google.Solutions.WWAuth.Adapters
                     "Exchanging token for audience '{0}'",
                     this.Audience);
 
-                using (var service = new CloudSecurityTokenService(
-                    new Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = UserAgent.Default.ToString()
-                    }))
+                using (var service = CreateService())
                 {
                     var response = await service.V1
                         .Token(
@@ -142,11 +147,7 @@ namespace Google.Solutions.WWAuth.Adapters
         {
             try
             {
-                using (var service = new CloudSecurityTokenService(
-                    new Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = UserAgent.Default.ToString()
-                    }))
+                using (var service = CreateService())
                 {
                     var response = await service.V1
                         .Introspect(
@@ -168,8 +169,14 @@ namespace Google.Solutions.WWAuth.Adapters
             }
             catch (GoogleApiException e)
             {
-                throw new TokenExchangeException(
-                    "Token introspection failed", e);
+                //
+                // Try to convert the exception.
+                //
+                var tokenException = TokenExchangeException.FromApiException(e);
+
+                this.logger.Error(tokenException, "{0}", tokenException.Message);
+
+                throw tokenException;
             }
         }
 
