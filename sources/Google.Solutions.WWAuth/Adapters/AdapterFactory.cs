@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging;
 using Google.Apis.Util;
 using Google.Solutions.WWAuth.Adapters.Adfs;
@@ -79,6 +80,32 @@ namespace Google.Solutions.WWAuth.Adapters
 
                 default:
                     throw new ArgumentException("Unknown protocol: " + options.Protocol);
+            }
+        }
+
+        public static ClientSecrets ClientSecrets
+        {
+            get
+            {
+                //
+                // Use credentials from environment variable, if available.
+                //
+                if (Environment.GetEnvironmentVariable("WWAUTH_CLIENT_SECRET")
+                    is var credentials &&
+                    !string.IsNullOrEmpty(credentials) &&
+                    credentials.Split(':') is var credentialParts &&
+                    credentialParts.Length == 2)
+                {
+                    return new ClientSecrets()
+                    {
+                        ClientId = credentialParts[0],
+                        ClientSecret = credentialParts[1]
+                    };
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }

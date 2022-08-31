@@ -66,6 +66,7 @@ namespace Google.Solutions.WWAuth.View
             this.showExternalTokenDetailsLink = new System.Windows.Forms.LinkLabel();
             this.logsButton = new System.Windows.Forms.Button();
             this.showServiceAccountTokenDetailsLink = new System.Windows.Forms.LinkLabel();
+            this.showStsTokenDetailsLink = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.acuireTokenPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.exchangeTokenPictureBox)).BeginInit();
@@ -233,6 +234,16 @@ namespace Google.Solutions.WWAuth.View
             this.showServiceAccountTokenDetailsLink.TabStop = true;
             this.showServiceAccountTokenDetailsLink.Text = "Show details";
             // 
+            // showStslTokenDetailsLink
+            // 
+            this.showStsTokenDetailsLink.AutoSize = true;
+            this.showStsTokenDetailsLink.Location = new System.Drawing.Point(226, 125);
+            this.showStsTokenDetailsLink.Name = "showStslTokenDetailsLink";
+            this.showStsTokenDetailsLink.Size = new System.Drawing.Size(67, 13);
+            this.showStsTokenDetailsLink.TabIndex = 12;
+            this.showStsTokenDetailsLink.TabStop = true;
+            this.showStsTokenDetailsLink.Text = "Show details";
+            // 
             // VerifyConfigurationDialog
             // 
             this.AcceptButton = this.okButton;
@@ -240,6 +251,7 @@ namespace Google.Solutions.WWAuth.View
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(484, 311);
+            this.Controls.Add(this.showStsTokenDetailsLink);
             this.Controls.Add(this.showServiceAccountTokenDetailsLink);
             this.Controls.Add(this.showExternalTokenDetailsLink);
             this.Controls.Add(this.resultPanel);
@@ -290,5 +302,6 @@ namespace Google.Solutions.WWAuth.View
         private System.Windows.Forms.LinkLabel showExternalTokenDetailsLink;
         private System.Windows.Forms.Button logsButton;
         private System.Windows.Forms.LinkLabel showServiceAccountTokenDetailsLink;
+        private System.Windows.Forms.LinkLabel showStsTokenDetailsLink;
     }
 }

@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging;
 using Google.Solutions.WWAuth.Adapters;
 using Google.Solutions.WWAuth.Data;
 using Google.Solutions.WWAuth.Util;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +47,10 @@ namespace Google.Solutions.WWAuth.View
                 AdapterFactory.CreateTokenAdapter(
                     configuration.Options,
                     logger),
-                new StsAdapter(configuration.PoolConfiguration.Audience, logger),
+                new StsAdapter(
+                    configuration.PoolConfiguration.Audience,
+                    AdapterFactory.ClientSecrets, 
+                    logger),
                 new ServiceAccountAdapter(configuration.ServiceAccountEmail, logger),
                 logger);
 
@@ -119,6 +124,11 @@ namespace Google.Solutions.WWAuth.View
                 viewModel,
                 m => m.IsShowExternalTokenDetailsLinkEnabled,
                 this.Container);
+            this.showStsTokenDetailsLink.BindReadonlyProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsShowStsTokenDetailsLinkEnabled,
+                this.Container);
             this.showServiceAccountTokenDetailsLink.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
@@ -149,6 +159,17 @@ namespace Google.Solutions.WWAuth.View
                     prop.Text = "External token";
                     prop.FormBorderStyle = FormBorderStyle.Sizable;
                     prop.AddSheet(new ViewTokenSheet(viewModel.ExternalToken));
+                    prop.ShowDialog(this);
+                }
+            };
+
+            this.showStsTokenDetailsLink.LinkClicked += (sender, args) =>
+            {
+                using (var prop = new PropertiesDialog())
+                {
+                    prop.Text = "STS token";
+                    prop.FormBorderStyle = FormBorderStyle.Sizable;
+                    prop.AddSheet(new ViewTokenSheet(viewModel.StsToken));
                     prop.ShowDialog(this);
                 }
             };
