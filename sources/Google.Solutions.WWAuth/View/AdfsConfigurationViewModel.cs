@@ -251,7 +251,8 @@ namespace Google.Solutions.WWAuth.View
             {
                 case UnattendedCommandLineOptions.AuthenticationProtocol.AdfsOidc:
                     this.IsRelyingPartyIdTextBoxReadonly = false;
-                    if (string.IsNullOrEmpty(this.RelyingPartyId))
+                    if (string.IsNullOrEmpty(this.RelyingPartyId) &&
+                        this.File.Configuration.PoolConfiguration.IsValid)
                     {
                         this.RelyingPartyId = $"https:{this.File.Configuration.PoolConfiguration.Audience}";
                     }
@@ -270,10 +271,7 @@ namespace Google.Solutions.WWAuth.View
 
                 case UnattendedCommandLineOptions.AuthenticationProtocol.AdfsWsTrust:
                     this.IsRelyingPartyIdTextBoxReadonly = true;
-                    if (this.RelyingPartyId != this.DefaultRelyingPartyId)
-                    {
-                        this.RelyingPartyId = this.DefaultRelyingPartyId;
-                    }
+                    this.RelyingPartyId = this.DefaultRelyingPartyId;
 
                     this.IsClientIdTextBoxVisible = false;
                     if (!string.IsNullOrEmpty(this.ClientId))
@@ -293,10 +291,7 @@ namespace Google.Solutions.WWAuth.View
 
                 case UnattendedCommandLineOptions.AuthenticationProtocol.AdfsSamlPost:
                     this.IsRelyingPartyIdTextBoxReadonly = true;
-                    if (this.RelyingPartyId != this.DefaultRelyingPartyId)
-                    {
-                        this.RelyingPartyId = this.DefaultRelyingPartyId;
-                    }
+                    this.RelyingPartyId = this.DefaultRelyingPartyId;
 
                     this.IsClientIdTextBoxVisible = false;
                     if (!string.IsNullOrEmpty(this.ClientId))

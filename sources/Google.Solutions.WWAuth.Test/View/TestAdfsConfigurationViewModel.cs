@@ -435,11 +435,36 @@ namespace Google.Solutions.WWAuth.Test.View
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtolIsOidc_ThenDefaultsAreApplied()
+        public void WhenProtolIsOidcAndPoolNotConfigured_ThenDefaultsAreApplied()
         {
             var file = CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile();
             file.Configuration.Options.Protocol =
                 UnattendedCommandLineOptions.AuthenticationProtocol.AdfsOidc;
+
+            var vm = new AdfsConfigurationViewModel(
+                file,
+                new Mock<IShellAdapter>().Object,
+                new Mock<ICertificateStoreAdapter>().Object);
+            vm.ReapplyProtocolDefaults();
+
+            Assert.IsNull(vm.AcsUrl);
+            Assert.IsNull(vm.ClientId);
+            Assert.IsNull(vm.RelyingPartyId);
+
+            Assert.IsFalse(vm.IsDirty);
+        }
+
+        [Test]
+        public void WhenProtolIsOidcAndPoolConfigured_ThenDefaultsAreApplied()
+        {
+            var file = CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile();
+            file.Configuration.Options.Protocol =
+                UnattendedCommandLineOptions.AuthenticationProtocol.AdfsOidc;
+
+            var poolConfig = (WorkloadIdentityPoolConfiguration)file.Configuration.PoolConfiguration;
+            poolConfig.ProjectNumber = 123;
+            poolConfig.ProviderName = "p-1";
+            poolConfig.PoolName = "p-1"; ;
 
             var vm = new AdfsConfigurationViewModel(
                 file,
