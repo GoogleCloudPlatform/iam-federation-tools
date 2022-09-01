@@ -178,6 +178,78 @@ namespace Google.Solutions.WWAuth.Test.View
         }
 
         //---------------------------------------------------------------------
+        // PerformTestAsync - token introspection.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenTokenIntrospectionFails_ThenStatusIsUpdated()
+        {
+            var tokenAdapter = new Mock<ITokenAdapter>();
+            tokenAdapter.Setup(t => t.AcquireTokenAsync(
+                    It.IsAny<TokenAcquisitionOptions>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ISubjectToken>().Object);
+
+            var stsAdapter = new Mock<IStsAdapter>();
+            stsAdapter.Setup(s => s.ExchangeTokenAsync(
+                    It.IsAny<ISubjectToken>(),
+                    It.IsAny<IList<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse());
+            stsAdapter.Setup(s => s.IntrospectTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TokenAcquisitionException("test"));
+
+            var vm = new VerifyConfigurationViewModel(
+                tokenAdapter.Object,
+                stsAdapter.Object,
+                new Mock<IServiceAccountAdapter>().Object,
+                new MemoryLogger(LogLevel.All));
+
+            await vm.PerformTestAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+
+            Assert.IsTrue(vm.IsShowExternalTokenDetailsLinkEnabled);
+            Assert.IsFalse(vm.IsShowStsTokenDetailsLinkEnabled);
+        }
+
+        [Test]
+        public async Task WhenTokenIntrospectionSucceeds_ThenStatusIsUpdated()
+        {
+            var tokenAdapter = new Mock<ITokenAdapter>();
+            tokenAdapter.Setup(t => t.AcquireTokenAsync(
+                    It.IsAny<TokenAcquisitionOptions>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ISubjectToken>().Object);
+
+            var stsAdapter = new Mock<IStsAdapter>();
+            stsAdapter.Setup(s => s.ExchangeTokenAsync(
+                    It.IsAny<ISubjectToken>(),
+                    It.IsAny<IList<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse());
+            stsAdapter.Setup(s => s.IntrospectTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ISubjectToken>().Object);
+
+            var vm = new VerifyConfigurationViewModel(
+                tokenAdapter.Object,
+                stsAdapter.Object,
+                new Mock<IServiceAccountAdapter>().Object,
+                new MemoryLogger(LogLevel.All));
+
+            await vm.PerformTestAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+
+            Assert.IsTrue(vm.IsShowExternalTokenDetailsLinkEnabled);
+            Assert.IsTrue(vm.IsShowStsTokenDetailsLinkEnabled);
+        }
+
+        //---------------------------------------------------------------------
         // PerformTestAsync - impersonation.
         //---------------------------------------------------------------------
 

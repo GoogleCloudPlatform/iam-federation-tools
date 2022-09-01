@@ -122,6 +122,7 @@
     <Compile Include="Util\EnumExtensions.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
+    <Compile Include="Util\RequestExtensions.cs" />
     <Compile Include="Util\SkipCodeCoverageAttribute.cs" />
     <Compile Include="Util\UrlSafeBase64.cs" />
     <Compile Include="View\AboutDialog.cs">

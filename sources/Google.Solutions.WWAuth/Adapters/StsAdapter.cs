@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.CloudSecurityToken.v1;
 using Google.Apis.CloudSecurityToken.v1.Data;
@@ -46,20 +47,43 @@ namespace Google.Solutions.WWAuth.Adapters
             ISubjectToken externalToken,
             IList<string> scopes,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Introspect access token.
+        /// </summary>
+        Task<ISubjectToken> IntrospectTokenAsync(
+            string accessToken,
+            CancellationToken cancellationToken);
     }
 
     internal class StsAdapter : IStsAdapter
     {
         private readonly ILogger logger;
 
+        //
+        // NB. Client secrets are optional and only required for introspection.
+        //
+        private readonly ClientSecrets clientSecrets;
+
         internal const string DefaultTokenUrl = "https://sts.googleapis.com/v1/token";
 
         public string Audience { get; }
 
+        private CloudSecurityTokenService CreateService()
+        {
+            return new CloudSecurityTokenService(
+                new Apis.Services.BaseClientService.Initializer()
+                {
+                    ApplicationName = UserAgent.Default.ToString()
+                });
+        }
+
         public StsAdapter(
             string audience,
+            ClientSecrets clientSecrets,
             ILogger logger)
         {
+            this.clientSecrets = clientSecrets;
             this.Audience = audience.ThrowIfNull(nameof(audience));
             this.logger = logger.ThrowIfNull(nameof(logger));
         }
@@ -75,11 +99,7 @@ namespace Google.Solutions.WWAuth.Adapters
                     "Exchanging token for audience '{0}'",
                     this.Audience);
 
-                using (var service = new CloudSecurityTokenService(
-                    new Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = UserAgent.Default.ToString()
-                    }))
+                using (var service = CreateService())
                 {
                     var response = await service.V1
                         .Token(
@@ -92,6 +112,9 @@ namespace Google.Solutions.WWAuth.Adapters
                                 SubjectTokenType = externalToken.Type.GetDescription(),
                                 SubjectToken = externalToken.Value,
                             })
+                        .WithCredentials<
+                            Google.Apis.CloudSecurityToken.v1.V1Resource.TokenRequest, 
+                            GoogleIdentityStsV1ExchangeTokenResponse>(this.clientSecrets)
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
 
@@ -118,6 +141,87 @@ namespace Google.Solutions.WWAuth.Adapters
             }
         }
 
+        public async Task<ISubjectToken> IntrospectTokenAsync(
+            string accessToken,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                using (var service = CreateService())
+                {
+                    var response = await service.V1
+                        .Introspect(
+                            new GoogleIdentityStsV1IntrospectTokenRequest()
+                            {
+                                Token = accessToken,
+                                TokenTypeHint = "urn:ietf:params:oauth:token-type:access_token"
+                            })
+                        .WithCredentials<
+                            Google.Apis.CloudSecurityToken.v1.V1Resource.IntrospectRequest,
+                            GoogleIdentityStsV1IntrospectTokenResponse>(this.clientSecrets)
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    this.logger.Info("Successfully introspected token");
+
+                    return new TokenInfo(accessToken, response);
+                }
+            }
+            catch (GoogleApiException e)
+            {
+                //
+                // Try to convert the exception.
+                //
+                var tokenException = TokenExchangeException.FromApiException(e);
+
+                this.logger.Error(tokenException, "{0}", tokenException.Message);
+
+                throw tokenException;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Token info.
+        //---------------------------------------------------------------------
+
+        private class TokenInfo : ISubjectToken
+        {
+            public SubjectTokenType Type => SubjectTokenType.IdToken;
+
+            public string Value { get; }
+
+            public string Issuer { get; }
+
+            public DateTimeOffset? Expiry { get; }
+
+            public IDictionary<string, object> Attributes { get; }
+
+            public string Audience { get; }
+
+            public bool IsEncrypted => false;
+
+            public TokenInfo(
+                string value,
+                GoogleIdentityStsV1IntrospectTokenResponse response)
+            {
+                this.Value = value;
+                this.Issuer = response.Iss;
+
+                if (response.Exp.HasValue)
+                {
+                    this.Expiry = DateTimeOffset.FromUnixTimeSeconds(response.Exp.Value);
+                }
+
+                this.Attributes = new Dictionary<string, object>
+                {
+                    { "iat", response.Iat },
+                    { "scope", response.Scope },
+                    { "sub", response.Sub },
+                    { "username", response.Username },
+                    { "active", response.Active }
+                };
+            }
+        }
     }
 
     public class TokenExchangeException : Exception

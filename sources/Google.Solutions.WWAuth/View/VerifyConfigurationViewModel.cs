@@ -49,10 +49,12 @@ namespace Google.Solutions.WWAuth.View
         private bool isLogsButtonEnabled = false;
 
         private bool isShowExternalTokenDetailsLinkEnabled = false;
+        private bool isShowStsTokenDetailsLinkEnabled = false;
         private bool isShowServiceAccountTokenDetailsLinkEnabled = false;
 
         public ISubjectToken ExternalToken { get; private set; }
         public ISubjectToken ServiceAccountToken { get; private set; }
+        public ISubjectToken StsToken { get; private set; }
 
         public string Logs => string.Join("\r\n", this.logger.LogEntries);
 
@@ -189,6 +191,16 @@ namespace Google.Solutions.WWAuth.View
             }
         }
 
+        public bool IsShowStsTokenDetailsLinkEnabled
+        {
+            get => this.isShowStsTokenDetailsLinkEnabled;
+            private set
+            {
+                this.isShowStsTokenDetailsLinkEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
         public bool IsShowServiceAccountTokenDetailsLinkEnabled
         {
             get => this.isShowServiceAccountTokenDetailsLinkEnabled;
@@ -267,10 +279,28 @@ namespace Google.Solutions.WWAuth.View
                     throw;
                 }
 
+                //
+                // (3) Try to introspect STS token.
+                //
+                try
+                {
+                    this.StsToken = await this.stsAdapter
+                        .IntrospectTokenAsync(
+                            stsToken.AccessToken,
+                            cancellationToken)
+                        .ConfigureAwait(true);
+
+                    this.IsShowStsTokenDetailsLinkEnabled = true;
+                }
+                catch
+                {
+                    this.IsShowStsTokenDetailsLinkEnabled = false;
+                }
+
                 if (this.serviceAccountAdapter.IsEnabled)
                 {
                     //
-                    // (3) Impersonate.
+                    // (4) Impersonate.
                     //
                     try
                     {

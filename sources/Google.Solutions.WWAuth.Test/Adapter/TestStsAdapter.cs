@@ -41,6 +41,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
         {
             var adapter = new StsAdapter(
                 "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
+                null,
                 new NullLogger());
 
             var token = new Mock<ISubjectToken>();
@@ -58,6 +59,66 @@ namespace Google.Solutions.WWAuth.Test.Adapter
             catch (TokenExchangeException e)
             {
                 StringAssert.Contains("Invalid value for \"audience\"", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task WhenClientCredentialsAndAudienceInvalid_ThenExchangeTokenThrowsException()
+        {
+            var adapter = new StsAdapter(
+                "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
+                new Apis.Auth.OAuth2.ClientSecrets()
+                {
+                    ClientId = "not-a-real-id",
+                    ClientSecret = "not-a-real-secret"
+                },
+                new NullLogger());
+
+            var token = new Mock<ISubjectToken>();
+            token.SetupGet(t => t.Type).Returns(SubjectTokenType.Jwt);
+            token.SetupGet(t => t.Value).Returns("token");
+            try
+            {
+                await adapter.ExchangeTokenAsync(
+                        token.Object,
+                        CredentialConfiguration.DefaultScopes,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+                Assert.Fail("Expected exception");
+            }
+            catch (TokenExchangeException e)
+            {
+                StringAssert.Contains("Invalid value for \"audience\"", e.Message);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IntrospectToken.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
+        {
+            var adapter = new StsAdapter(
+                "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
+                new Apis.Auth.OAuth2.ClientSecrets()
+                {
+                    ClientId = "not-a-real-id",
+                    ClientSecret = "not-a-real-secret"
+                },
+                new NullLogger());
+
+            try
+            { 
+                await adapter.IntrospectTokenAsync(
+                    "notatoken",
+                    CancellationToken.None)
+                    .ConfigureAwait(false);
+                Assert.Fail("Expected exception");
+            }
+            catch (TokenExchangeException e)
+            {
+                StringAssert.Contains("Request has invalid basic authentication credentials.", e.Message);
             }
         }
     }
