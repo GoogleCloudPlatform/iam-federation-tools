@@ -49,6 +49,22 @@ namespace Google.Solutions.WWAuth.Data
                     "Missing identity pool provider name.");
             }
         }
+
+        public bool IsValid
+        {
+            get
+            {
+                try
+                {
+                    Validate();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
     }
 
     /// <summary>
