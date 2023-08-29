@@ -16,7 +16,7 @@ To let Windows application authenticate using their existing Active Directory cr
 [integrated windows authentication :octicons-link-external-16:](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
 (IWA) and [workload identity federation :octicons-link-external-16:](https://cloud.google.com/iam/docs/workload-identity-federation):
 
-![Architecture](images/architecture.svg)
+![Architecture](images/wwauth-labelled.png){ width="570" }
 
 1.  You configure an application to use WWAuth by pointing the environment variable
     `GOOGLE_APPLICATION_CREDENTIALS` to an WWAuth-enabled credential configuration file.
@@ -36,7 +36,7 @@ To let Windows application authenticate using their existing Active Directory cr
 WWAuth includes a user interface that lets you create and edit a WWAuth-enabled credential 
 configuration file:
 
-![Configuration](images/adfs-config.png)
+![Configuration](images/adfs-config.png){ width="300" }
 
 The user interface also includes the option to test the configuration and check for common
 misconfigurations:

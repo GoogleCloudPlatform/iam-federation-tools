@@ -11,7 +11,7 @@ Workload identity federation allows devices or workloads to exchange existing cr
 access tokens. This means that you don't have to manage service account keys, which can help to improve security.
 
 Workload identity federation supports certain types of credentials, including OIDC tokens and SAML assertions. 
-By combining workload identity federation with a token broker service, you can add support for other types 
+By combining workload identity federation with a token broker, you can add support for other types 
 of credentials, including X.509 client certificates.
 
 For example, if you're already using an X.509 public key infrastructure (PKI) to issue client certificates to devices 
@@ -20,17 +20,23 @@ their existing client certificates and mutual TLS.
 
 ## Token Service
 
-The Token Service is an example implementation of a token broker service that supports 
+The Token Service is an open-source example implementation of a token broker that
 the following authentication flows:
 
 *   `xlb-mtls-client-credentials`: This flow lets clients authenticate
     using mutual TLS (mTLS).
+    
+    ![Architecture](images/token-service-labelled.png){ width="570" }
+
+    The token service verifies the certificate presented by the client and uses attributes
+    from the certificate to issue an ID token. Clients can then use this ID token
+    and exchange it against short-lived Google credentials by using workload identity
+    federation.
+
 *   Custom flows: You can add additional, custom authentication flows by extending the
     the [`ClientCredentialsFlow`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/token-service/src/main/java/com/google/solutions/tokenservice/oauth/ClientCredentialsFlow.java)
     base class.
 
-After a client authenticates to the token service, it obtains an ID token that asserts its identity.
-Using this ID token, the token can then use workload identity to obtain short-lived Google credentials.
 
 ## Implementation
 
