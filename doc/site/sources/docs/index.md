@@ -7,18 +7,10 @@ to authenticate to Google Cloud.
 
 ## Token Service
 
-The [Token Service](token-service.md) is an application that lets clients exchange custom credentials against
-an ID token that suitable for workload identity federation:
-
-*   Towards a client appliation, the Token Service application acts
-    as an Open ID Connect identity provider. Clients can authenticate using
-    different authentication flows and can obtain an ID token that
-    asserts their identity.
-    
-*   When you register the _Token Service_
-    [as a workload identity pool provider :octicons-link-external-16:](https://cloud.google.com/iam/docs/manage-workload-identity-pools-providers), 
-    clients can then use the ID token and exchange it against short-lived Google 
-    credentials by using the Google STS.
+The [Token Service](token-service.md) lets IoT devices and on-premises workloads authenticate 
+to Google Cloud APIs without using service account keys. The service integrates with 
+workload identity federation and, by acting as a token broker, lets you use credentials
+that workload identity federation doesn't support natively.
 
 ## Workload Authenticator for Windows
 

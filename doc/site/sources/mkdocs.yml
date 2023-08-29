@@ -26,6 +26,7 @@ theme:
   custom_dir: overrides
   features:
     - content.code.copy
+    - content.code.annotate
     - navigation.expand
   palette:
     primary: #006CBE
@@ -63,7 +64,11 @@ nav:
   - 'Overview': 'index.md'
   - 'Token Service':
     - 'Overview': token-service.md
-    - 'Source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/token-service
+    - 'Deploy the service': token-service-deployment.md
+    - 'Upgrade the service': token-service-upgrade.md
+    - 'Configure the service': token-service-configuration.md
+    - 'Authenticate using mTLS': token-service-authenticate-clients-mtls.md
+    - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/token-service
   - 'Workload Authenticator': 
     - 'Overview': wwauth.md
-    - 'Source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/wwauth
+    - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/wwauth
