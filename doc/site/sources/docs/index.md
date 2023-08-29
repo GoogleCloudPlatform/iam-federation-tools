@@ -2,6 +2,11 @@
 
 The following tool can help you ... todo
 
+
+## Token Service
+
+The [Token Service](token-service.md) is ...
+
 ## Workload Authenticator for Windows
 
 [Workload Authenticator for Windows (WWAuth)](wwauth.md) lets Windows applications authenticate to Google Cloud using their 
