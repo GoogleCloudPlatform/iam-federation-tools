@@ -1,4 +1,4 @@
-# Workload Authenticator for Windows
+# IAM Federation tools
 
 Workload Authenticator for Windows (WWAuth) lets Windows applications authenticate to Google Cloud using their 
 Active Directory Kerberos credentials. Using WWAuth is an alternative to using service account keys
