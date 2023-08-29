@@ -5,10 +5,10 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "maven"
-    directory: "/sources"
+    directory: "/token-service"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/sources"
+    directory: "/token-service"
     schedule:
       interval: "daily"
