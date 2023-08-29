@@ -5,7 +5,7 @@ Active Directory Kerberos credentials. Using WWAuth is an alternative to using s
 and doesn't require you to manage and store any secrets or keys.
 
 WWAuth acts as a plugin for `gcloud`, `terraform`, and other applications
-that use [Google Cloud client libraries](https://cloud.google.com/apis/docs/cloud-client-libraries)
+that use [Google Cloud client libraries :octicons-link-external-16:](https://cloud.google.com/apis/docs/cloud-client-libraries)
 and requires no code changes in the application.
 
 [![Download](images/download.png)](https://github.com/GoogleCloudPlatform/iam-windows-authenticator/releases/latest/download/wwauth.exe)
@@ -13,8 +13,8 @@ and requires no code changes in the application.
 ## Authentication
 
 To let Windows application authenticate using their existing Active Directory credentials, WWAuth combines
-[integrated windows authentication](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
-(IWA) and [workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation):
+[integrated windows authentication :octicons-link-external-16:](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
+(IWA) and [workload identity federation :octicons-link-external-16:](https://cloud.google.com/iam/docs/workload-identity-federation):
 
 ![Architecture](images/architecture.svg)
 
@@ -22,7 +22,7 @@ To let Windows application authenticate using their existing Active Directory cr
     `GOOGLE_APPLICATION_CREDENTIALS` to an WWAuth-enabled credential configuration file.
 1.  The credential configuration file instructs the client library (which is built into the application) to 
     invoke WWAuth every time it needs to authenticate to Google Cloud. This mechanism is 
-	called [executable-sourced credentials](https://google.aip.dev/auth/4117).
+	called [executable-sourced credentials :octicons-link-external-16:](https://google.aip.dev/auth/4117).
 1.  When invoked by the client library, WWAuth uses the application's Kerberos credentials to authenticate to an
     Active Directory Federation Services (AD FS) instance, and returns an OAuth token
     or SAML assertion back to the client library.

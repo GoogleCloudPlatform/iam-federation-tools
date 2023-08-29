@@ -61,9 +61,9 @@ markdown_extensions:
   - pymdownx.details
 nav:
   - 'Overview': 'index.md'
-  - 'Workload Authenticator': 
-    - 'Overview': wwauth.md
-    - 'Source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/wwauth
   - 'Token Service':
     - 'Overview': token-service.md
     - 'Source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/token-service
+  - 'Workload Authenticator': 
+    - 'Overview': wwauth.md
+    - 'Source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/wwauth
