@@ -451,6 +451,6 @@ public class TestOAuthResource {
     assertTrue(response.getBody().success());
     assertEquals("urn:ietf:params:oauth:token-type:id_token", response.getBody().tokenType());
     assertEquals("id-token", response.getBody().idToken());
-    assertEquals(60, response.getBody().expirationTime());
+    assertTrue(response.getBody().expirationTime() > Instant.now().getEpochSecond());
   }
 }

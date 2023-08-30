@@ -194,8 +194,7 @@ public class OAuthResource {
           .ok()
           .entity(new ExternalCredentialResponse(
             authentication.idToken().value(),
-            authentication.idToken().expiryTime().getEpochSecond()
-              - authentication.idToken().issueTime().getEpochSecond()))
+            authentication.idToken().expiryTime().getEpochSecond()))
           .build();
       }
       catch (IllegalArgumentException e) {
