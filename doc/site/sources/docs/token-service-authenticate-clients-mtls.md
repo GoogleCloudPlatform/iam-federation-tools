@@ -239,8 +239,8 @@ to authenticate by using mTLS by doing the following:
                 --service-account SERVICE_ACCOUNT_EMAIL \
                 --output-file token-service.json \
                 --executable-command 'curl https://PUBLIC_FQDN/token 
-                    --data "format=external_credential" 
-                    --data "grant_type=client_credentials" 
+                    --data format=external_credential 
+                    --data grant_type=client_credentials 
                     --cert ./user.cer 
                     --key ./user.key
                     --silent'
