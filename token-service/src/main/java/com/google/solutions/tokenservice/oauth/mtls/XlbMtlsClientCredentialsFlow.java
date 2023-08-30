@@ -33,8 +33,8 @@ import com.google.solutions.tokenservice.web.LogEvents;
 import io.vertx.core.http.HttpServerRequest;
 import org.apache.commons.codec.binary.Base64;
 
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.ForbiddenException;
+import jakarta.enterprise.context.Dependent;
+import jakarta.ws.rs.ForbiddenException;
 import java.time.OffsetDateTime;
 import java.util.Set;
 

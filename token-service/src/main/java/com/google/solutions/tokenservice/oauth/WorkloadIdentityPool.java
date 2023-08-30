@@ -35,7 +35,7 @@ import com.google.solutions.tokenservice.URLHelper;
 import com.google.solutions.tokenservice.UserId;
 import com.google.solutions.tokenservice.platform.HttpTransport;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.net.URL;
 import java.security.GeneralSecurityException;

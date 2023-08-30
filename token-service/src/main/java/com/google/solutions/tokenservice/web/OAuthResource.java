@@ -30,11 +30,11 @@ import com.google.solutions.tokenservice.oauth.AuthenticationRequest;
 import com.google.solutions.tokenservice.oauth.IdTokenIssuer;
 import com.google.solutions.tokenservice.platform.LogAdapter;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;

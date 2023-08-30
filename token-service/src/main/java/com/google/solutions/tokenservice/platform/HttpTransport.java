@@ -30,15 +30,15 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 
 /**
- * Factory for creating transports based on the 'javax.net.ssl.trustStore'
+ * Factory for creating transports based on the 'jakarta.net.ssl.trustStore'
  * system property.
  */
 public class HttpTransport {
   private HttpTransport() {}
 
   public static NetHttpTransport newTransport() throws GeneralSecurityException, IOException {
-    var trustStore = System.getProperty("javax.net.ssl.trustStore");
-    var trustStorePassword = System.getProperty("javax.net.ssl.trustStorePassword");
+    var trustStore = System.getProperty("jakarta.net.ssl.trustStore");
+    var trustStorePassword = System.getProperty("jakarta.net.ssl.trustStorePassword");
 
     if (trustStore != null && trustStorePassword != null) {
       //

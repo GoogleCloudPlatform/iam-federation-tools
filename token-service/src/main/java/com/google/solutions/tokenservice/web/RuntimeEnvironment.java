@@ -36,9 +36,9 @@ import com.google.solutions.tokenservice.oauth.mtls.XlbMtlsClientCredentialsFlow
 import com.google.solutions.tokenservice.platform.LogAdapter;
 import io.vertx.core.http.HttpServerRequest;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
