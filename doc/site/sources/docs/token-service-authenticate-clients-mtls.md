@@ -31,7 +31,7 @@ To obtain an ID token, do the following:
             
         Replace the following:
 
-        *   `CERT_HASH`: the certificate hash of a certificate in your personal certificate store.
+        *   `CERT_HASH`: the certificate thumbprint of a certificate in your personal certificate store.
         *   `PUBLIC_FQDN`: the public FQDN of the load balancer
         
         

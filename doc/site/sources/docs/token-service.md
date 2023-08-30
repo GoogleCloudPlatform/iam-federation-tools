@@ -20,18 +20,17 @@ their existing client certificates and mutual TLS.
 
 ## Token Service
 
-The Token Service is an open-source example implementation of a token broker that
-the following authentication flows:
+The Token Service is an open-source example implementation of a token broker that extends workload
+identity federation by adding support for additional authentication flows:
 
 *   `xlb-mtls-client-credentials`: This flow lets clients authenticate
     using mutual TLS (mTLS).
     
     ![Architecture](images/token-service-labelled.png){ width="570" }
 
-    The token service verifies the certificate presented by the client and uses attributes
-    from the certificate to issue an ID token. Clients can then use this ID token
-    and exchange it against short-lived Google credentials by using workload identity
-    federation.
+    Clients use mTLS to authenticate to the token broker. Using the identity
+    information from the client certificate, the token broker can then issue
+    different types of credentials to the client, including short-lived Google credentials.
 
 *   Custom flows: You can add additional, custom authentication flows by extending the
     the [`ClientCredentialsFlow`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/token-service/src/main/java/com/google/solutions/tokenservice/oauth/ClientCredentialsFlow.java)

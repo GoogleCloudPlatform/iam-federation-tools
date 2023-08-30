@@ -15,8 +15,8 @@ do the following:
 3.  Clone the GitHub repository and switch to the latest branch: 
  
         git clone https://github.com/GoogleCloudPlatform/iam-federation-tools.git
-        cd token-service/sources 
-        git checkout latest
+        cd iam-federation-tools/token-service
+        git checkout latest 
 
 4.  Download the configuration file that you used previously to deploy the application 
     and save it to a file `app.yaml`: 
