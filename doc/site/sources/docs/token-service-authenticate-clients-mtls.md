@@ -236,13 +236,14 @@ to authenticate by using mTLS by doing the following:
         
             gcloud iam workload-identity-pools create-cred-config \
                 projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID \
-                --service-account=SERVICE_ACCOUNT_EMAIL \
-                --output-file=token-service.json \
+                --service-account SERVICE_ACCOUNT_EMAIL \
+                --output-file token-service.json \
                 --executable-command 'curl https://PUBLIC_FQDN/token 
                     --data "format=external_credential" 
                     --data "grant_type=client_credentials" 
                     --cert ./user.cer 
-                    --key ./user.key'
+                    --key ./user.key
+                    --silent'
         
         Replace the following:
 
