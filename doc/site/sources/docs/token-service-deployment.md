@@ -223,7 +223,7 @@ You now deploy a load balancer.
         gcloud iam workload-identity-pools providers create-oidc token-service \
             --location="global" \
             --workload-identity-pool=$POOL_ID \
-            --issuer-uri="https://$PUBLIC_FQDN/" \
+            --issuer-uri="https://$PUBLIC_FQDN" \
             --attribute-mapping="google.subject=assertion.client_id, attribute.client_x5_spiffe=assertion.client.x5_spiffe, attribute.client_x5_dnssan=assertion.client.x5_dnssan, attribute.client_x5_urisan=assertion.client.x5_urisan, attribute.client_x5_sha256=assertion.client.x5_sha256, attribute.client_x5_serial=assertion.client.x5_serial"
             
 2.  Perform an HTTP request to the Token Service to verify that it has been deployed successfully: 
@@ -293,10 +293,6 @@ You now configure the load balancer to verify mTLS certificates:
 
             gcloud beta certificate-manager trust-configs import token-service-ca \
               --source token-service-ca.yaml
-
-            gcloud beta certificate-manager trust-configs import token-service-ca \
-                --source token-service-ca.yaml
-
  
     === "Intermediate CA"
  
@@ -310,9 +306,6 @@ You now configure the load balancer to verify mTLS certificates:
               intermediateCas:
                - pemCertificate: "$(cat intermediate-ca.cer | sed 's/^[ ]*//g' | tr '\n' $ | sed 's/\$/\\n/g')"
             EOF
-
-            gcloud beta certificate-manager trust-configs import token-service-ca \
-              --source token-service-ca.yaml
 
             gcloud beta certificate-manager trust-configs import token-service-ca \
                 --source token-service-ca.yaml
