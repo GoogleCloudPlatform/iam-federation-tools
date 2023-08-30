@@ -31,14 +31,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
-import javax.ws.rs.core.Response;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -119,7 +117,7 @@ public class TestOAuthResource {
 
     assertEquals(200, response.getStatus());
 
-    assertEquals(ISSUER_ID, response.getBody().issuerEndpoint());
+    assertEquals("http://example.com", response.getBody().issuerId());
     assertEquals(new URL(ISSUER_ID, "/token"), response.getBody().tokenEndpoint());
     assertEquals(new URL(ISSUER_ID, "/token"), response.getBody().authorizationEndpoint());
   }

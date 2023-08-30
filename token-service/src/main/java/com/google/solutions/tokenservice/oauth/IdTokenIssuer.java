@@ -66,8 +66,13 @@ public class IdTokenIssuer {
   /**
    * @return OIDC-compliant issuer ID.
    */
-  public URL id() {
-    return this.options.id();
+  public String id() {
+    var issuer = this.options.id().toString();
+    if (issuer.endsWith("/")) {
+      issuer = issuer.substring(0, issuer.length() - 1);
+    }
+
+    return issuer;
   }
 
   /**
@@ -97,13 +102,8 @@ public class IdTokenIssuer {
     var issueTime = Instant.now();
     var expiryTime = issueTime.plus(this.options.tokenExiry);
 
-    var issuer = this.options.id().toString();
-    if (issuer.endsWith("/")) {
-      issuer = issuer.substring(0, issuer.length() - 1);
-    }
-
     var jwtPayload = payload
-      .setIssuer(issuer)
+      .setIssuer(id())
       .setIssuedAtTimeSeconds(issueTime.getEpochSecond())
       .setAudience(this.options.tokenAudience.toString())
       .setExpirationTimeSeconds(expiryTime.getEpochSecond())
