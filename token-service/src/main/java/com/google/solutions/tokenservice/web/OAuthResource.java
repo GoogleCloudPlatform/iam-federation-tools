@@ -36,7 +36,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
@@ -134,7 +133,7 @@ public class OAuthResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getRoot() throws MalformedURLException, URISyntaxException {
-    var metadataUrl = new URL(this.tokenIssuer.id(), "/.well-known/openid-configuration");
+    var metadataUrl = new URL(this.tokenIssuer.id() + "/.well-known/openid-configuration");
 
     return Response
       .temporaryRedirect(metadataUrl.toURI())
@@ -150,7 +149,7 @@ public class OAuthResource {
   public ProviderMetadata getMetadata(
     @Context UriInfo uriInfo
   ) throws MalformedURLException {
-    var tokenUrl = new URL(this.tokenIssuer.id(), "/token");
+    var tokenUrl = new URL(this.tokenIssuer.id() + "/token");
 
     return new ProviderMetadata(
       this.tokenIssuer.id(),
@@ -273,7 +272,7 @@ public class OAuthResource {
    */
   public record ProviderMetadata(
     @JsonProperty("issuer")
-    URL issuerEndpoint,
+    String issuerId,
 
     @JsonProperty("authorization_endpoint")
     URL authorizationEndpoint,
