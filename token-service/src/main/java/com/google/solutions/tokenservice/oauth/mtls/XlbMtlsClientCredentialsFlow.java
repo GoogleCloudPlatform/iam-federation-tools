@@ -23,6 +23,7 @@ package com.google.solutions.tokenservice.oauth.mtls;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.solutions.tokenservice.Base64Helper;
 import com.google.solutions.tokenservice.oauth.AuthenticationRequest;
 import com.google.solutions.tokenservice.oauth.IdTokenIssuer;
 import com.google.solutions.tokenservice.oauth.WorkloadIdentityPool;
@@ -30,6 +31,7 @@ import com.google.solutions.tokenservice.oauth.client.ClientPolicy;
 import com.google.solutions.tokenservice.platform.LogAdapter;
 import com.google.solutions.tokenservice.web.LogEvents;
 import io.vertx.core.http.HttpServerRequest;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.ForbiddenException;
@@ -83,6 +85,17 @@ public class XlbMtlsClientCredentialsFlow extends MtlsClientCredentialsFlow {
     {
       entry.addLabel("header/" + headerName.toLowerCase(), headers.get(headerName));
     }
+  }
+
+  private static String decodeSanHeader(String headerValue) {
+    //
+    // SAN header contain a Base64-escaped, comma-separated list of SANs
+    //
+    if (headerValue == null) {
+      return null;
+    }
+
+    return Base64Helper.unescape(headerValue).split(",")[0];
   }
 
   //---------------------------------------------------------------------------
@@ -199,8 +212,8 @@ public class XlbMtlsClientCredentialsFlow extends MtlsClientCredentialsFlow {
     return new MtlsClientAttributes(
       clientId,
       headers.get(this.options.clientCertSpiffeIdHeaderName),
-      headers.get(this.options.clientCertDnsSansHeaderName),
-      headers.get(this.options.clientCertUriSansHeaderName),
+      decodeSanHeader(headers.get(this.options.clientCertDnsSansHeaderName)),
+      decodeSanHeader(headers.get(this.options.clientCertUriSansHeaderName)),
       headers.get(this.options.clientCertHashHeaderName),
       headers.get(this.options.clientCertSerialNumberHeaderName),
       parseIfNotNull(headers.get(this.options.clientCertNotBeforeHeaderName)),

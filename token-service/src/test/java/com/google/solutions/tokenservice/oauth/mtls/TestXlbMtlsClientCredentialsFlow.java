@@ -21,6 +21,7 @@
 
 package com.google.solutions.tokenservice.oauth.mtls;
 
+import com.google.solutions.tokenservice.Base64Helper;
 import com.google.solutions.tokenservice.oauth.AuthenticationRequest;
 import com.google.solutions.tokenservice.oauth.IdTokenIssuer;
 import com.google.solutions.tokenservice.oauth.WorkloadIdentityPool;
@@ -33,6 +34,8 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.MultivaluedHashMap;
+
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -132,11 +135,11 @@ public class TestXlbMtlsClientCredentialsFlow {
   }
 
   // -------------------------------------------------------------------------
-  // verifyRequest.
+  // getVerifiedClientAttributes.
   // -------------------------------------------------------------------------
 
   @Test
-  public void whenMtlsCertChainVerifiedHeaderIsFalse_thenVerifyClientCertificateThrowsException()
+  public void whenMtlsCertChainVerifiedHeaderIsFalse_thenGetVerifiedClientAttributesThrowsException()
   {
     var headers = new HeadersMultiMap();
     headers.add(OPTIONS.clientCertPresentHeaderName(), "TRuE");
@@ -160,7 +163,7 @@ public class TestXlbMtlsClientCredentialsFlow {
   }
 
   @Test
-  public void whenMtlsCertChainVerifiedHeaderIsTrueButClientIdMissing_thenVerifyClientCertificateThrowsException()
+  public void whenMtlsCertChainVerifiedHeaderIsTrueButClientIdMissing_thenGetVerifiedClientAttributesThrowsException()
   {
     var headers = new HeadersMultiMap();
     headers.add(OPTIONS.clientCertPresentHeaderName(), "TRuE");
@@ -185,7 +188,7 @@ public class TestXlbMtlsClientCredentialsFlow {
   }
 
   @Test
-  public void whenMtlsCertChainVerifiedHeaderIsTrue_thenVerifyClientCertificateReturnsAttributes()
+  public void whenMtlsCertChainVerifiedHeaderIsTrue_thenGetVerifiedClientAttributesReturnsAttributes()
   {
     var headers = new HeadersMultiMap();
     headers.add(OPTIONS.clientCertPresentHeaderName(), "TRuE");
@@ -210,5 +213,35 @@ public class TestXlbMtlsClientCredentialsFlow {
 
     assertNotNull(attributes);
     assertEquals("spiffe-1", attributes.spiffeId());
+  }
+
+  @Test
+  public void whenMultipleSansPresent_thenGetVerifiedClientAttributesReturnsFirstSan()
+  {
+    var headers = new HeadersMultiMap();
+    headers.add(OPTIONS.clientCertPresentHeaderName(), "true");
+    headers.add(OPTIONS.clientCertChainVerifiedHeaderName(), "true");
+    headers.add(OPTIONS.clientCertDnsSansHeaderName(), Base64Helper.escape("dns-1, dns-2"));
+    headers.add(OPTIONS.clientCertUriSansHeaderName(), Base64Helper.escape("https://uri-1,https://uri-2"));
+    headers.add(OPTIONS.clientIdHeaderName(), "client-1");
+
+    var httpRequest = Mockito.mock(HttpServerRequest.class);
+    when(httpRequest.headers()).thenReturn(headers);
+
+    var flow = new XlbMtlsClientCredentialsFlow(
+            OPTIONS,
+            Mockito.mock(ClientPolicy.class),
+            Mockito.mock(IdTokenIssuer.class),
+            Mockito.mock(WorkloadIdentityPool.class),
+            httpRequest,
+            new LogAdapter());
+
+    var request = createRequest("client-1");
+
+    var attributes = flow.getVerifiedClientAttributes(request);
+
+    assertNotNull(attributes);
+    assertEquals("dns-1", attributes.sanDns());
+    assertEquals("https://uri-1", attributes.sanUri());
   }
 }
