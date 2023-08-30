@@ -278,10 +278,12 @@ You now configure the load balancer to verify mTLS certificates:
         The contents of the `.cer` files must start with `-----BEGIN CERTIFICATE-----`. 
 
 2.  Create a [TrustConfig resource :octicons-link-external-16:](https://cloud.google.com/certificate-manager/docs/trust-configs)
-    in Certificate Manager that contains your CA root certificate: 
+    in Certificate Manager: 
  
     === "Root CA"
  
+        Create a TrustConfig resource that contains your CA root certificate:
+        
             cat << EOF > token-service-ca.yaml
             name: token-service-ca
             trustStores:
@@ -298,6 +300,8 @@ You now configure the load balancer to verify mTLS certificates:
  
     === "Intermediate CA"
  
+        Create a TrustConfig resource that contains both, your CA root and intermediate CA certificate:
+        
             cat << EOF > token-service-ca.yaml
             name: token-service-ca
             trustStores:
