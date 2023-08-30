@@ -23,7 +23,7 @@ package com.google.solutions.tokenservice.oauth.client;
 
 import com.google.solutions.tokenservice.oauth.mtls.MtlsClientAttributes;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.util.HashMap;
 

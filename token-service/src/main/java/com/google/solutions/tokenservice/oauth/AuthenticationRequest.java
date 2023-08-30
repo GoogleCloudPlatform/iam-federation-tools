@@ -21,7 +21,7 @@
 
 package com.google.solutions.tokenservice.oauth;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 /**
  * Authentication request containing the parameters provided

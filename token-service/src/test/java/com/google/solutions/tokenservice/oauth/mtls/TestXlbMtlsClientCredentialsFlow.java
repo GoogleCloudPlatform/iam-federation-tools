@@ -32,8 +32,8 @@ import io.vertx.core.http.impl.headers.HeadersMultiMap;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import java.util.Base64;
 

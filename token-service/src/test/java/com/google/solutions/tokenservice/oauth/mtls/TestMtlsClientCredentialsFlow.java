@@ -34,7 +34,7 @@ import com.google.solutions.tokenservice.platform.LogAdapter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
