@@ -26,7 +26,7 @@
   <artifactId>tokenservice</artifactId>
   <version>1.0.0</version>
   <properties>
-    <surefire-plugin.version>3.1.2</surefire-plugin.version>
+    <surefire-plugin.version>3.2.1</surefire-plugin.version>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <quarkus.version>3.2.3.Final</quarkus.version>
