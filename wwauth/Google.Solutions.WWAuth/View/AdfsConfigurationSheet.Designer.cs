@@ -268,8 +268,8 @@ namespace Google.Solutions.WWAuth.View
             // 
             // AdfsConfigurationSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.rpBox);
             this.Controls.Add(this.asfsBox);
             this.Name = "AdfsConfigurationSheet";
