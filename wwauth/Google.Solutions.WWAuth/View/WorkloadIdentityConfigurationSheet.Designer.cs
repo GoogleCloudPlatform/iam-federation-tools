@@ -201,8 +201,8 @@ namespace Google.Solutions.WWAuth.View
             // 
             // WorkloadIdentityConfigurationSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.poolGroup);
             this.Name = "WorkloadIdentityConfigurationSheet";
             this.Size = new System.Drawing.Size(350, 400);
