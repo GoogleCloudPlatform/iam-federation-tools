@@ -13,9 +13,9 @@
     <Product>Workload Authenticator for Windows</Product>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.57.0" />
-    <PackageReference Include="Google.Apis.CloudSecurityToken.v1" Version="1.57.0.2726" />
-    <PackageReference Include="Google.Apis.IAMCredentials.v1" Version="1.57.0.2528" />
+    <PackageReference Include="Google.Apis" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.CloudSecurityToken.v1" Version="1.60.0.2950" />
+    <PackageReference Include="Google.Apis.IAMCredentials.v1" Version="1.60.0.2528" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />
