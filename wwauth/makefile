@@ -23,9 +23,10 @@
 # Basic configuration
 #------------------------------------------------------------------------------
 
-PRODUCT_VERSION = 1.0
+PRODUCT_VERSION = 1.1
 CONFIGURATION = Release
 PLATFORM=Any CPU
+TARGET_FRAMEWORK = net47
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
 BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
@@ -35,13 +36,15 @@ BUILD_NUMBER = 1
 
 BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
-ASSEMBLY_DIR = Google.Solutions.WWAuth\bin\$(CONFIGURATION)
+ASSEMBLY_DIR = Google.Solutions.WWAuth\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)
 PACKED_ASSEMBLY = $(ASSEMBLY_DIR)\wwauth.exe
 MAIN_ASSEMBLY = $(ASSEMBLY_DIR)\Google.Solutions.WWAuth.exe
 
-NUNIT_ASSEMBLIES = Google.Solutions.WWAuth.Test\bin\$(CONFIGURATION)\Google.Solutions.WWAuth.Test.dll
+NUNIT_ASSEMBLIES = Google.Solutions.WWAuth.Test\bin\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.WWAuth.Test.dll
 NUNIT_COVERAGE_FILTER = +[Google.Solutions.WWAuth]* 
     
+NUGET_PACKAGES = $(USERPROFILE)\.nuget\packages
+
 #------------------------------------------------------------------------------
 # Output targets
 #------------------------------------------------------------------------------
@@ -53,7 +56,7 @@ $(MAIN_ASSEMBLY):
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
 
-	msbuild /t:Rebuild "/p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)"
+	msbuild /t:Rebuild "/p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);Version=$(BINARY_VERSION)"
 	
 $(PACKED_ASSEMBLY): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
@@ -90,7 +93,7 @@ test: $(MAIN_ASSEMBLY)
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
 
-	ReportGenerator.exe \
+	$(NUGET_PACKAGES)\ReportGenerator\$(REPORTGENERATOR)\tools\net47\ReportGenerator.exe \
 		-reports:opencovertests.xml \
 		-targetdir:coveragereport \
 		-reporttypes:HTML

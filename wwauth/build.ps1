@@ -30,41 +30,58 @@ ${env:__BUILD_ENV_INITIALIZED} = "1"
 # Find MSBuild and add to PATH
 #------------------------------------------------------------------------------
 
-$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
-	'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin', 'msbuild.exe'))).Path | Select-Object -Last 1
-if ($Msbuild)
+if ((Get-Command "msbuild.exe" -ErrorAction SilentlyContinue) -eq $null)
 {
-	$MsbuildDir = (Split-Path $Msbuild -Parent)
-	$env:Path += ";$MsbuildDir"
+    $MsBuildCandidates = `
+        "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
+        "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
+        "c:\VS\MSBuild\Current\Bin\"
+
+    $Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
+    if ($Msbuild)
+    {
+        $MsbuildDir = (Split-Path $Msbuild -Parent)
+        $env:Path += ";$MsbuildDir"
+    }
+    else
+    {
+        Write-Host "Could not find msbuild" -ForegroundColor Red
+        exit 1
+    }
 }
-else
-{
-	Write-Host "Could not find msbuild" -ForegroundColor Red
-	exit 1
-}
+
+$env:MSBUILD = $Msbuild
 
 #------------------------------------------------------------------------------
 # Find nmake and add to PATH
 #------------------------------------------------------------------------------
 
-$Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
-	'Microsoft Visual Studio', '*', '*', 'VC', 'Tools', 'MSVC', '*' , 'bin', 'Hostx86', '*' , 'nmake.exe'))).Path | Select-Object -Last 1
-if ($Nmake)
+$Nmake = (Get-Command "nmake.exe" -ErrorAction SilentlyContinue).Source
+if ($Nmake -eq $null)
 {
-	$NMakeDir = (Split-Path $NMake -Parent)
-	$env:Path += ";$NMakeDir"
-}
-else
-{
-	Write-Host "Could not find nmake" -ForegroundColor Red
-	exit 1
+    $NmakeCandidates = `
+        "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
+        "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
+        "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
+    $Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
+    if ($Nmake)
+    {
+        $NMakeDir = (Split-Path $NMake -Parent)
+        $env:Path += ";$NMakeDir"
+    }
+    else
+    {
+        Write-Host "Could not find nmake" -ForegroundColor Red
+        exit 1
+    }
 }
 
 #------------------------------------------------------------------------------
 # Find nuget and add to PATH
 #------------------------------------------------------------------------------
 
-if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
+$Nuget = (Get-Command "nuget.exe" -ErrorAction SilentlyContinue).Source
+if ($Nuget -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
@@ -75,20 +92,14 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 	$env:Path += ";${PSScriptRoot}\.tools"
 }
 
+$env:NUGET = $Nuget
+
 #------------------------------------------------------------------------------
 # Restore packages and make them available in the environment
 #------------------------------------------------------------------------------
 
 if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
-    #
-    # Register feed containing pre-built dependencies.
-    #
-    if (Test-Path "${env:KOKORO_GFILE_DIR}\NuGetPackages")
-    {
-        & nuget sources add -Name iap-desktop-dependencies -Source "${env:KOKORO_GFILE_DIR}\NuGetPackages" | Out-Default
-    }
-
     #
     # Restore packages for solution.
     #
@@ -98,21 +109,23 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
+	$PackageReferences = ` 
+        Get-ChildItem -Recurse -Include "*.csproj" `
+            | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `
+            | sort -Property Include -Unique
+        
 	#
 	# Add all tools to PATH.
 	#
-	$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
-		| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
-		| Select-Object -ExpandProperty FullName)
-
+    $ToolsDirectories = $PackageReferences | % { "$($env:USERPROFILE)\.nuget\packages\$($_.Include)\$($_.Version)\tools" }
 	$env:Path += ";" + ($ToolsDirectories -join ";")
 
 	#
 	# Add environment variables indicating package versions, for example
 	# $env:Google_Apis_Auth = 1.2.3
 	#
-	(nuget list -Source (Resolve-Path packages)) `
-		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
+    $PackageReferences `
+        | ForEach-Object { New-Item -Name $_.Include.Replace(".", "_") -value $_.Version -ItemType Variable -Path Env: -Force }
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
