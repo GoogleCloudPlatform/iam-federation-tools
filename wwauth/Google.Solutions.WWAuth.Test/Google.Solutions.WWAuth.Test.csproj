@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Google.Solutions.WWAuth.Test</RootNamespace>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>

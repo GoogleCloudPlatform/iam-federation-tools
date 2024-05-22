@@ -100,6 +100,15 @@ $env:NUGET = $Nuget
 
 if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
+    #
+    # Restore packages for solution.
+    #
+	& $Nmake restore
+	if ($LastExitCode -ne 0)
+	{
+		exit $LastExitCode
+	}
+
 	$PackageReferences = ` 
         Get-ChildItem -Recurse -Include "*.csproj" `
             | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `

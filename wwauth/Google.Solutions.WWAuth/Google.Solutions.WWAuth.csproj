@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Google.Solutions.WWAuth</RootNamespace>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
     <RuntimeIdentifiers>win7-x86;win7-x64</RuntimeIdentifiers>
