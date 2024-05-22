@@ -22,5 +22,6 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
+    <PackageReference Include="ILRepack" Version="2.0.18" />
   </ItemGroup>
 </Project>
