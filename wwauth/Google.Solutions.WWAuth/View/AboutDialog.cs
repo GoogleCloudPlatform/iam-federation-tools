@@ -35,7 +35,7 @@ namespace Google.Solutions.WWAuth.View
             this.infoLabel.Text =
                 $"Workload Authenticator for Windows\n" +
                 $"Version {Assembly.GetExecutingAssembly().GetName().Version}\n\n" +
-                $"© 2022 Google LLC";
+                $"© 2024 Google LLC";
         }
     }
 }
