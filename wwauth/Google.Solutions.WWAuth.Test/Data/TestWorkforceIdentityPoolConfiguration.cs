@@ -22,7 +22,7 @@
 using Google.Solutions.WWAuth.Data;
 using NUnit.Framework;
 
-namespace Google.Solutions.WindowsWorkforceAuth.Test.Data
+namespace Google.Solutions.WWAuth.Test.Data
 {
     [TestFixture]
     public class TestWorkforceIdentityPoolConfiguration
