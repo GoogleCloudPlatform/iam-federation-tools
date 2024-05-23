@@ -11,6 +11,7 @@
     <Company>Google LLC</Company>
     <Copyright>Google LLC</Copyright>
     <Product>Workload Authenticator for Windows</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.64.0" />
