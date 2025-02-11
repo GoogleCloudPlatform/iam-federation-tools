@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-sts</artifactId>
-      <version>v1-rev20240904-2.0.0</version>
+      <version>v1-rev20250127-2.0.0</version>
     </dependency>
 
     <!-- Test dependencies -->
