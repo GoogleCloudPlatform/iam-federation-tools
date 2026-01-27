@@ -42,13 +42,13 @@ namespace Google.Solutions.WWAuth.Test.Util
         [Test]
         public void WhenDescriptionAttributeSet_ThenGetDescriptionReturnsDescription()
         {
-            Assert.AreEqual("Milky substance", Toppings.Cream.GetDescription());
+            Assert.That(Toppings.Cream.GetDescription(), Is.EqualTo("Milky substance"));
         }
 
         [Test]
         public void WhenDescriptionAttributeNotSet_ThenGetDescriptionReturnsName()
         {
-            Assert.AreEqual("Chocolate", Toppings.Chocolate.GetDescription());
+            Assert.That(Toppings.Chocolate.GetDescription(), Is.EqualTo("Chocolate"));
         }
 
         //---------------------------------------------------------------------
@@ -59,14 +59,14 @@ namespace Google.Solutions.WWAuth.Test.Util
         public void WhenDescriptionFound_ThenFromDescriptionReturnsValue()
         {
             var topping = EnumExtensions.FromDescription<Toppings>("Milky substance");
-            Assert.AreEqual(Toppings.Cream, topping);
+            Assert.That(topping, Is.EqualTo(Toppings.Cream));
         }
 
         [Test]
         public void WhenDescriptionNotFound_ThenFromDescriptionReturnsNull()
         {
             var topping = EnumExtensions.FromDescription<Toppings>("Slimy substance");
-            Assert.IsNull(topping);
+            Assert.That(topping, Is.Null);
         }
     }
 }

@@ -5,15 +5,21 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="NUnit" />
-    <PackageReference Include="NUnit3TestAdapter" />
-    <PackageReference Include="NUnit.ConsoleRunner" />
+    <PackageReference Include="NUnit.Analyzers">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Moq" />
+    <PackageReference Include="NUnit.ConsoleRunner" />
+    <PackageReference Include="NUnit3TestAdapter" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.WWAuth\Google.Solutions.WWAuth.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

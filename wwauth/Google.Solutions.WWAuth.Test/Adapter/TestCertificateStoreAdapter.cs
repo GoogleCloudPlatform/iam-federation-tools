@@ -35,7 +35,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
         public void WhenCertificateNotFound_ThenTryGetSigningCertificateReturnsNull()
         {
             var adapter = new CertificateStoreAdapter();
-            Assert.IsNull(adapter.TryGetSigningCertificate("AAAA"));
+            Assert.That(adapter.TryGetSigningCertificate("AAAA"), Is.Null);
         }
     }
 }

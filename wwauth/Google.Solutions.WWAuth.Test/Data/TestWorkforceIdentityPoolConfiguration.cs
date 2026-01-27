@@ -36,9 +36,9 @@ namespace Google.Solutions.WWAuth.Test.Data
         {
             var configuration = new WorkforceIdentityPoolConfiguration();
 
-            Assert.AreEqual(
-                "//iam.googleapis.com/locations/global/workforcePools/-/providers/-",
-                configuration.Audience);
+            Assert.That(
+                configuration.Audience,
+                Is.EqualTo("//iam.googleapis.com/locations/global/workforcePools/-/providers/-"));
         }
 
         [Test]
@@ -52,9 +52,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ProviderName = "provider-1"
             };
 
-            Assert.AreEqual(
-                "//iam.googleapis.com/locations/global/workforcePools/pool-1/providers/provider-1",
-                configuration.Audience);
+            Assert.That(
+                configuration.Audience,
+                Is.EqualTo("//iam.googleapis.com/locations/global/workforcePools/pool-1/providers/provider-1"));
         }
 
         //---------------------------------------------------------------------
@@ -73,7 +73,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ProviderName = "provider-1"
             };
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -88,7 +90,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ProviderName = "provider-1"
             };
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -103,7 +107,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ProviderName = missingValue
             };
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         //---------------------------------------------------------------------
@@ -114,9 +120,9 @@ namespace Google.Solutions.WWAuth.Test.Data
         public void WhenAudienceMalformed_ThenTryParseReturnsFalse(
             [Values(null, "", "//iam.googleapis.com/")] string audience)
         {
-            Assert.IsFalse(WorkforceIdentityPoolConfiguration.TryParse(
+            Assert.That(WorkforceIdentityPoolConfiguration.TryParse(
                 audience,
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
@@ -127,12 +133,12 @@ namespace Google.Solutions.WWAuth.Test.Data
                 "pool-1/providers/provider-1",
                 out var config);
 
-            Assert.IsTrue(parsed);
-            Assert.IsNotNull(config);
+            Assert.That(parsed, Is.True);
+            Assert.That(config, Is.Not.Null);
 
-            Assert.AreEqual("pool-1", config.PoolName);
-            Assert.AreEqual("global", config.Location);
-            Assert.AreEqual("provider-1", config.ProviderName);
+            Assert.That(config.PoolName, Is.EqualTo("pool-1"));
+            Assert.That(config.Location, Is.EqualTo("global"));
+            Assert.That(config.ProviderName, Is.EqualTo("provider-1"));
         }
     }
 }

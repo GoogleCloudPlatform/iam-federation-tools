@@ -42,12 +42,12 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                 "resource",
                 new NullLogger());
 
-            Assert.AreEqual(
-                "https://example.com/adfs/",
-                adapter.IssuerUrl.ToString());
-            Assert.AreEqual(
-                "https://example.com/adfs/.well-known/openid-configuration",
-                adapter.OidcConfigurationUrl.ToString());
+            Assert.That(
+                adapter.IssuerUrl.ToString(),
+                Is.EqualTo("https://example.com/adfs/"));
+            Assert.That(
+                adapter.OidcConfigurationUrl.ToString(),
+                Is.EqualTo("https://example.com/adfs/.well-known/openid-configuration"));
         }
 
         [Test]
@@ -59,12 +59,12 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                 "resource",
                 new NullLogger());
 
-            Assert.AreEqual(
-                "https://example.com/adfs/",
-                adapter.IssuerUrl.ToString());
-            Assert.AreEqual(
-                "https://example.com/adfs/.well-known/openid-configuration",
-                adapter.OidcConfigurationUrl.ToString());
+            Assert.That(
+                adapter.IssuerUrl.ToString(),
+                Is.EqualTo("https://example.com/adfs/"));
+            Assert.That(
+                adapter.OidcConfigurationUrl.ToString(),
+                Is.EqualTo("https://example.com/adfs/.well-known/openid-configuration"));
         }
     }
 }

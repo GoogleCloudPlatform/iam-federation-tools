@@ -41,7 +41,7 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var unwrapped = ex.Unwrap();
 
-            Assert.AreSame(ex, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(ex));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(inner1, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner1));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var unwrapped = target.Unwrap();
 
-            Assert.AreSame(inner, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner));
         }
 
         //---------------------------------------------------------------------
@@ -75,7 +75,7 @@ namespace Google.Solutions.WWAuth.Test.Util
         public void WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
         {
             var ex = new ArgumentException("something went wrong!");
-            Assert.AreEqual(ex.Message, ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo(ex.Message));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Google.Solutions.WWAuth.Test.Util
             var ex = new ArgumentException("One",
                 new InvalidOperationException("two",
                     new Exception("three")));
-            Assert.AreEqual("One: two: three", ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo("One: two: three"));
         }
     }
 }

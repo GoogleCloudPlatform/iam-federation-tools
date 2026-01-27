@@ -37,8 +37,8 @@ namespace Google.Solutions.WWAuth.Test.Util
         public void WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
             IEnumerable<string> e = null;
-            Assert.IsNotNull(e.EnsureNotNull());
-            Assert.AreEqual(0, e.EnsureNotNull().Count());
+            Assert.That(e.EnsureNotNull(), Is.Not.Null);
+            Assert.That(e.EnsureNotNull().Count(), Is.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -52,14 +52,14 @@ namespace Google.Solutions.WWAuth.Test.Util
             {
                 { "key", "value" },
             };
-            Assert.AreEqual("value", dict.TryGet("key"));
+            Assert.That(dict.TryGet("key"), Is.EqualTo("value"));
         }
 
         [Test]
         public void WhenKeyNotFound_ThenTryGetReturnsNull()
         {
             var dict = new Dictionary<string, string>();
-            Assert.IsNull(dict.TryGet("key"));
+            Assert.That(dict.TryGet("key"), Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -70,27 +70,27 @@ namespace Google.Solutions.WWAuth.Test.Util
         public void WhenStringHasNoQuotes_ThenSplitQuotedStringSplits()
         {
             var s = "this is a string";
-            CollectionAssert.AreEquivalent(
-                s.Split(),
-                s.SplitQuotedString(' '));
+            Assert.That(
+                s.SplitQuotedString(' '),
+                Is.EquivalentTo(s.Split()));
         }
 
         [Test]
         public void WhenStringHasQuotes_ThenQuotedPartIsPreserved()
         {
             var s = "'this' is 'a string'";
-            CollectionAssert.AreEquivalent(
-                new[] { "this", "is", "a string" },
-                s.SplitQuotedString(' '));
+            Assert.That(
+                s.SplitQuotedString(' '),
+                Is.EquivalentTo(new[] { "this", "is", "a string" }));
         }
 
         [Test]
         public void WhenStringHasMultipleQuotes_ThenQuotedPartIsPreserved()
         {
             var s = "this is 'a string' and \"here is\" another one";
-            CollectionAssert.AreEquivalent(
-                new[] { "this", "is", "a string", "and", "here is", "another", "one" },
-                s.SplitQuotedString(' '));
+            Assert.That(
+                s.SplitQuotedString(' '),
+                Is.EquivalentTo(new[] { "this", "is", "a string", "and", "here is", "another", "one" }));
         }
     }
 }

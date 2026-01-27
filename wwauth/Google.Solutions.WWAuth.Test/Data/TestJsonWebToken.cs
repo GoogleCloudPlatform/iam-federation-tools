@@ -54,7 +54,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                 sub = "subject"
             });
 
-            Assert.IsNull(jwt.Issuer);
+            Assert.That(jwt.Issuer, Is.Null);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                 iss = "issuer"
             });
 
-            Assert.AreEqual("issuer", jwt.Issuer);
+            Assert.That(jwt.Issuer, Is.EqualTo("issuer"));
         }
 
         //---------------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                 sub = "subject"
             });
 
-            Assert.IsNull(jwt.Audience);
+            Assert.That(jwt.Audience, Is.Null);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                 aud = "audience"
             });
 
-            Assert.AreEqual("audience", jwt.Audience);
+            Assert.That(jwt.Audience, Is.EqualTo("audience"));
         }
 
         //---------------------------------------------------------------------
@@ -117,16 +117,16 @@ namespace Google.Solutions.WWAuth.Test.Data
 
             var attributes = jwt.Attributes;
 
-            Assert.AreEqual(9, attributes.Count);
-            Assert.AreEqual(1, attributes["assertion.scalarInt"]);
-            Assert.AreEqual("test", attributes["assertion.scalarString"]);
-            Assert.AreEqual(1, attributes["assertion.arrayInt[0]"]);
-            Assert.AreEqual(2, attributes["assertion.arrayInt[1]"]);
-            Assert.AreEqual(3, attributes["assertion.arrayInt[2]"]);
-            Assert.AreEqual("one", attributes["assertion.arrayString[0]"]);
-            Assert.AreEqual("two", attributes["assertion.arrayString[1]"]);
-            Assert.AreEqual("three", attributes["assertion.arrayString[2]"]);
-            Assert.AreEqual(1, attributes["assertion.nested.scalarInt"]);
+            Assert.That(attributes.Count, Is.EqualTo(9));
+            Assert.That(attributes["assertion.scalarInt"], Is.EqualTo(1));
+            Assert.That(attributes["assertion.scalarString"], Is.EqualTo("test"));
+            Assert.That(attributes["assertion.arrayInt[0]"], Is.EqualTo(1));
+            Assert.That(attributes["assertion.arrayInt[1]"], Is.EqualTo(2));
+            Assert.That(attributes["assertion.arrayInt[2]"], Is.EqualTo(3));
+            Assert.That(attributes["assertion.arrayString[0]"], Is.EqualTo("one"));
+            Assert.That(attributes["assertion.arrayString[1]"], Is.EqualTo("two"));
+            Assert.That(attributes["assertion.arrayString[2]"], Is.EqualTo("three"));
+            Assert.That(attributes["assertion.nested.scalarInt"], Is.EqualTo(1));
         }
     }
 }

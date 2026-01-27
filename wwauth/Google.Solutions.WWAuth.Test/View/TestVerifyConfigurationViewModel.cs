@@ -85,7 +85,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(vm.ResultImage);
-            Assert.AreEqual("test", vm.ResultText);
+            Assert.That(vm.ResultText, Is.EqualTo("test"));
             Assert.IsTrue(vm.IsResultPanelVisible);
         }
 
@@ -173,7 +173,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(vm.ResultImage);
-            Assert.AreEqual("test", vm.ResultText);
+            Assert.That(vm.ResultText, Is.EqualTo("test"));
             Assert.IsTrue(vm.IsResultPanelVisible);
         }
 
@@ -384,7 +384,7 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.IsTrue(vm.IsImpersonationStatusVisible);
             Assert.IsFalse(vm.IsShowServiceAccountTokenDetailsLinkEnabled);
             Assert.IsNotNull(vm.ResultImage);
-            Assert.AreEqual("test", vm.ResultText);
+            Assert.That(vm.ResultText, Is.EqualTo("test"));
             Assert.IsTrue(vm.IsResultPanelVisible);
         }
         [Test]
@@ -432,7 +432,7 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.IsTrue(vm.IsImpersonationStatusVisible);
             Assert.IsFalse(vm.IsShowServiceAccountTokenDetailsLinkEnabled);
             Assert.IsNotNull(vm.ResultImage);
-            Assert.AreEqual("test", vm.ResultText);
+            Assert.That(vm.ResultText, Is.EqualTo("test"));
             Assert.IsTrue(vm.IsResultPanelVisible);
         }
 
@@ -477,7 +477,7 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.IsTrue(vm.IsImpersonationStatusVisible);
             Assert.IsTrue(vm.IsShowServiceAccountTokenDetailsLinkEnabled);
             Assert.IsNotNull(vm.ResultImage);
-            StringAssert.Contains("success", vm.ResultText);
+            Assert.That(vm.ResultText, Does.Contain("success"));
             Assert.IsTrue(vm.IsResultPanelVisible);
         }
 
@@ -514,7 +514,7 @@ namespace Google.Solutions.WWAuth.Test.View
             Assert.IsFalse(vm.IsImpersonationStatusVisible);
             Assert.IsFalse(vm.IsShowServiceAccountTokenDetailsLinkEnabled);
             Assert.IsNotNull(vm.ResultImage);
-            StringAssert.Contains("success", vm.ResultText);
+            Assert.That(vm.ResultText, Does.Contain("success"));
             Assert.IsTrue(vm.IsResultPanelVisible);
 
             serviceAccountAdapter.Verify(

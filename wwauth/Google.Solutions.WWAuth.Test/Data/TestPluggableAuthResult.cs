@@ -39,8 +39,8 @@ namespace Google.Solutions.WWAuth.Test.Data
             token.SetupGet(t => t.Expiry).Returns(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero));
 
             var result = new PluggableAuthResult(token.Object);
-            Assert.IsTrue(result.Success);
-            Assert.AreEqual("token value", result.IdToken);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.IdToken, Is.EqualTo("token value"));
         }
 
         [Test]
@@ -52,8 +52,8 @@ namespace Google.Solutions.WWAuth.Test.Data
             token.SetupGet(t => t.Expiry).Returns(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero));
 
             var result = new PluggableAuthResult(token.Object);
-            Assert.IsTrue(result.Success);
-            Assert.AreEqual("token value", result.SamlResponse);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.SamlResponse, Is.EqualTo("token value"));
         }
 
         [Test]
@@ -64,9 +64,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                     new ArgumentException("AE")));
 
             var result = new PluggableAuthResult(exception);
-            Assert.AreEqual("InvalidOperationException", result.Code);
-            StringAssert.Contains("IOE", result.Message);
-            StringAssert.Contains("AE", result.Message);
+            Assert.That(result.Code, Is.EqualTo("InvalidOperationException"));
+            Assert.That(result.Message, Does.Contain("IOE"));
+            Assert.That(result.Message, Does.Contain("AE"));
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                 result.WriteTo(writer);
                 writer.Flush();
 
-                StringAssert.Contains("token value", writer.ToString());
+                Assert.That(writer.ToString(), Does.Contain("token value"));
             }
         }
     }

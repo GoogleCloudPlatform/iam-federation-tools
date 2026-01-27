@@ -47,7 +47,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             var token = CreateToken(
                 new Saml2Assertion(new Saml2NameIdentifier("issuer")));
 
-            Assert.AreEqual("issuer", token.Issuer);
+            Assert.That(token.Issuer, Is.EqualTo("issuer"));
         }
 
         //---------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             var token = CreateToken(
                 new Saml2Assertion(new Saml2NameIdentifier("isuer")));
 
-            Assert.IsNull(token.Audience);
+            Assert.That(token.Audience, Is.Null);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
                 new Saml2AudienceRestriction(new Uri("https://example.org/")));
             var token = CreateToken(assertion);
 
-            Assert.AreEqual("https://example.com/", token.Audience);
+            Assert.That(token.Audience, Is.EqualTo("https://example.com/"));
         }
 
         //---------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             var token = CreateToken(
                 new Saml2Assertion(new Saml2NameIdentifier("isuer")));
 
-            Assert.IsFalse(token.Attributes.Any());
+            Assert.That(token.Attributes.Any(), Is.False);
         }
 
         [Test]
@@ -102,8 +102,8 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             });
 
             var attributes = token.Attributes;
-            Assert.AreEqual(1, attributes.Count);
-            Assert.AreEqual("subject", attributes["assertion.subject"]);
+            Assert.That(attributes.Count, Is.EqualTo(1));
+            Assert.That(attributes["assertion.subject"], Is.EqualTo("subject"));
         }
 
         [Test]
@@ -124,10 +124,10 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             var token = CreateToken(assertion);
 
             var attributes = token.Attributes;
-            Assert.AreEqual(3, attributes.Count);
-            Assert.AreEqual("value-1", attributes["assertion.attributes['att-1']"]);
-            Assert.AreEqual("value-1", attributes["assertion.attributes['att-2'][0]"]);
-            Assert.AreEqual("value-2", attributes["assertion.attributes['att-2'][1]"]);
+            Assert.That(attributes.Count, Is.EqualTo(3));
+            Assert.That(attributes["assertion.attributes['att-1']"], Is.EqualTo("value-1"));
+            Assert.That(attributes["assertion.attributes['att-2'][0]"], Is.EqualTo("value-1"));
+            Assert.That(attributes["assertion.attributes['att-2'][1]"], Is.EqualTo("value-2"));
         }
     }
 }

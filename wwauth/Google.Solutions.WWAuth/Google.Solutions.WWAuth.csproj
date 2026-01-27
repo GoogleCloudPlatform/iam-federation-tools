@@ -12,6 +12,12 @@
     <Copyright>Google LLC</Copyright>
     <Product>Workload Authenticator for Windows</Product>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+
+
+    <!-- suppress warnings about System.Net.Http conflict resolution -->
+    <MSBuildWarningsAsMessages>
+      $(MSBuildWarningsAsMessages);MSB3277
+    </MSBuildWarningsAsMessages>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis" />

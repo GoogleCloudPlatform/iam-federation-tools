@@ -42,7 +42,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 missingValue,
                 new NullLogger());
 
-            Assert.IsFalse(adapter.IsEnabled);
+            Assert.That(adapter.IsEnabled, Is.False);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 "securetoken@system.gserviceaccount.com",
                 new NullLogger());
 
-            Assert.IsTrue(adapter.IsEnabled);
+            Assert.That(adapter.IsEnabled, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -66,9 +66,9 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 "securetoken@system.gserviceaccount.com",
                 new NullLogger());
 
-            Assert.IsTrue(await adapter.ExistsAsync(
+            Assert.That(await adapter.ExistsAsync(
                     CancellationToken.None)
-                .ConfigureAwait(false));
+                .ConfigureAwait(false), Is.True);
         }
 
         [Test]
@@ -78,9 +78,9 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 "does-not-exist@invalid.iam.gserviceaccount.com",
                 new NullLogger());
 
-            Assert.IsFalse(await adapter.ExistsAsync(
+            Assert.That(await adapter.ExistsAsync(
                     CancellationToken.None)
-                .ConfigureAwait(false));
+                .ConfigureAwait(false), Is.False);
         }
 
         //---------------------------------------------------------------------
