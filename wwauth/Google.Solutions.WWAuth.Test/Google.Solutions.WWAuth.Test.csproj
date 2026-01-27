@@ -5,10 +5,10 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="NUnit.ConsoleRunner" Version="3.15.2"/>
-    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.ConsoleRunner" />
+    <PackageReference Include="Moq" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.WWAuth\Google.Solutions.WWAuth.csproj" />
