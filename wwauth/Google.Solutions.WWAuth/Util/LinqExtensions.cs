@@ -39,7 +39,7 @@ namespace Google.Solutions.WWAuth.Util
             K key)
             where V : class
         {
-            if (dict.TryGetValue(key, out V value))
+            if (dict.TryGetValue(key, out var value))
             {
                 return value;
             }
@@ -54,10 +54,10 @@ namespace Google.Solutions.WWAuth.Util
             params char[] separator)
         {
             var splits = new List<string>();
-            bool inQuotedSegment = false;
+            var inQuotedSegment = false;
 
             var segments = s.Split('\'', '"');
-            for (int i = 0; i < segments.Length; i++)
+            for (var i = 0; i < segments.Length; i++)
             {
                 segments[i] = segments[i].Trim(separator);
 

@@ -33,7 +33,7 @@ namespace Google.Solutions.WWAuth.Util
         public static TRequest WithCredentials<TRequest, TResponse>(
             this TRequest request,
             ClientSecrets credentials)
-            where TRequest: ClientServiceRequest<TResponse>
+            where TRequest : ClientServiceRequest<TResponse>
         {
             if (credentials != null)
             {

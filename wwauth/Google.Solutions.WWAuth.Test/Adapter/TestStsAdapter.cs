@@ -25,7 +25,6 @@ using Google.Solutions.WWAuth.Data;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.WWAuth.Test.Adapter
 {
@@ -103,7 +102,9 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                     "notatoken",
                     CancellationToken.None));
 
-            Assert.That(ex.Message, Does.Contain("Request has invalid basic authentication credentials."));
+            Assert.That(
+                ex.Message,
+                Does.Contain("Request has invalid basic authentication credentials."));
         }
     }
 }

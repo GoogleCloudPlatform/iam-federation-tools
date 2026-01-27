@@ -35,7 +35,7 @@ namespace Google.Solutions.WWAuth.Test
             Action raisingAction)
             where TViewModel : INotifyPropertyChanged
         {
-            bool eventRaised = false;
+            var eventRaised = false;
             using (viewModel.OnPropertyChange(modelProperty, _ =>
             {
                 eventRaised = true;

@@ -309,17 +309,17 @@ namespace Google.Solutions.WWAuth.View
                             .ConfigureAwait(true))
                         {
                             throw new ArgumentException(
-                                $"Service account {serviceAccountAdapter.ServiceAccountEmail}' does not exist");
+                                $"Service account {this.serviceAccountAdapter.ServiceAccountEmail}' does not exist");
                         }
 
-                        var token = await serviceAccountAdapter
+                        var token = await this.serviceAccountAdapter
                             .ImpersonateAsync(
                                 stsToken.AccessToken,
                                 CredentialConfiguration.DefaultScopes,
                                 cancellationToken)
                             .ConfigureAwait(true);
 
-                        this.ServiceAccountToken = await serviceAccountAdapter
+                        this.ServiceAccountToken = await this.serviceAccountAdapter
                             .IntrospectTokenAsync(
                                 token.AccessToken,
                                 cancellationToken)

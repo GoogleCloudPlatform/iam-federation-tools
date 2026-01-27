@@ -188,7 +188,7 @@ namespace Google.Solutions.WWAuth.Adapters
 
             var usernameBuffer = new StringBuilder(256);
             var passwordBuffer = new StringBuilder(256);
-            bool save = false;
+            var save = false;
 
             var result = NativeMethods.CredUIPromptForCredentialsW(
                 ref uiInfo,

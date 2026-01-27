@@ -201,11 +201,17 @@ namespace Google.Solutions.WWAuth.Test.Data
             var info = configuration.ToJsonStructure();
             Assert.That(info.Type, Is.EqualTo("external_account"));
             Assert.That(info.TokenUrl, Is.EqualTo(StsAdapter.DefaultTokenUrl));
-            Assert.That(info.Audience, Is.EqualTo("//iam.googleapis.com/projects/1/locations/local/workloadIdentityPools/pool-1/providers/provider-1"));
-            Assert.That(info.ServiceAccountImpersonationUrl, Is.EqualTo("https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/sa@example.iam.gserviceaccount.com:generateAccessToken"));
+            Assert.That(
+                info.Audience,
+                Is.EqualTo("//iam.googleapis.com/projects/1/locations/local/workloadIdentityPools/pool-1/providers/provider-1"));
+            Assert.That(
+                info.ServiceAccountImpersonationUrl,
+                Is.EqualTo("https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/sa@example.iam.gserviceaccount.com:generateAccessToken"));
             Assert.That(info.SubjectTokenType, Is.EqualTo("urn:ietf:params:oauth:token-type:jwt"));
             Assert.That(info.CredentialSource.Executable.TimeoutMillis, Is.EqualTo(60000));
-            Assert.That(info.CredentialSource.Executable.Command, Is.EqualTo("test.exe " +
+            Assert.That(
+                info.CredentialSource.Executable.Command,
+                Is.EqualTo("test.exe " +
                     "/IssuerUrl https://example.com/adfs/ " +
                     "/Protocol AdfsOidc " +
                     "/RelyingPartyId https://rp.example.com/ " +
@@ -246,11 +252,15 @@ namespace Google.Solutions.WWAuth.Test.Data
             var info = configuration.ToJsonStructure();
             Assert.That(info.Type, Is.EqualTo("external_account"));
             Assert.That(info.TokenUrl, Is.EqualTo(StsAdapter.DefaultTokenUrl));
-            Assert.That(info.Audience, Is.EqualTo("//iam.googleapis.com/locations/local/workforcePools/pool-1/providers/provider-1"));
+            Assert.That(
+                info.Audience,
+                Is.EqualTo("//iam.googleapis.com/locations/local/workforcePools/pool-1/providers/provider-1"));
             Assert.That(info.ServiceAccountImpersonationUrl, Is.Null);
             Assert.That(info.SubjectTokenType, Is.EqualTo("urn:ietf:params:oauth:token-type:jwt"));
             Assert.That(info.CredentialSource.Executable.TimeoutMillis, Is.EqualTo(60000));
-            Assert.That(info.CredentialSource.Executable.Command, Is.EqualTo("test.exe " +
+            Assert.That(
+                info.CredentialSource.Executable.Command,
+                Is.EqualTo("test.exe " +
                     "/IssuerUrl https://example.com/adfs/ " +
                     "/Protocol AdfsOidc " +
                     "/RelyingPartyId https://rp.example.com/ " +

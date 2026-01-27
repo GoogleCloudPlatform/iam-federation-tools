@@ -142,9 +142,9 @@ namespace Google.Solutions.WWAuth.View
                 m => m.IsViewCertificateMenuItemEnabled,
                 this.Container);
 
-            this.Load += (s, e) =>
+            Load += (s, e) =>
             {
-                if (!File.Exists(viewModel.Executable) &&
+                if (!File.Exists(this.viewModel.Executable) &&
                     MessageBox.Show(
                         this,
                         "The credential configuration contains points to a copy of WWAuth " +
@@ -154,7 +154,7 @@ namespace Google.Solutions.WWAuth.View
                         MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    viewModel.ResetExecutable();
+                    this.viewModel.ResetExecutable();
                 }
             };
         }

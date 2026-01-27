@@ -94,7 +94,7 @@ namespace Google.Solutions.WWAuth.View
             var tempFile = this.file.Clone();
             tempFile.SaveAs(Path.GetTempFileName());
 
-            var result = shellAdapter.PromptForCredentials(
+            var result = this.shellAdapter.PromptForCredentials(
                 owner,
                 out var credential);
             if (result == DialogResult.OK)
@@ -119,7 +119,7 @@ namespace Google.Solutions.WWAuth.View
                 //
                 try
                 {
-                    shellAdapter.StartProcessAsUser(
+                    this.shellAdapter.StartProcessAsUser(
                         Program.ExecutablePath,
                         new AttendedCommandLineOptions()
                         {

@@ -21,7 +21,6 @@
 
 using Google.Solutions.WWAuth.View;
 using NUnit.Framework;
-using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.WWAuth.Test.View
@@ -178,9 +177,11 @@ namespace Google.Solutions.WWAuth.Test.View
         {
             var observed = new TextBox();
 
-            Assert.That(() => observed.OnControlPropertyChange(
-                o => o.PasswordChar,
-                _ => { }), Throws.ArgumentException);
+            Assert.That(
+                () => observed.OnControlPropertyChange(
+                    o => o.PasswordChar,
+                    _ => { }),
+                Throws.ArgumentException);
         }
 
         //---------------------------------------------------------------------

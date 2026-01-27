@@ -24,9 +24,7 @@ using Google.Solutions.WWAuth.Data;
 using Google.Solutions.WWAuth.View;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
@@ -427,7 +425,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.That(() => vm.ValidateChanges(), Throws.InstanceOf<InvalidCredentialConfigurationException>());
+            Assert.That(
+                () => vm.ValidateChanges(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         //---------------------------------------------------------------------
