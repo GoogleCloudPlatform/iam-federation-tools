@@ -74,11 +74,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 v => { callbacks++; }))
             {
                 observed.One = "observed";
-                Assert.AreEqual(1, callbacks);
+                Assert.That(callbacks, Is.EqualTo(1));
             }
 
             observed.One = "not observed";
-            Assert.AreEqual(1, callbacks);
+            Assert.That(callbacks, Is.EqualTo(1));
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 v => { callbacks++; }))
             {
                 observed.Two = 2;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 };
 
                 observed.One = "observed";
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -131,11 +131,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 v => { callbacks++; }))
             {
                 observed.Text = "observed";
-                Assert.AreEqual(1, callbacks);
+                Assert.That(callbacks, Is.EqualTo(1));
             }
 
             observed.Text = "not observed";
-            Assert.AreEqual(1, callbacks);
+            Assert.That(callbacks, Is.EqualTo(1));
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 v => { callbacks++; }))
             {
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -169,7 +169,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 };
 
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -178,9 +178,9 @@ namespace Google.Solutions.WWAuth.Test.View
         {
             var observed = new TextBox();
 
-            Assert.Throws<ArgumentException>(() => observed.OnControlPropertyChange(
+            Assert.That(() => observed.OnControlPropertyChange(
                 o => o.PasswordChar,
-                _ => { }));
+                _ => { }), Throws.ArgumentException);
         }
 
         //---------------------------------------------------------------------
@@ -201,7 +201,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -215,9 +215,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
             control.Text = "test";
-            Assert.AreEqual("test", model.One);
+            Assert.That(model.One, Is.EqualTo("test"));
         }
 
         [Test]
@@ -231,9 +231,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
 
 
@@ -255,7 +255,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -269,9 +269,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
             control.Text = "test";
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
         }
 
         [Test]
@@ -285,9 +285,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 model,
                 m => m.One);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
     }
 }

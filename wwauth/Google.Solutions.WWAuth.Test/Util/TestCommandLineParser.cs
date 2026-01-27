@@ -41,6 +41,7 @@ namespace Google.Solutions.WWAuth.Test.Util
             public string StringOne { get; set; }
 
             [CommandLineArgument]
+
             public string StringTwo { get; set; }
 
             private string IgnoreMe { get; set; } = "ignore";
@@ -62,34 +63,32 @@ namespace Google.Solutions.WWAuth.Test.Util
         public void WhenCommandLineEmpty_ThenParseSucceeds()
         {
             var options = CommandLineParser.Parse<Options>("foo.exe");
-            Assert.IsNotNull(options);
+            Assert.That(options, Is.Not.Null);
         }
 
         [Test]
         public void WhenCommandLineContainsExtraArguments_ThenParseThrowsException()
         {
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe /stringone"));
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe /stringone"),
+                Throws.ArgumentException);
         }
 
         [Test]
         public void WhenCommandLineContainsArgumentWitoutSlash_ThenParseThrowsException()
         {
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe stringone value"));
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe stringone value"),
+                Throws.ArgumentException);
         }
 
         [Test]
         public void WhenCommandLineReferencesInvalidProperty_ThenParseThrowsException()
         {
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe intone value"));
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe /Executable value"));
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe /nonexistingproperty value"));
-            Assert.Throws<ArgumentException>(
-                () => CommandLineParser.Parse<Options>("foo.exe /enumone value"));
+            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe intone value"), Throws.ArgumentException);
+            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /Executable value"), Throws.ArgumentException);
+            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /nonexistingproperty value"), Throws.ArgumentException);
+            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /enumone value"), Throws.ArgumentException);
         }
 
         [Test]
@@ -97,10 +96,10 @@ namespace Google.Solutions.WWAuth.Test.Util
         {
             var options = CommandLineParser.Parse<Options>(
                 "'c:\\path to\\foo.exe' /stringONE 'some value' /stringtwo \" some more\" /enumone White");
-            Assert.IsNotNull(options);
-            Assert.AreEqual("some value", options.StringOne);
-            Assert.AreEqual("some more", options.StringTwo);
-            Assert.AreEqual(Colors.White, options.EnumOne);
+            Assert.That(options, Is.Not.Null);
+            Assert.That(options.StringOne, Is.EqualTo("some value"));
+            Assert.That(options.StringTwo, Is.EqualTo("some more"));
+            Assert.That(options.EnumOne, Is.EqualTo(Colors.White));
         }
 
         //---------------------------------------------------------------------
@@ -120,9 +119,9 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var cmd = CommandLineParser.ToString(options);
             var parsed = CommandLineParser.Parse<Options>(cmd);
-            Assert.AreEqual(options.StringOne, parsed.StringOne);
-            Assert.AreEqual(options.StringTwo, parsed.StringTwo);
-            Assert.AreEqual(Colors.White, parsed.EnumOne);
+            Assert.That(parsed.StringOne, Is.EqualTo(options.StringOne));
+            Assert.That(parsed.StringTwo, Is.EqualTo(options.StringTwo));
+            Assert.That(parsed.EnumOne, Is.EqualTo(Colors.White));
         }
 
         [Test]
@@ -135,7 +134,7 @@ namespace Google.Solutions.WWAuth.Test.Util
                 StringTwo = string.Empty
             };
 
-            Assert.AreEqual("\"foo.exe\" /EnumOne \"Blue\"", CommandLineParser.ToString(options));
+            Assert.That(CommandLineParser.ToString(options), Is.EqualTo("\"foo.exe\" /EnumOne \"Blue\""));
         }
 
         [Test]
@@ -148,7 +147,7 @@ namespace Google.Solutions.WWAuth.Test.Util
                 StringTwo = string.Empty
             };
 
-            Assert.AreEqual("c:\\pathto\\foo.exe /EnumOne Blue", CommandLineParser.ToString(options, false));
+            Assert.That(CommandLineParser.ToString(options, false), Is.EqualTo("c:\\pathto\\foo.exe /EnumOne Blue"));
         }
 
         [Test]
@@ -175,9 +174,7 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var commandLine = CommandLineParser.ToString(options, false);
 
-            StringAssert.DoesNotContain(
-                " ",
-                commandLine.Substring(0, commandLine.IndexOf("foo.exe")));
+            Assert.That(commandLine.Substring(0, commandLine.IndexOf("foo.exe")), Does.Not.Contain(" "));
         }
     }
 }

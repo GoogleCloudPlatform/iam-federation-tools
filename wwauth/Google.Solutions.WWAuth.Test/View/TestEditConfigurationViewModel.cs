@@ -71,9 +71,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 NewSampleCredentialConfigurationFile(),
                 shellAdapter.Object);
 
-            Assert.AreEqual(
-                DialogResult.Cancel,
-                vm.VerifyConfigurationAsUser(null));
+            Assert.That(
+                vm.VerifyConfigurationAsUser(null),
+                Is.EqualTo(DialogResult.Cancel));
         }
 
         [Test]
@@ -91,8 +91,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 NewSampleCredentialConfigurationFile(),
                 shellAdapter.Object);
 
-            Assert.Throws<IdentityNotMappedException>(
-                () => vm.VerifyConfigurationAsUser(null));
+            Assert.That(
+                () => vm.VerifyConfigurationAsUser(null),
+                Throws.InstanceOf<IdentityNotMappedException>());
         }
 
         [Test]
@@ -118,8 +119,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 NewSampleCredentialConfigurationFile(),
                 shellAdapter.Object);
 
-            Assert.Throws<IOException>(
-                () => vm.VerifyConfigurationAsUser(null));
+            Assert.That(
+                () => vm.VerifyConfigurationAsUser(null),
+                Throws.InstanceOf<IOException>());
         }
 
         [Test]
@@ -139,9 +141,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 NewSampleCredentialConfigurationFile(),
                 shellAdapter.Object);
 
-            Assert.AreEqual(
-                DialogResult.OK,
-                vm.VerifyConfigurationAsUser(null));
+            Assert.That(
+                vm.VerifyConfigurationAsUser(null),
+                Is.EqualTo(DialogResult.OK));
 
             shellAdapter.Verify(a => a.StartProcessAsUser(
                     It.Is<string>(s => s == Program.ExecutablePath),

@@ -66,7 +66,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
 
             PropertyAssert.RaisesPropertyChangeNotification(
                 vm,
@@ -77,7 +77,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.IsDirty,
                 () => vm.IssuerUrl = "value");
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -97,7 +97,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
 
             PropertyAssert.RaisesPropertyChangeNotification(
                 vm,
@@ -108,7 +108,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.IsDirty,
                 () => vm.RelyingPartyId = "value");
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -128,7 +128,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
 
             PropertyAssert.RaisesPropertyChangeNotification(
                 vm,
@@ -139,7 +139,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.IsDirty,
                 () => vm.ClientId = "value");
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -154,9 +154,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            CollectionAssert.Contains(vm.AvailableProtocols, "AdfsOidc");
-            CollectionAssert.Contains(vm.AvailableProtocols, "AdfsWsTrust");
-            CollectionAssert.Contains(vm.AvailableProtocols, "AdfsSamlPost");
+            Assert.That(vm.AvailableProtocols, Does.Contain("AdfsOidc"));
+            Assert.That(vm.AvailableProtocols, Does.Contain("AdfsWsTrust"));
+            Assert.That(vm.AvailableProtocols, Does.Contain("AdfsSamlPost"));
         }
 
         //---------------------------------------------------------------------
@@ -176,7 +176,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
 
             PropertyAssert.RaisesPropertyChangeNotification(
                 vm,
@@ -195,7 +195,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.IsAcsUrlTextBoxVisible,
                 () => vm.ProtocolIndex = 0);
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -215,7 +215,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsSignRequestControlVisible);
+            Assert.That(vm.IsSignRequestControlVisible, Is.False);
         }
 
         [Test]
@@ -231,7 +231,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.IsFalse(vm.IsSignRequestControlVisible);
+            Assert.That(vm.IsSignRequestControlVisible, Is.False);
         }
 
         [Test]
@@ -250,11 +250,11 @@ namespace Google.Solutions.WWAuth.Test.View
 
             vm.ReapplyProtocolDefaults();
 
-            Assert.IsTrue(vm.IsSignRequestControlVisible);
-            Assert.IsFalse(vm.IsSignRequestControlEnabled);
-            Assert.IsNull(vm.SigningCertificateSubject);
-            Assert.IsNull(vm.RequestSigningCertificate);
-            Assert.IsFalse(vm.IsViewCertificateMenuItemEnabled);
+            Assert.That(vm.IsSignRequestControlVisible, Is.True);
+            Assert.That(vm.IsSignRequestControlEnabled, Is.False);
+            Assert.That(vm.SigningCertificateSubject, Is.Null);
+            Assert.That(vm.RequestSigningCertificate, Is.Null);
+            Assert.That(vm.IsViewCertificateMenuItemEnabled, Is.False);
         }
 
         [Test]
@@ -276,11 +276,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 certStoreAdapter.Object);
 
-            Assert.IsTrue(vm.IsSignRequestControlVisible);
-            Assert.IsFalse(vm.IsSignRequestControlEnabled);
-            Assert.IsNull(vm.SigningCertificateSubject);
-            Assert.IsNull(vm.RequestSigningCertificate);
-            Assert.IsFalse(vm.IsViewCertificateMenuItemEnabled);
+            Assert.That(vm.IsSignRequestControlVisible, Is.True);
+            Assert.That(vm.IsSignRequestControlEnabled, Is.False);
+            Assert.That(vm.SigningCertificateSubject, Is.Null);
+            Assert.That(vm.RequestSigningCertificate, Is.Null);
+            Assert.That(vm.IsViewCertificateMenuItemEnabled, Is.False);
         }
 
         [Test]
@@ -304,11 +304,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 certStoreAdapter.Object);
 
-            Assert.IsTrue(vm.IsSignRequestControlVisible);
-            Assert.IsTrue(vm.IsSignRequestControlEnabled);
-            Assert.AreEqual("CN=test", vm.SigningCertificateSubject);
-            Assert.AreSame(cert, vm.RequestSigningCertificate);
-            Assert.IsTrue(vm.IsViewCertificateMenuItemEnabled);
+            Assert.That(vm.IsSignRequestControlVisible, Is.True);
+            Assert.That(vm.IsSignRequestControlEnabled, Is.True);
+            Assert.That(vm.SigningCertificateSubject, Is.EqualTo("CN=test"));
+            Assert.That(vm.RequestSigningCertificate, Is.SameAs(cert));
+            Assert.That(vm.IsViewCertificateMenuItemEnabled, Is.True);
 #else
             Assert.Inconclusive("Test requires .NET 4.7.2+");
 #endif
@@ -348,11 +348,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.SigningCertificateSubject,
                 () => vm.IsSignRequestControlEnabled = false);
 
-            Assert.IsTrue(vm.IsSignRequestControlVisible);
-            Assert.IsFalse(vm.IsSignRequestControlEnabled);
-            Assert.IsNull(vm.SigningCertificateSubject);
-            Assert.IsNull(vm.RequestSigningCertificate);
-            Assert.IsFalse(vm.IsViewCertificateMenuItemEnabled);
+            Assert.That(vm.IsSignRequestControlVisible, Is.True);
+            Assert.That(vm.IsSignRequestControlEnabled, Is.False);
+            Assert.That(vm.SigningCertificateSubject, Is.Null);
+            Assert.That(vm.RequestSigningCertificate, Is.Null);
+            Assert.That(vm.IsViewCertificateMenuItemEnabled, Is.False);
 #else
             Assert.Inconclusive("Test requires .NET 4.7.2+");
 #endif
@@ -376,13 +376,13 @@ namespace Google.Solutions.WWAuth.Test.View
                 IssuerUrl = "url"
             };
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
 
             PropertyAssert.RaisesPropertyChangeNotification(
                 vm,
                 m => m.IsDirty,
                 () => vm.ApplyChanges(null));
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
         }
 
         [Test]
@@ -409,10 +409,10 @@ namespace Google.Solutions.WWAuth.Test.View
                 IssuerUrl = "url"
             };
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
 
-            Assert.AreEqual(DialogResult.Cancel, vm.ApplyChanges(null));
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.ApplyChanges(null), Is.EqualTo(DialogResult.Cancel));
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -427,7 +427,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<IShellAdapter>().Object,
                 new Mock<ICertificateStoreAdapter>().Object);
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => vm.ValidateChanges());
+            Assert.That(() => vm.ValidateChanges(), Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         //---------------------------------------------------------------------
@@ -447,11 +447,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<ICertificateStoreAdapter>().Object);
             vm.ReapplyProtocolDefaults();
 
-            Assert.IsNull(vm.AcsUrl);
-            Assert.IsNull(vm.ClientId);
-            Assert.IsNull(vm.RelyingPartyId);
+            Assert.That(vm.AcsUrl, Is.Null);
+            Assert.That(vm.ClientId, Is.Null);
+            Assert.That(vm.RelyingPartyId, Is.Null);
 
-            Assert.IsFalse(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.False);
         }
 
         [Test]
@@ -472,11 +472,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<ICertificateStoreAdapter>().Object);
             vm.ReapplyProtocolDefaults();
 
-            Assert.IsNull(vm.AcsUrl);
-            Assert.IsNull(vm.ClientId);
-            Assert.AreEqual(vm.DefaultRelyingPartyId, vm.RelyingPartyId);
+            Assert.That(vm.AcsUrl, Is.Null);
+            Assert.That(vm.ClientId, Is.Null);
+            Assert.That(vm.RelyingPartyId, Is.EqualTo(vm.DefaultRelyingPartyId));
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         [Test]
@@ -492,11 +492,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<ICertificateStoreAdapter>().Object);
             vm.ReapplyProtocolDefaults();
 
-            Assert.AreEqual(vm.DefaultRelyingPartyId, vm.RelyingPartyId);
-            Assert.IsNull(vm.AcsUrl);
-            Assert.IsNull(vm.ClientId);
+            Assert.That(vm.RelyingPartyId, Is.EqualTo(vm.DefaultRelyingPartyId));
+            Assert.That(vm.AcsUrl, Is.Null);
+            Assert.That(vm.ClientId, Is.Null);
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         [Test]
@@ -512,11 +512,11 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<ICertificateStoreAdapter>().Object);
             vm.ReapplyProtocolDefaults();
 
-            Assert.AreEqual(vm.DefaultRelyingPartyId, vm.RelyingPartyId);
-            Assert.AreEqual(StsAdapter.DefaultTokenUrl, vm.AcsUrl);
-            Assert.IsNull(vm.ClientId);
+            Assert.That(vm.RelyingPartyId, Is.EqualTo(vm.DefaultRelyingPartyId));
+            Assert.That(vm.AcsUrl, Is.EqualTo(StsAdapter.DefaultTokenUrl));
+            Assert.That(vm.ClientId, Is.Null);
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
 
         [Test]
@@ -533,7 +533,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 new Mock<ICertificateStoreAdapter>().Object);
             vm.ReapplyProtocolDefaults();
 
-            StringAssert.EndsWith("/-", vm.RelyingPartyId);
+            Assert.That(vm.RelyingPartyId, Does.EndWith("/-"));
 
             //
             // Change the provider name, which affects the relying party ID.
@@ -545,7 +545,7 @@ namespace Google.Solutions.WWAuth.Test.View
             poolConfig.ProviderName = "changed";
 
             vm.ApplyChanges(null);
-            StringAssert.EndsWith("/changed", vm.RelyingPartyId);
+            Assert.That(vm.RelyingPartyId, Does.EndWith("/changed"));
         }
 
         //---------------------------------------------------------------------
@@ -565,7 +565,7 @@ namespace Google.Solutions.WWAuth.Test.View
                 m => m.IsDirty,
                 () => vm.ResetExecutable());
 
-            Assert.IsTrue(vm.IsDirty);
+            Assert.That(vm.IsDirty, Is.True);
         }
     }
 }

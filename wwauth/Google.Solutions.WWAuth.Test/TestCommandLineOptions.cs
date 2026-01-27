@@ -31,7 +31,7 @@ namespace Google.Solutions.WWAuth.Test
         public void WhenCommandLineHasNoArguments_ThenExecutableIsSet()
         {
             var options = UnattendedCommandLineOptions.Parse("test.exe");
-            Assert.AreEqual("test.exe", options.Executable);
+            Assert.That(options.Executable, Is.EqualTo("test.exe"));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Google.Solutions.WWAuth.Test
         public void WhenCommandLineHasNoArguments_ThenExecutableIsSet()
         {
             var options = AttendedCommandLineOptions.Parse("test.exe");
-            Assert.AreEqual("test.exe", options.Executable);
+            Assert.That(options.Executable, Is.EqualTo("test.exe"));
         }
 
         [Test]

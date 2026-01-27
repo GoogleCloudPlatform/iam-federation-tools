@@ -32,11 +32,12 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
         [Test]
         public void WhenRelyingPartyIdNotWellFormed_ThenConstructorThrowsException()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.That(
                 () => new AdfsWsTrustAdapter(
                     new Uri("https://example.com/"),
                     "not-a-url",
-                    new NullLogger()));
+                    new NullLogger()),
+                Throws.ArgumentException);
         }
     }
 }

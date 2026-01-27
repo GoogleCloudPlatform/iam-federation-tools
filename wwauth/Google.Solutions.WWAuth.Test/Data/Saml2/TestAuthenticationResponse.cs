@@ -303,8 +303,9 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         [Test]
         public void WhenResponseIsUnsignedAndContainsRequesterError_ThenParseThrowsException()
         {
-            Assert.Throws<InvalidSamlResponseException>(
-                () => AuthenticationResponse.Parse(EncodeXml(UnsignedResponseContainingRequesterError)));
+            Assert.That(
+                () => AuthenticationResponse.Parse(EncodeXml(UnsignedResponseContainingRequesterError)),
+                Throws.InstanceOf<InvalidSamlResponseException>());
         }
 
         [Test]
@@ -312,8 +313,9 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(UnsignedResponseContainingResponderError);
 
-            Assert.Throws<InvalidSamlResponseException>(
-                () => AuthenticationResponse.Parse(encodedResponse));
+            Assert.That(
+                () => AuthenticationResponse.Parse(encodedResponse),
+                Throws.InstanceOf<InvalidSamlResponseException>());
         }
 
         [Test]
@@ -321,8 +323,9 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(UnsignedResponseContainingResponderErrorAndSubStatus);
 
-            Assert.Throws<InvalidSamlResponseException>(
-                () => AuthenticationResponse.Parse(encodedResponse));
+            Assert.That(
+                () => AuthenticationResponse.Parse(encodedResponse),
+                Throws.InstanceOf<InvalidSamlResponseException>());
         }
 
         [Test]
@@ -330,12 +333,12 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(UnsignedResponseContainingUnsignedAssertion);
             var response = AuthenticationResponse.Parse(encodedResponse);
-            Assert.IsFalse(response.IsEncrypted);
-            Assert.AreEqual(SubjectTokenType.Saml2, response.Type);
-            Assert.AreEqual(encodedResponse, response.Value);
-            Assert.AreEqual("http://example.org/adfs/services/trust", response.Issuer);
-            Assert.AreEqual("https://rp.example.org/", response.Audience);
-            Assert.IsNotNull(response.Expiry);
+            Assert.That(response.IsEncrypted, Is.False);
+            Assert.That(response.Type, Is.EqualTo(SubjectTokenType.Saml2));
+            Assert.That(response.Value, Is.EqualTo(encodedResponse));
+            Assert.That(response.Issuer, Is.EqualTo("http://example.org/adfs/services/trust"));
+            Assert.That(response.Audience, Is.EqualTo("https://rp.example.org/"));
+            Assert.That(response.Expiry, Is.Not.Null);
         }
 
         [Test]
@@ -343,12 +346,12 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(UnsignedResponseContainingEncryptedAssertion);
             var response = AuthenticationResponse.Parse(encodedResponse);
-            Assert.IsTrue(response.IsEncrypted);
-            Assert.AreEqual(SubjectTokenType.Saml2, response.Type);
-            Assert.AreEqual(encodedResponse, response.Value);
-            Assert.AreEqual("http://example.org/adfs/services/trust", response.Issuer);
-            Assert.IsNull(response.Audience);
-            Assert.IsNull(response.Expiry);
+            Assert.That(response.IsEncrypted, Is.True);
+            Assert.That(response.Type, Is.EqualTo(SubjectTokenType.Saml2));
+            Assert.That(response.Value, Is.EqualTo(encodedResponse));
+            Assert.That(response.Issuer, Is.EqualTo("http://example.org/adfs/services/trust"));
+            Assert.That(response.Audience, Is.Null);
+            Assert.That(response.Expiry, Is.Null);
         }
 
         [Test]
@@ -356,12 +359,12 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(SignedResponseContainingEncryptedAssertion);
             var response = AuthenticationResponse.Parse(encodedResponse);
-            Assert.IsTrue(response.IsEncrypted);
-            Assert.AreEqual(SubjectTokenType.Saml2, response.Type);
-            Assert.AreEqual(encodedResponse, response.Value);
-            Assert.AreEqual("http://example.org/adfs/services/trust", response.Issuer);
-            Assert.IsNull(response.Audience);
-            Assert.IsNull(response.Expiry);
+            Assert.That(response.IsEncrypted, Is.True);
+            Assert.That(response.Type, Is.EqualTo(SubjectTokenType.Saml2));
+            Assert.That(response.Value, Is.EqualTo(encodedResponse));
+            Assert.That(response.Issuer, Is.EqualTo("http://example.org/adfs/services/trust"));
+            Assert.That(response.Audience, Is.Null);
+            Assert.That(response.Expiry, Is.Null);
         }
 
         [Test]
@@ -369,8 +372,9 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
         {
             var encodedResponse = EncodeXml(SignedResponseContainingSignedAssertion);
 
-            Assert.Throws<CryptographicException>(
-                () => AuthenticationResponse.Parse(encodedResponse));
+            Assert.That(
+                () => AuthenticationResponse.Parse(encodedResponse),
+                Throws.InstanceOf<CryptographicException>());
         }
     }
 }

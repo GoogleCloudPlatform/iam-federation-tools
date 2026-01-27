@@ -32,25 +32,27 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
         [Test]
         public void WhenRelyingPartyIdNotWellFormed_ThenConstructorThrowsException()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.That(
                 () => new AdfsSamlPostAdapter(
                     new Uri("https://example.com/"),
                     "not-a-url",
                     "https://acs.example.com/",
                     null,
-                    new NullLogger()));
+                    new NullLogger()),
+                Throws.ArgumentException);
         }
 
         [Test]
         public void WhenAcsNotWellFormed_ThenConstructorThrowsException()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.That(
                 () => new AdfsSamlPostAdapter(
                     new Uri("https://example.com/"),
                     "https://rp.example.com/",
                     "not-a-url",
                     null,
-                    new NullLogger()));
+                    new NullLogger()),
+                Throws.ArgumentException);
         }
 
         [Test]
@@ -63,7 +65,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                 null,
                 new NullLogger());
 
-            Assert.AreEqual("https://example.com/adfs/ls", adapter.Request.Destination);
+            Assert.That(adapter.Request.Destination, Is.EqualTo("https://example.com/adfs/ls"));
         }
 
         //---------------------------------------------------------------------
@@ -75,7 +77,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
         {
             var response = new AdfsSamlPostAdapter.HtmlResponse("<html/>");
 
-            Assert.IsFalse(response.IsSamlLoginForm);
+            Assert.That(response.IsSamlLoginForm, Is.False);
         }
 
         [Test]
@@ -88,7 +90,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                     <form action='http://acs/?SAMLRequest=xx' method=POST> </form>
                 </body>
                 </html>");
-            Assert.IsTrue(response.IsSamlLoginForm);
+            Assert.That(response.IsSamlLoginForm, Is.True);
         }
 
         [Test]
@@ -100,7 +102,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                         <input value=""assertion"" name=""SAMLResponse"" id=a></input>
                 </body>
                 </html>");
-            Assert.IsTrue(response.IsSamlPostbackForm);
+            Assert.That(response.IsSamlPostbackForm, Is.True);
         }
 
         [Test]
@@ -113,7 +115,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                          name = ""SAMLResponse"" id=a></input>
                 </body>
                 </html>");
-            Assert.AreEqual("assertion", response.SamlResponse);
+            Assert.That(response.SamlResponse, Is.EqualTo("assertion"));
         }
 
         [Test]
@@ -123,7 +125,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                 <li>Error details: MSIS3200: No AssertionConsumerService is configured on the relying party trust &#39;https://...&#39; specified by the request.</li>
                 </html>");
 
-            Assert.AreEqual("MSIS3200: No AssertionConsumerService is configured on the relying party trust 'https://...' specified by the request.", response.Error);
+            Assert.That(response.Error, Is.EqualTo("MSIS3200: No AssertionConsumerService is configured on the relying party trust 'https://...' specified by the request."));
         }
     }
 }

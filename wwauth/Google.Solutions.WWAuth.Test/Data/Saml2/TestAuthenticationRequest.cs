@@ -70,7 +70,7 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             using (var reader = new StreamReader(inflated, new UTF8Encoding(false)))
             {
                 var xml = reader.ReadToEnd();
-                StringAssert.Contains("<AuthnRequest", xml);
+                Assert.That(xml, Does.Contain("<AuthnRequest"));
             }
         }
 
@@ -96,10 +96,10 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
                 using (var reader = new StreamReader(inflated, new UTF8Encoding(false)))
                 {
                     var xml = reader.ReadToEnd();
-                    StringAssert.Contains("Destination=", xml);
-                    StringAssert.Contains("<AuthnRequest", xml);
-                    StringAssert.Contains("<X509Certificate>", xml);
-                    StringAssert.Contains("<SignatureValue>", xml);
+                    Assert.That(xml, Does.Contain("Destination="));
+                    Assert.That(xml, Does.Contain("<AuthnRequest"));
+                    Assert.That(xml, Does.Contain("<X509Certificate>"));
+                    Assert.That(xml, Does.Contain("<SignatureValue>"));
                 }
             }
 #else

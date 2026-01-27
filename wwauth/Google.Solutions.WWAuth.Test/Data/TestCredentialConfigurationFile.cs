@@ -58,8 +58,9 @@ namespace Google.Solutions.WWAuth.Test.Data
         public void WhenFilePathNotSet_ThenSaveThrowsException()
         {
             var file = CredentialConfigurationFile.NewWorkloadIdentityConfigurationFile();
-            Assert.Throws<InvalidOperationException>(
-                () => file.Save());
+            Assert.That(
+                () => file.Save(),
+                Throws.InstanceOf<InvalidOperationException>());
         }
 
         [Test]
@@ -75,10 +76,10 @@ namespace Google.Solutions.WWAuth.Test.Data
                 });
 
             file.SetDirty();
-            Assert.IsTrue(file.IsDirty);
+            Assert.That(file.IsDirty, Is.True);
 
             file.Save();
-            Assert.IsFalse(file.IsDirty);
+            Assert.That(file.IsDirty, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -110,8 +111,9 @@ namespace Google.Solutions.WWAuth.Test.Data
         [Test]
         public void WhenFileDoesNotExist_ThenFromFileThrowsException()
         {
-            Assert.Throws<FileNotFoundException>(
-                () => CredentialConfigurationFile.FromFile("doesnotexist"));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile("doesnotexist"),
+                Throws.InstanceOf<FileNotFoundException>());
         }
 
         [Test]
@@ -120,8 +122,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, string.Empty);
 
-            Assert.Throws<UnknownCredentialConfigurationException>(
-                () => CredentialConfigurationFile.FromFile(filePath));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile(filePath),
+                Throws.InstanceOf<UnknownCredentialConfigurationException>());
         }
 
         [Test]
@@ -130,8 +133,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "not json");
 
-            Assert.Throws<InvalidCredentialConfigurationFileException>(
-                () => CredentialConfigurationFile.FromFile(filePath));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile(filePath),
+                Throws.InstanceOf<InvalidCredentialConfigurationFileException>());
         }
 
         [Test]
@@ -156,8 +160,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, json);
 
-            Assert.Throws<InvalidCredentialConfigurationFileException>(
-                () => CredentialConfigurationFile.FromFile(filePath));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile(filePath),
+                Throws.InstanceOf<InvalidCredentialConfigurationFileException>());
         }
 
         [Test]
@@ -185,8 +190,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, json);
 
-            Assert.Throws<InvalidCredentialConfigurationFileException>(
-                () => CredentialConfigurationFile.FromFile(filePath));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile(filePath),
+                Throws.InstanceOf<InvalidCredentialConfigurationFileException>());
         }
 
         [Test]
@@ -207,8 +213,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, json);
 
-            Assert.Throws<InvalidCredentialConfigurationFileException>(
-                () => CredentialConfigurationFile.FromFile(filePath));
+            Assert.That(
+                () => CredentialConfigurationFile.FromFile(filePath),
+                Throws.InstanceOf<InvalidCredentialConfigurationFileException>());
         }
 
         //---------------------------------------------------------------------
@@ -228,10 +235,10 @@ namespace Google.Solutions.WWAuth.Test.Data
                 });
 
             var clone = file.Clone();
-            Assert.AreNotSame(file, clone);
-            Assert.AreNotSame(file.Configuration, clone.Configuration);
+            Assert.That(clone, Is.Not.SameAs(file));
+            Assert.That(clone.Configuration, Is.Not.SameAs(file.Configuration));
 
-            Assert.IsNull(clone.FilePath);
+            Assert.That(clone.FilePath, Is.Null);
         }
 
         [Test]
@@ -252,8 +259,8 @@ namespace Google.Solutions.WWAuth.Test.Data
             clone.Configuration.ServiceAccountEmail = "sa-2@test.iam.gserviceaccount.com";
             clone.Configuration.Options.Executable = "foo.exe";
 
-            Assert.AreEqual("sa-1@test.iam.gserviceaccount.com", file.Configuration.ServiceAccountEmail);
-            Assert.AreEqual("test.exe", file.Configuration.Options.Executable);
+            Assert.That(file.Configuration.ServiceAccountEmail, Is.EqualTo("sa-1@test.iam.gserviceaccount.com"));
+            Assert.That(file.Configuration.Options.Executable, Is.EqualTo("test.exe"));
         }
     }
 }

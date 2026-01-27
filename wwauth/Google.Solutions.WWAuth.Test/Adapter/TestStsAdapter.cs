@@ -37,7 +37,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenAudienceInvalid_ThenExchangeTokenThrowsExceptionWithProperMessage()
+        public void WhenAudienceInvalid_ThenExchangeTokenThrowsExceptionWithProperMessage()
         {
             var adapter = new StsAdapter(
                 "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
@@ -47,23 +47,18 @@ namespace Google.Solutions.WWAuth.Test.Adapter
             var token = new Mock<ISubjectToken>();
             token.SetupGet(t => t.Type).Returns(SubjectTokenType.Jwt);
             token.SetupGet(t => t.Value).Returns("token");
-            try
-            {
-                await adapter.ExchangeTokenAsync(
-                        token.Object,
-                        CredentialConfiguration.DefaultScopes,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-                Assert.Fail("Expected exception");
-            }
-            catch (TokenExchangeException e)
-            {
-                StringAssert.Contains("Invalid value for \"audience\"", e.Message);
-            }
+
+            var ex = Assert.ThrowsAsync<TokenExchangeException>(
+                () => adapter.ExchangeTokenAsync(
+                    token.Object,
+                    CredentialConfiguration.DefaultScopes,
+                    CancellationToken.None));
+
+            Assert.That(ex.Message, Does.Contain("Invalid value for \"audience\""));
         }
 
         [Test]
-        public async Task WhenClientCredentialsAndAudienceInvalid_ThenExchangeTokenThrowsException()
+        public void WhenClientCredentialsAndAudienceInvalid_ThenExchangeTokenThrowsException()
         {
             var adapter = new StsAdapter(
                 "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
@@ -77,19 +72,14 @@ namespace Google.Solutions.WWAuth.Test.Adapter
             var token = new Mock<ISubjectToken>();
             token.SetupGet(t => t.Type).Returns(SubjectTokenType.Jwt);
             token.SetupGet(t => t.Value).Returns("token");
-            try
-            {
-                await adapter.ExchangeTokenAsync(
-                        token.Object,
-                        CredentialConfiguration.DefaultScopes,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-                Assert.Fail("Expected exception");
-            }
-            catch (TokenExchangeException e)
-            {
-                StringAssert.Contains("Invalid value for \"audience\"", e.Message);
-            }
+
+            var ex = Assert.ThrowsAsync<TokenExchangeException>(
+                () => adapter.ExchangeTokenAsync(
+                    token.Object,
+                    CredentialConfiguration.DefaultScopes,
+                    CancellationToken.None));
+
+            Assert.That(ex.Message, Does.Contain("Invalid value for \"audience\""));
         }
 
         //---------------------------------------------------------------------
@@ -97,7 +87,7 @@ namespace Google.Solutions.WWAuth.Test.Adapter
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
+        public void WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
         {
             var adapter = new StsAdapter(
                 "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION/workloadIdentityPools/WORKLOAD_POOL_ID/providers/PROVIDER_ID",
@@ -108,18 +98,12 @@ namespace Google.Solutions.WWAuth.Test.Adapter
                 },
                 new NullLogger());
 
-            try
-            { 
-                await adapter.IntrospectTokenAsync(
+            var ex = Assert.ThrowsAsync<TokenExchangeException>(
+                () => adapter.IntrospectTokenAsync(
                     "notatoken",
-                    CancellationToken.None)
-                    .ConfigureAwait(false);
-                Assert.Fail("Expected exception");
-            }
-            catch (TokenExchangeException e)
-            {
-                StringAssert.Contains("Request has invalid basic authentication credentials.", e.Message);
-            }
+                    CancellationToken.None));
+
+            Assert.That(ex.Message, Does.Contain("Request has invalid basic authentication credentials."));
         }
     }
 }

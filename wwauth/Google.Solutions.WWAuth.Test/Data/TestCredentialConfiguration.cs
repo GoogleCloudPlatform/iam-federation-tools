@@ -91,7 +91,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ServiceAccountEmail = SampleServiceAccountEmail
             };
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -108,7 +110,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             configuration.Validate();
 
             configuration.Options.IssuerUrl = missingValue;
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -125,7 +129,9 @@ namespace Google.Solutions.WWAuth.Test.Data
             configuration.Validate();
 
             configuration.Options.RelyingPartyId = missingValue;
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -138,7 +144,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 ServiceAccountEmail = "not-an-email"
             };
 
-            Assert.Throws<InvalidCredentialConfigurationException>(() => configuration.Validate());
+            Assert.That(
+                () => configuration.Validate(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -165,16 +173,18 @@ namespace Google.Solutions.WWAuth.Test.Data
         {
             var configuration = CredentialConfiguration.NewWorkloadIdentityConfiguration();
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => configuration.ToJsonStructure());
+            Assert.That(
+                () => configuration.ToJsonStructure(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
         [Test]
         public void WhenWorkforceIdentityConfigurationIncomplete_ThenToJsonStructureThrowsException()
         {
             var configuration = CredentialConfiguration.NewWorkforceIdentityConfiguration();
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => configuration.ToJsonStructure());
+            Assert.That(
+                () => configuration.ToJsonStructure(),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -189,18 +199,17 @@ namespace Google.Solutions.WWAuth.Test.Data
             };
 
             var info = configuration.ToJsonStructure();
-            Assert.AreEqual("external_account", info.Type);
-            Assert.AreEqual(StsAdapter.DefaultTokenUrl, info.TokenUrl);
-            Assert.AreEqual("//iam.googleapis.com/projects/1/locations/local/workloadIdentityPools/pool-1/providers/provider-1", info.Audience);
-            Assert.AreEqual("https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/sa@example.iam.gserviceaccount.com:generateAccessToken", info.ServiceAccountImpersonationUrl);
-            Assert.AreEqual("urn:ietf:params:oauth:token-type:jwt", info.SubjectTokenType);
-            Assert.AreEqual(60000, info.CredentialSource.Executable.TimeoutMillis);
-            Assert.AreEqual("test.exe " +
+            Assert.That(info.Type, Is.EqualTo("external_account"));
+            Assert.That(info.TokenUrl, Is.EqualTo(StsAdapter.DefaultTokenUrl));
+            Assert.That(info.Audience, Is.EqualTo("//iam.googleapis.com/projects/1/locations/local/workloadIdentityPools/pool-1/providers/provider-1"));
+            Assert.That(info.ServiceAccountImpersonationUrl, Is.EqualTo("https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/sa@example.iam.gserviceaccount.com:generateAccessToken"));
+            Assert.That(info.SubjectTokenType, Is.EqualTo("urn:ietf:params:oauth:token-type:jwt"));
+            Assert.That(info.CredentialSource.Executable.TimeoutMillis, Is.EqualTo(60000));
+            Assert.That(info.CredentialSource.Executable.Command, Is.EqualTo("test.exe " +
                     "/IssuerUrl https://example.com/adfs/ " +
                     "/Protocol AdfsOidc " +
                     "/RelyingPartyId https://rp.example.com/ " +
-                    "/OidcClientId client-1",
-                info.CredentialSource.Executable.Command);
+                    "/OidcClientId client-1"));
         }
 
         [Test]
@@ -216,7 +225,7 @@ namespace Google.Solutions.WWAuth.Test.Data
             };
 
             var info = configuration.ToJsonStructure();
-            Assert.IsNull(info.ServiceAccountImpersonationUrl);
+            Assert.That(info.ServiceAccountImpersonationUrl, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -235,19 +244,18 @@ namespace Google.Solutions.WWAuth.Test.Data
             };
 
             var info = configuration.ToJsonStructure();
-            Assert.AreEqual("external_account", info.Type);
-            Assert.AreEqual(StsAdapter.DefaultTokenUrl, info.TokenUrl);
-            Assert.AreEqual("//iam.googleapis.com/locations/local/workforcePools/pool-1/providers/provider-1", info.Audience);
-            Assert.IsNull(info.ServiceAccountImpersonationUrl);
-            Assert.AreEqual("urn:ietf:params:oauth:token-type:jwt", info.SubjectTokenType);
-            Assert.AreEqual(60000, info.CredentialSource.Executable.TimeoutMillis);
-            Assert.AreEqual("test.exe " +
+            Assert.That(info.Type, Is.EqualTo("external_account"));
+            Assert.That(info.TokenUrl, Is.EqualTo(StsAdapter.DefaultTokenUrl));
+            Assert.That(info.Audience, Is.EqualTo("//iam.googleapis.com/locations/local/workforcePools/pool-1/providers/provider-1"));
+            Assert.That(info.ServiceAccountImpersonationUrl, Is.Null);
+            Assert.That(info.SubjectTokenType, Is.EqualTo("urn:ietf:params:oauth:token-type:jwt"));
+            Assert.That(info.CredentialSource.Executable.TimeoutMillis, Is.EqualTo(60000));
+            Assert.That(info.CredentialSource.Executable.Command, Is.EqualTo("test.exe " +
                     "/IssuerUrl https://example.com/adfs/ " +
                     "/Protocol AdfsOidc " +
                     "/RelyingPartyId https://rp.example.com/ " +
-                    "/OidcClientId client-1",
-                info.CredentialSource.Executable.Command);
-            Assert.AreEqual(1, info.WorkforcePoolUserProject);
+                    "/OidcClientId client-1"));
+            Assert.That(info.WorkforcePoolUserProject, Is.EqualTo(1));
         }
 
         //---------------------------------------------------------------------
@@ -269,8 +277,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                         "test.exe",
                         null)));
 
-            Assert.Throws<UnknownCredentialConfigurationException>(
-                () => CredentialConfiguration.FromJsonStructure(info));
+            Assert.That(
+                () => CredentialConfiguration.FromJsonStructure(info),
+                Throws.InstanceOf<UnknownCredentialConfigurationException>());
         }
 
         [Test]
@@ -285,8 +294,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 SubjectTokenType.Jwt.GetDescription(),
                 null);
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => CredentialConfiguration.FromJsonStructure(info));
+            Assert.That(
+                () => CredentialConfiguration.FromJsonStructure(info),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -301,8 +311,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                 SubjectTokenType.Jwt.GetDescription(),
                 new CredentialConfiguration.CredentialSourceInfo(null));
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => CredentialConfiguration.FromJsonStructure(info));
+            Assert.That(
+                () => CredentialConfiguration.FromJsonStructure(info),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -320,8 +331,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                         "test.exe",
                         null)));
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => CredentialConfiguration.FromJsonStructure(info));
+            Assert.That(
+                () => CredentialConfiguration.FromJsonStructure(info),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -340,7 +352,7 @@ namespace Google.Solutions.WWAuth.Test.Data
                         null)));
 
             var configuration = CredentialConfiguration.FromJsonStructure(info);
-            Assert.IsNull(configuration.ServiceAccountEmail);
+            Assert.That(configuration.ServiceAccountEmail, Is.Null);
         }
 
         [Test]
@@ -359,15 +371,15 @@ namespace Google.Solutions.WWAuth.Test.Data
                         null)));
 
             var configuration = CredentialConfiguration.FromJsonStructure(info);
-            Assert.AreEqual("test@example.iam.gserviceaccount.com", configuration.ServiceAccountEmail);
-            Assert.IsInstanceOf<WorkloadIdentityPoolConfiguration>(configuration.PoolConfiguration);
+            Assert.That(configuration.ServiceAccountEmail, Is.EqualTo("test@example.iam.gserviceaccount.com"));
+            Assert.That(configuration.PoolConfiguration, Is.InstanceOf<WorkloadIdentityPoolConfiguration>());
 
             var poolConfiguration = (WorkloadIdentityPoolConfiguration)configuration.PoolConfiguration;
-            Assert.AreEqual(123, poolConfiguration.ProjectNumber);
-            Assert.AreEqual("pool-1", poolConfiguration.PoolName);
-            Assert.AreEqual("global", poolConfiguration.Location);
-            Assert.AreEqual("provider-1", poolConfiguration.ProviderName);
-            Assert.AreEqual("test.exe", configuration.Options.Executable);
+            Assert.That(poolConfiguration.ProjectNumber, Is.EqualTo(123));
+            Assert.That(poolConfiguration.PoolName, Is.EqualTo("pool-1"));
+            Assert.That(poolConfiguration.Location, Is.EqualTo("global"));
+            Assert.That(poolConfiguration.ProviderName, Is.EqualTo("provider-1"));
+            Assert.That(configuration.Options.Executable, Is.EqualTo("test.exe"));
         }
 
         //---------------------------------------------------------------------
@@ -389,8 +401,9 @@ namespace Google.Solutions.WWAuth.Test.Data
                         "test.exe",
                         null)));
 
-            Assert.Throws<InvalidCredentialConfigurationException>(
-                () => CredentialConfiguration.FromJsonStructure(info));
+            Assert.That(
+                () => CredentialConfiguration.FromJsonStructure(info),
+                Throws.InstanceOf<InvalidCredentialConfigurationException>());
         }
 
         [Test]
@@ -409,15 +422,15 @@ namespace Google.Solutions.WWAuth.Test.Data
                         null)));
 
             var configuration = CredentialConfiguration.FromJsonStructure(info);
-            Assert.IsNull(configuration.ServiceAccountEmail);
-            Assert.IsInstanceOf<WorkforceIdentityPoolConfiguration>(configuration.PoolConfiguration);
+            Assert.That(configuration.ServiceAccountEmail, Is.Null);
+            Assert.That(configuration.PoolConfiguration, Is.InstanceOf<WorkforceIdentityPoolConfiguration>());
 
             var poolConfiguration = (WorkforceIdentityPoolConfiguration)configuration.PoolConfiguration;
-            Assert.AreEqual("pool-1", poolConfiguration.PoolName);
-            Assert.AreEqual("global", poolConfiguration.Location);
-            Assert.AreEqual("provider-1", poolConfiguration.ProviderName);
-            Assert.AreEqual(123, poolConfiguration.UserProjectNumber);
-            Assert.AreEqual("test.exe", configuration.Options.Executable);
+            Assert.That(poolConfiguration.PoolName, Is.EqualTo("pool-1"));
+            Assert.That(poolConfiguration.Location, Is.EqualTo("global"));
+            Assert.That(poolConfiguration.ProviderName, Is.EqualTo("provider-1"));
+            Assert.That(poolConfiguration.UserProjectNumber, Is.EqualTo(123));
+            Assert.That(configuration.Options.Executable, Is.EqualTo("test.exe"));
         }
 
         //---------------------------------------------------------------------
@@ -428,11 +441,8 @@ namespace Google.Solutions.WWAuth.Test.Data
         public void WhenNewFileCreated_ThenExecutableIsInitialized()
         {
             var configuration = CredentialConfiguration.NewWorkloadIdentityConfiguration();
-            Assert.IsNotNull(configuration.Options.Executable);
-
-            StringAssert.Contains(
-                ".exe",
-                configuration.Options.Executable);
+            Assert.That(configuration.Options.Executable, Is.Not.Null);
+            Assert.That(configuration.Options.Executable, Does.Contain(".exe"));
         }
 
         //---------------------------------------------------------------------
@@ -440,14 +450,14 @@ namespace Google.Solutions.WWAuth.Test.Data
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenExutableInvalid_ThenResetExecutableUpdatesPath()
+        public void WhenExecutableInvalid_ThenResetExecutableUpdatesPath()
         {
             var configuration = CredentialConfiguration.NewWorkloadIdentityConfiguration();
             configuration.Options.Executable = "doesnotexist.exe";
 
             configuration.ResetExecutable();
 
-            Assert.True(File.Exists(configuration.Options.Executable));
+            Assert.That(File.Exists(configuration.Options.Executable), Is.True);
         }
     }
 }
