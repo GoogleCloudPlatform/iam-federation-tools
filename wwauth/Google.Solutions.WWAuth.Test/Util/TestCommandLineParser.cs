@@ -85,10 +85,18 @@ namespace Google.Solutions.WWAuth.Test.Util
         [Test]
         public void WhenCommandLineReferencesInvalidProperty_ThenParseThrowsException()
         {
-            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe intone value"), Throws.ArgumentException);
-            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /Executable value"), Throws.ArgumentException);
-            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /nonexistingproperty value"), Throws.ArgumentException);
-            Assert.That(() => CommandLineParser.Parse<Options>("foo.exe /enumone value"), Throws.ArgumentException);
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe intone value"),
+                Throws.ArgumentException);
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe /Executable value"),
+                Throws.ArgumentException);
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe /nonexistingproperty value"),
+                Throws.ArgumentException);
+            Assert.That(
+                () => CommandLineParser.Parse<Options>("foo.exe /enumone value"),
+                Throws.ArgumentException);
         }
 
         [Test]
@@ -125,7 +133,7 @@ namespace Google.Solutions.WWAuth.Test.Util
         }
 
         [Test]
-        public void WhenPropertyIsNullOrEmpty_TnenToStringIgnoresProperty()
+        public void WhenPropertyIsNullOrEmpty_ThenToStringIgnoresProperty()
         {
             var options = new Options()
             {
@@ -134,11 +142,13 @@ namespace Google.Solutions.WWAuth.Test.Util
                 StringTwo = string.Empty
             };
 
-            Assert.That(CommandLineParser.ToString(options), Is.EqualTo("\"foo.exe\" /EnumOne \"Blue\""));
+            Assert.That(
+                CommandLineParser.ToString(options),
+                Is.EqualTo("\"foo.exe\" /EnumOne \"Blue\""));
         }
 
         [Test]
-        public void WhenQuotesDisabled_TnenToStringReturnsUnquotedString()
+        public void WhenQuotesDisabled_ThenToStringReturnsUnquotedString()
         {
             var options = new Options()
             {
@@ -147,11 +157,13 @@ namespace Google.Solutions.WWAuth.Test.Util
                 StringTwo = string.Empty
             };
 
-            Assert.That(CommandLineParser.ToString(options, false), Is.EqualTo("c:\\pathto\\foo.exe /EnumOne Blue"));
+            Assert.That(
+                CommandLineParser.ToString(options, false),
+                Is.EqualTo("c:\\pathto\\foo.exe /EnumOne Blue"));
         }
 
         [Test]
-        public void WhenQuotesDisabledAndExecutableContainsSpaces_TnenExecutablePathIsConvertedTo8dot3()
+        public void WhenQuotesDisabledAndExecutableContainsSpaces_ThenExecutablePathIsConvertedTo8dot3()
         {
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KOKORO_BUILD_ID")))
             {
@@ -174,7 +186,9 @@ namespace Google.Solutions.WWAuth.Test.Util
 
             var commandLine = CommandLineParser.ToString(options, false);
 
-            Assert.That(commandLine.Substring(0, commandLine.IndexOf("foo.exe")), Does.Not.Contain(" "));
+            Assert.That(
+                commandLine.Substring(0, commandLine.IndexOf("foo.exe")),
+                Does.Not.Contain(" "));
         }
     }
 }

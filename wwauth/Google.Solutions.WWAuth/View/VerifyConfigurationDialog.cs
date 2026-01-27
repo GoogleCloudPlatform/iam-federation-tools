@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging;
 using Google.Solutions.WWAuth.Adapters;
 using Google.Solutions.WWAuth.Data;
 using Google.Solutions.WWAuth.Util;
-using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +47,7 @@ namespace Google.Solutions.WWAuth.View
                     logger),
                 new StsAdapter(
                     configuration.PoolConfiguration.Audience,
-                    AdapterFactory.ClientSecrets, 
+                    AdapterFactory.ClientSecrets,
                     logger),
                 new ServiceAccountAdapter(configuration.ServiceAccountEmail, logger),
                 logger);
@@ -137,7 +135,7 @@ namespace Google.Solutions.WWAuth.View
 
             var cancellationSource = new CancellationTokenSource();
 
-            this.Shown += async (sender, args) =>
+            Shown += async (sender, args) =>
             {
                 await Task.Yield();
                 await viewModel

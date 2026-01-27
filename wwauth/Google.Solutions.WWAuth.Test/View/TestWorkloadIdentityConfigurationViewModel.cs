@@ -165,7 +165,9 @@ namespace Google.Solutions.WWAuth.Test.View
                 v => v.ServiceAccountEmail,
                 () => vm.IsImpersonateServiceAccountEnabled = false);
 
-            Assert.That(file.Configuration.ServiceAccountEmail, Is.EqualTo(string.Empty));
+            Assert.That(
+                file.Configuration.ServiceAccountEmail,
+                Is.EqualTo(string.Empty));
         }
 
         //---------------------------------------------------------------------

@@ -125,7 +125,10 @@ namespace Google.Solutions.WWAuth.Test.Adapter.Adfs
                 <li>Error details: MSIS3200: No AssertionConsumerService is configured on the relying party trust &#39;https://...&#39; specified by the request.</li>
                 </html>");
 
-            Assert.That(response.Error, Is.EqualTo("MSIS3200: No AssertionConsumerService is configured on the relying party trust 'https://...' specified by the request."));
+            Assert.That(
+                response.Error,
+                Is.EqualTo("MSIS3200: No AssertionConsumerService is configured on the relying party " +
+                           "trust 'https://...' specified by the request."));
         }
     }
 }

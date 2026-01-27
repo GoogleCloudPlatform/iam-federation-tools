@@ -100,7 +100,7 @@ namespace Google.Solutions.WWAuth.Data.Saml2
                     var mangledName = $"assertion.attributes['{statement.Name}']";
                     if (statement.Values.Count > 1)
                     {
-                        for (int i = 0; i < statement.Values.Count; i++)
+                        for (var i = 0; i < statement.Values.Count; i++)
                         {
                             attributes[$"{mangledName}[{i}]"] = statement.Values[i];
                         }

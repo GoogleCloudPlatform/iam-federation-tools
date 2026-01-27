@@ -78,7 +78,7 @@ namespace Google.Solutions.WWAuth.Util
 
             var properties = GetSupportedProperties<TOptions>();
 
-            for (int i = 0; i < arguments.Count / 2; i++)
+            for (var i = 0; i < arguments.Count / 2; i++)
             {
                 var key = arguments[i * 2];
                 var value = arguments[i * 2 + 1];
@@ -115,7 +115,7 @@ namespace Google.Solutions.WWAuth.Util
         {
             var quote = useQuotes ? "\"" : string.Empty;
 
-            string executablePath = options.Executable;
+            var executablePath = options.Executable;
             if (executablePath.Contains(" ") && !useQuotes)
             {
                 //

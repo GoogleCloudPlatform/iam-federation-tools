@@ -126,8 +126,12 @@ namespace Google.Solutions.WWAuth.Test.Data.Saml2
             var attributes = token.Attributes;
             Assert.That(attributes.Count, Is.EqualTo(3));
             Assert.That(attributes["assertion.attributes['att-1']"], Is.EqualTo("value-1"));
-            Assert.That(attributes["assertion.attributes['att-2'][0]"], Is.EqualTo("value-1"));
-            Assert.That(attributes["assertion.attributes['att-2'][1]"], Is.EqualTo("value-2"));
+            Assert.That(
+                attributes["assertion.attributes['att-2'][0]"],
+                Is.EqualTo("value-1"));
+            Assert.That(
+                attributes["assertion.attributes['att-2'][1]"],
+                Is.EqualTo("value-2"));
         }
     }
 }

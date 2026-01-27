@@ -113,7 +113,7 @@ namespace Google.Solutions.WWAuth.Adapters
                                 SubjectToken = externalToken.Value,
                             })
                         .WithCredentials<
-                            Google.Apis.CloudSecurityToken.v1.V1Resource.TokenRequest, 
+                            Google.Apis.CloudSecurityToken.v1.V1Resource.TokenRequest,
                             GoogleIdentityStsV1ExchangeTokenResponse>(this.clientSecrets)
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);

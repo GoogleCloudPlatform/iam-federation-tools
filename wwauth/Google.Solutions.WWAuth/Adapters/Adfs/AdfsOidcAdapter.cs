@@ -152,7 +152,7 @@ namespace Google.Solutions.WWAuth.Adapters.Adfs
                     // a backoff/retry loop.
                     //
                     var backoff = new ExponentialBackOff();
-                    for (int retries = 0; ; retries++)
+                    for (var retries = 0; ; retries++)
                     {
                         var request = new HttpRequestMessage(HttpMethod.Post, configuration.TokenEndpoint)
                         {

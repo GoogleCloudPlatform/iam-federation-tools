@@ -102,7 +102,7 @@ namespace Google.Solutions.WWAuth.Data
             {
                 if (value is JArray jarray)
                 {
-                    for (int i = 0; i < jarray.Count; i++)
+                    for (var i = 0; i < jarray.Count; i++)
                     {
                         Visit($"{name}[{i}]", jarray[i]);
                     }

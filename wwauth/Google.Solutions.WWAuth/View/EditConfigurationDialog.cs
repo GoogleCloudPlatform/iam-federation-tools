@@ -36,13 +36,13 @@ namespace Google.Solutions.WWAuth.View
         {
             InitializeComponent();
 
-            viewModel = new EditConfigurationViewModel(
+            this.viewModel = new EditConfigurationViewModel(
                 file,
                 new ShellAdapter());
 
             this.BindReadonlyProperty(
                 c => c.Text,
-                viewModel,
+                this.viewModel,
                 m => m.WindowTitle,
                 this.Container);
 
