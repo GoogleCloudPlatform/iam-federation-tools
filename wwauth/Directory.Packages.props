@@ -1,0 +1,31 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Google Cloud client libraries-->
+    <PackageVersion Include="Google.Apis" Version="1.64.0" />
+    <PackageVersion Include="Google.Apis.CloudSecurityToken.v1" Version="1.64.0.2950" />
+    <PackageVersion Include="Google.Apis.IAMCredentials.v1" Version="1.64.0.2528" />
+
+    <!-- .NET -->
+    <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageVersion Include="System.DirectoryServices" Version="7.0.0" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="7.0.0" />
+    <PackageVersion Include="System.ServiceModel.Primitives" Version="4.10.3" />
+
+    <!-- Unit testing -->
+    <PackageVersion Include="Castle.Core" Version="5.2.1" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="NUnit" Version="3.14.0" />
+    <PackageVersion Include="NUnit.Console" Version="3.20.1" />
+    <PackageVersion Include="NUnit.ConsoleRunner" Version="3.20.1" />
+    <PackageVersion Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
+
+    <!-- Build -->
+    <PackageVersion Include="OpenCover" Version="4.6.519" />
+    <PackageVersion Include="ReportGenerator" Version="5.1.23" />
+    <PackageVersion Include="ILRepack" Version="2.0.33" />
+  </ItemGroup>
+</Project>

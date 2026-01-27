@@ -14,15 +14,15 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.64.0" />
-    <PackageReference Include="Google.Apis.CloudSecurityToken.v1" Version="1.64.0.2950" />
-    <PackageReference Include="Google.Apis.IAMCredentials.v1" Version="1.64.0.2528" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="5.1.23" />
-    <PackageReference Include="ILRepack" Version="2.0.33" />
+    <PackageReference Include="Google.Apis" />
+    <PackageReference Include="Google.Apis.CloudSecurityToken.v1" />
+    <PackageReference Include="Google.Apis.IAMCredentials.v1" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.DirectoryServices" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
+    <PackageReference Include="System.ServiceModel.Primitives" />
+    <PackageReference Include="OpenCover" />
+    <PackageReference Include="ReportGenerator" />
+    <PackageReference Include="ILRepack" />
   </ItemGroup>
 </Project>

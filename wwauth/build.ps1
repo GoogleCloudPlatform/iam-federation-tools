@@ -109,10 +109,16 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
-	$PackageReferences = ` 
-        Get-ChildItem -Recurse -Include "*.csproj" `
-            | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `
-            | sort -Property Include -Unique
+    $PackageReferences = [xml](Get-Content .\Directory.Packages.props) `
+        | Select-Xml "//PackageVersion"  `
+        | Select-Object -ExpandProperty Node `
+        | sort -Property Include -Unique `
+        | ForEach-Object {
+            [PSCustomObject]@{
+                Include = $_.Include
+                Version = $_.Version.Replace("]", "").Replace("[", "")
+            }
+        }
         
 	#
 	# Add all tools to PATH.
@@ -125,6 +131,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	# $env:Google_Apis_Auth = 1.2.3
 	#
     $PackageReferences `
+        | Where-Object { $_.Include -ne $null } `
         | ForEach-Object { New-Item -Name $_.Include.Replace(".", "_") -value $_.Version -ItemType Variable -Path Env: -Force }
 }
 
