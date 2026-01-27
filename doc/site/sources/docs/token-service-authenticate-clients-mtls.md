@@ -260,7 +260,7 @@ to authenticate by using mTLS by doing the following:
     3.  Allow client libraries and tools to run an executable to obtain credentials
         by initializing the following environment variable:
     
-            set GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1
+            export GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1
             
     2.  Optionally, you can now test that authentication works by running the following command:
         

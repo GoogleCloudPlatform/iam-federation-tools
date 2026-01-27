@@ -32,14 +32,14 @@ identity federation by adding support for additional authentication flows:
     information from the client certificate, the token broker can then issue
     different types of credentials to the client, including short-lived Google credentials.
 
-*   Custom flows: You can add additional, custom authentication flows by extending the
+*   Custom flows: You can add additional, custom authentication flows by extending
     the [`ClientCredentialsFlow`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/token-service/src/main/java/com/google/solutions/tokenservice/oauth/ClientCredentialsFlow.java)
     base class.
 
 
 ## Implementation
 
-The Token Service ia a Java application that uses Quarkus, CDI, and JAX-RS and is designed to run on Cloud Run. 
+The Token Service is a Java application that uses Quarkus, CDI, and JAX-RS and is designed to run on Cloud Run. 
 It exposes two endpoints:
 
 *   `/token`: An OAuth client credentials flow-compatible endpoint that lets workloads authenticate and obtain an OIDC token.
