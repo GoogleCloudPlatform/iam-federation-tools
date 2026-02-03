@@ -38,4 +38,3 @@ _IAM Federation tools is an open-source project and not an officially supported 
 
 _All files in this repository are under the
 [Apache License, Version 2.0](LICENSE.txt) unless noted otherwise._
-

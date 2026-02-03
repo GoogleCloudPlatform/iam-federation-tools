@@ -41,3 +41,4 @@ COPY --from=build /app/target/tokenservice-runner.jar .
 
 EXPOSE 8080
 CMD ["tokenservice-runner.jar"]
+
