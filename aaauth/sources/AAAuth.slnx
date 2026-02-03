@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../README.md" />
+    <File Path=".editorconfig" />
+    <File Path="build.ps1" />
+  </Folder>
+  <Project Path="Google.Solutions.AAAuth.Test/Google.Solutions.AAAuth.Test.csproj" Id="2b6895f0-4685-4988-9837-08860bf397c4" />
+  <Project Path="Google.Solutions.AAAuth/Google.Solutions.AAAuth.csproj" />
+</Solution>

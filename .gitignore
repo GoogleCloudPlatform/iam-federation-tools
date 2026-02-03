@@ -96,8 +96,14 @@ replay_pid*
 target/
 app.yaml
 test.properties
-
 runConfigurations/
 .metals
 .vscode
 .idea/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.lock.hcl
