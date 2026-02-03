@@ -59,8 +59,8 @@ jobs:
       run: dotnet restore
       working-directory: aaauth/sources
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build and test
+      run: dotnet test --configuration Release --no-restore
       working-directory: aaauth/sources
       
     - name: Perform CodeQL Analysis
