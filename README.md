@@ -5,7 +5,7 @@ federated authentication between Google Cloud and external identity providers.
 
 ## AI Agent Authenticator
 
-_AI Agent Authenticator (AAAuth)_ enables delegated authentication scenarios
+_AI Agent Authenticator (AAAuth)_ enables delegated authentication 
 between [Gemini Enterprise and custom ADK or A2A agents](https://docs.cloud.google.com/gemini/enterprise/docs/agents-overview),
 including the following:
 

@@ -63,7 +63,7 @@ markdown_extensions:
 nav:
   - 'Overview': 'index.md'
   - 'AI Agent Authenticator':
-    - 'Overview': aauth.md
+    - 'Overview': aaauth.md
     - 'Deploy the service': aaauth-deployment.md
     - 'Configure an ADK agent': aaauth-configure-adk.md
   - 'Token Service':
