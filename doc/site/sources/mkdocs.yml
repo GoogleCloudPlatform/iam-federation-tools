@@ -45,7 +45,7 @@ repo_url: https://github.com/GoogleCloudPlatform/iam-federation-tools
 copyright: |
     The tools in this repository are developed and maintained by the Google Cloud Solutions Architects team.<br>
     The project is not an officially supported Google product.<br>
-    Copyright &copy; 2019-2024 Google LLC<br>
+    Copyright &copy; 2019-2026 Google LLC<br>
     <a href='https://cloud.google.com/'><img src='https://googlecloudplatform.github.io/iam-federation-tools/images/cloud.svg' width='240' height='160'/></a>
 
 markdown_extensions:
@@ -62,6 +62,10 @@ markdown_extensions:
   - pymdownx.details
 nav:
   - 'Overview': 'index.md'
+  - 'AI Agent Authenticator':
+    - 'Overview': aauth.md
+    - 'Deploy the service': aaauth-deployment.md
+    - 'Configure an ADK agent': aaauth-configure-adk.md
   - 'Token Service':
     - 'Overview': token-service.md
     - 'Deploy the service': token-service-deployment.md

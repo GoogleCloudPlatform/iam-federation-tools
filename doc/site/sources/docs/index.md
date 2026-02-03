@@ -1,9 +1,17 @@
 # IAM federation tools
 
 The [`iam-federation-tools`](https://github.com/GoogleCloudPlatform/iam-federation-tools/) repository 
-contains open-source tools for letting workloads that run outside of Google Cloud
-use [workload identity federation :octicons-link-external-16:](https://cloud.google.com/iam/docs/workload-identity-federation)
-to authenticate to Google Cloud. 
+contains a collection of open-source tools that let you use 
+federated authentication between Google Cloud and external identity providers.
+
+
+## AI Agent Authenticator
+
+[![AI Agent Authenticator](images/aaauth.png){ align=right width="350" }](aaauth.md)
+
+The [AI Agent Authenticator (AAAuth)](aauth.md) enables delegated authentication scenarios
+between [Gemini Enterprise and custom ADK or A2A agents](https://docs.cloud.google.com/gemini/enterprise/docs/agents-overview)
+by acting as an intermediary between Gemini Enterprise and your identity provider.
 
 ## Token Service
 
