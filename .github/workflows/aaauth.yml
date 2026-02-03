@@ -19,25 +19,18 @@
 # under the License.
 #
 
-name: Token Service
+name: AAAuth
 
 on:
   push:
     branches: [ master ]
     paths:
-      - 'token-service/**'
+      - 'aaauth/**'
       
   pull_request:
     branches: [ master ]
     paths:
-      - 'token-service/**'
-      
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Base version'
-        required: true
-        default: '1.0'
+      - 'aaauth/**'
   
 jobs:
   ci:
@@ -53,27 +46,24 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
       with:
-        languages: java
-        source-root: token-service
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: 'maven'
+        languages: csharp
+        source-root: aaauth
+        build-mode: manual
         
-    - name: Set version
-      run: mvn versions:set -DnewVersion=${{ github.event.inputs.version || '1.0' }}.${{ github.run_number }}
-      working-directory: token-service
-      shell: bash
-      
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: aaauth
+
     - name: Build
-      run: mvn -P release -B package -Dmaven.test.skip=true 
-      working-directory: token-service
-      shell: bash
+      run: dotnet build --configuration Release --no-restore
+      working-directory: aaauth
       
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
       with:
-        category: "/language:java"
+        category: "/language:csharp"
