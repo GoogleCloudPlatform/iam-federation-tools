@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -57,11 +57,11 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: aaauth
+      working-directory: aaauth/sources
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
-      working-directory: aaauth
+      working-directory: aaauth/sources
       
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
