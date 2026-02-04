@@ -65,7 +65,9 @@ nav:
   - 'AI Agent Authenticator':
     - 'Overview': aaauth.md
     - 'Deploy the service': aaauth-deployment.md
-    - 'Configure an ADK agent': aaauth-configure-adk.md
+    - 'Configure Gemini Enterprise': aaauth-configure-gemini-enterprise.md
+    - 'Access credentials in ADK': aaauth-adk-credentials.md 
+    - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/aaauth
   - 'Token Service':
     - 'Overview': token-service.md
     - 'Deploy the service': token-service-deployment.md

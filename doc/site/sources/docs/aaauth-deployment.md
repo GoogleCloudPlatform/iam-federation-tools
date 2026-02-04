@@ -139,8 +139,11 @@ identity provider used by Gemini Enterprise:
     1.  Select **Web application** and configure the following settings:
 
         *   **Name**: Enter a name such as `AAAuth`.
-        *   **Authorized redirect URIs**: `https://SERVICE/google-identity/continue`
-            where `SERVICE` is the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
+        *   **Authorized redirect URIs**: 
+        
+                https://SERVICE/google-identity/continue
+
+            Replace `SERVICE` with the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
     1.  Click **Create**.
 
         Note down the client ID and the client secret, you'll need it later.
@@ -157,11 +160,15 @@ identity provider used by Gemini Enterprise:
         identity provider. 
     1.  Go to **Authentication**.
     1.  Click **Add redirect URI**.
-    1.  Select **Web** and enter the following URI: `https://SERVICE/entra-delegated/continue`
-        where `SERVICE` is the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
+    1.  Select **Web** and enter the following URI: 
+    
+            https://SERVICE/entra-delegated/continue
+
+        Replace `SERVICE` with the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
+
     1.  Click **Configure**.
     
 
 ## What's next
 
-*   See how you can [use AAAuth for an ADK agent](aaauth-configure-adk.md).
+[Configure Gemini Enterprise](aaauth-configure-gemini-enterprise.md) so that it can use AAAuth.

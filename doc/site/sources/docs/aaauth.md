@@ -101,6 +101,6 @@ using ASP.NET Web API. The application exposes the following endpoints:
 AAAuth behaves like an OAuth identity provider, but doesn't issue tokens by
 itself -- it merely mediates between your identity provider and Gemini Enterprise.
 
-# What's next
+## What's next
 
-*   [Deploy AAAuth](aaauth-deployment.md) to Cloud Run by using Terraform.
+[Deploy AAAuth](aaauth-deployment.md) to Cloud Run by using Terraform.
