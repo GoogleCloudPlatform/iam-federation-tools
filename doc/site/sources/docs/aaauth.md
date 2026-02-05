@@ -34,7 +34,6 @@ Gemini Enterprise lets you implement (2) by configuring
 [your identity provider :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/configure-identity-provider),
 agent authorization lets you implement the following scenarios:
 
-
 | Scenario                                                                | Google identity         | Workforce identity (Entra) | Workforce identity (other) |
 | ------------------------------------------------------------------------| ------------------------| ---------------------------| ---------------------------|
 | Access Google APIs on behalf of the user <br>(requires an access token) | :material-check:        | :material-close:           | :material-close:           |
@@ -42,7 +41,7 @@ agent authorization lets you implement the following scenarios:
 | Access other IAP-protected services      <br>(requires an ID token)     | :material-close:        | :material-close:           | :material-close:           |
 | Access Azure, M365 on behalf of the user <br>(requires an access token) | :material-close:        | :material-check:           | :material-close:           |
 
-By using AAAuth, you can additionally implement the following scenarios:
+AAAuth lets you implement delegated authorization for a number of additional scenarios:
 
 | Scenario                                                                | Google identity         | Workforce identity (Entra) | Workforce identity (other) |
 | ------------------------------------------------------------------------| ------------------------| ---------------------------| ---------------------------|
@@ -64,6 +63,8 @@ AAAuth works by acting as an intermediary between Gemini Enterprise and your ide
     token for the scenario you're implementing.
 
 ![Architecture](images/aaauth.png){ width="570" }
+
+That way, AAAuth lets you implement delegated authorization for a number of additional scenarios:
 
 *   If you use Gemini Enterprise with workforce identity federation, you can use
     AAAuth to let users delegate their access to ADK and A2A agents so that agents 

@@ -42,11 +42,13 @@ variable "repository" {
 variable "entra_tenant" {
   description      = "Entra Tenant ID, in format 00000000-0000-0000-0000-000000000000"
   type             = string
+  default          = ""
 }
 
 variable "entra_provider" {
   description      = "Workforce identity provider, in format locations/global/workforcePools/POOL/providers/PROVIDER"
   type             = string
+  default          = ""
 }
 
 #------------------------------------------------------------------------------

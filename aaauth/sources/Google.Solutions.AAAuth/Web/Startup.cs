@@ -61,26 +61,13 @@ namespace Google.Solutions.AAAuth.Web
             //
             // Register the Entra authorizer.
             //
-            if (this.configuration
-                .GetSection(EntraOptions.Key)
-                .Get<EntraOptions>() is EntraOptions entraOptions)
+            if (this.configuration.GetSection(EntraOptions.Key).Get<EntraOptions>() 
+                    is EntraOptions entraOptions &&
+                !string.IsNullOrWhiteSpace(entraOptions.TenantId) &&
+                WorkforceIdentityProviderName.TryParse(
+                    entraOptions.WorkforceIdentityProviderName,
+                    out var entraWorkforceProvider))
             {
-                if (string.IsNullOrWhiteSpace(entraOptions.TenantId))
-                {
-                    throw new InvalidOperationException(
-                        $"The setting {EntraOptions.Key}.{nameof(entraOptions.TenantId)} " +
-                        $"is missing or empty");
-                }
-
-                if (!WorkforceIdentityProviderName.TryParse(
-                        entraOptions.WorkforceIdentityProviderName,
-                        out var entraWorkforceProvider))
-                {
-                    throw new InvalidOperationException(
-                        $"The setting {EntraOptions.Key}.{nameof(entraOptions.WorkforceIdentityProviderName)} " +
-                        $"is missing or empty");
-                }
-
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
                     Guid.Parse(entraOptions.TenantId),
                     entraWorkforceProvider,
