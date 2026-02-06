@@ -13,8 +13,8 @@ that agents can use delegated authorization using AAAuth.
 
 ## Create an authorization resource
 
-Before you can configure individual agents to use AAAuth for 
-authorization, you must create an  authorization resource:
+To let Gemini Enterprise agents use AAAuth for delegated authorization, 
+create an  authorization resource:
 
 1.  Open a bash or PowerShell prompt
 1.  Authenticate gcloud:
@@ -25,21 +25,21 @@ authorization, you must create an  authorization resource:
 
     === "bash"
 
-            PROJECT_ID=project-id
+            GE_PROJECT_ID=project-id
             SERVICE=service
             CLIENT_ID=client-id
             CLIENT_SECRET=client-secret
 
     === "PowerShell"
 
-            $ProjectId = "project-id"
+            $GeProjectId = "project-id"
             $Service = "service"
             $ClientId = "client-id"
             $ClientSecret = "client-secret"
 
     Replace the following:
 
-    *   `project-id`: project ID of your Gemini Enterprise project.
+    *   `project-id`: project ID of your Gemini Enterprise project. This might be different from the project you deployed AAAuth to.
     *   `service`: the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
 
     Replace `client-id` and `client-secret` depending on 
@@ -56,10 +56,11 @@ authorization, you must create an  authorization resource:
             workforce identity provider.
         *   `client-secret`: the client secret that you created when you [deployed AAAuth](aaauth-deokoyment.md).
 
-1.  Select the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
+1.  Initialize another variable that selects the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
 
-    *   If you use Google identity as identity provider, run the following command:    
+    === "Google identity"
 
+    
         === "bash"
 
                 AUTHORIZER=google-identity
@@ -69,7 +70,7 @@ authorization, you must create an  authorization resource:
                 $Authorizer = "google-identity"
                 
 
-    *   If you use workforce identity and Entra as identity provider, run the following command instead:
+    === "Entra"
 
         === "bash"
 
@@ -83,10 +84,10 @@ authorization, you must create an  authorization resource:
 
     === "bash"
 
-            curl -s -X POST "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/authorizations?authorizationId=aaauth-$AUTHORIZER" \
+            curl -s -X POST "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/authorizations?authorizationId=aaauth-$AUTHORIZER" \
                 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
                 -H "Content-Type: application/json" \
-                -H "X-Goog-User-Project: $PROJECT_ID" \
+                -H "X-Goog-User-Project: $GE_PROJECT_ID" \
                 -d @- <<EOF
             {
                 "displayName": "AAAuth",
@@ -102,12 +103,12 @@ authorization, you must create an  authorization resource:
     === "PowerShell"
 
             Invoke-RestMethod `
-                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$ProjectId/locations/global/authorizations?authorizationId=aaauth-$Authorizer" `
+                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GeProjectId/locations/global/authorizations?authorizationId=aaauth-$Authorizer" `
                 -Method POST `
                 -Headers @{
                     "Authorization"       = "Bearer $(gcloud auth print-access-token)"
                     "Content-Type"        = "application/json"
-    		        "X-Goog-User-Project" = "$ProjectId" 
+    		        "X-Goog-User-Project" = "$GeProjectId" 
                 } `
                 -Body (@{
                     "displayName" = "AAAuth"
@@ -132,21 +133,24 @@ To let an agent use AAAuth for authorization, do the following:
 
     === "bash"
 
-            PROJECT_ID=project-id
+            GE_PROJECT_ID=project-id
+            GE_PROJECT_NUMBER=project-number
             SERVICE=service
             ENGINE=engine
             AGENT=agent
 
     === "PowerShell"
 
-            $ProjectId = "project-id"
+            $GeProjectId = "project-id"
+            $GeProjectNumber = "project-number"
             $Service = "service"
             $Engine = "engine"
             $Agent = "agent"
 
     Replace the following:
 
-    *   `project-id`: project ID of your Gemini Enterprise project.
+    *   `project-id`: the project ID of your Gemini Enterprise project.
+    *   `project-number`: the project number of your Gemini Enterprise project.
     *   `engine`: the ID of your Gemini Enterprise app. 
     *   `agent`: the ID  of the Gemini Enterprise agent.
 
@@ -155,21 +159,21 @@ To let an agent use AAAuth for authorization, do the following:
 	=== "bash"
 
 			curl -s -X GET \
-				"https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines" \
+				"https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines" \
 				-H "Authorization: Bearer $(gcloud auth print-access-token)" \
 				-H "Content-Type: application/json" \
-				-H "X-Goog-User-Project: $PROJECT_ID" | \
+				-H "X-Goog-User-Project: $GE_PROJECT_ID" | \
 			jq -r '.engines[] | {displayName: .displayName, id: (.name | split("/") | last)}'
 
     === "PowerShell"
 
             $Engines = Invoke-RestMethod `
-                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$ProjectId/locations/global/collections/default_collection/engines" `
+                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GeProjectId/locations/global/collections/default_collection/engines" `
                 -Method Get `
                 -Headers @{
                     "Authorization"       = "Bearer $(gcloud auth print-access-token)"
                     "Content-Type"        = "application/json"
-                    "X-Goog-User-Project" = "$ProjectId"
+                    "X-Goog-User-Project" = "$GeProjectId"
                 }
             $Engines.engines | Select-Object displayName, @{Name='id'; Expression={$_.name.Split('/')[-1]}}
 			
@@ -178,10 +182,10 @@ To let an agent use AAAuth for authorization, do the following:
 
 	=== "bash"
 
-			curl -s -X GET "https://discoveryengine.googleapis.com/v1alpha/$ENGINE/assistants/default_assistant/agents" \
+			curl -s -X GET "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$ENGINE/assistants/default_assistant/agents" \
 				-H "Authorization: Bearer $(gcloud auth print-access-token)" \
 				-H "Content-Type: application/json" \
-				-H "X-Goog-User-Project: $PROJECT_ID" | \
+				-H "X-Goog-User-Project: $GE_PROJECT_ID" | \
 				jq -r '
 					.agents[] | [
 						.displayName, 
@@ -195,12 +199,12 @@ To let an agent use AAAuth for authorization, do the following:
 				
 				
 			$Agents = Invoke-RestMethod `
-				-Uri "https://discoveryengine.googleapis.com/v1alpha/$Engine/assistants/default_assistant/agents" `
+				-Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents" `
 				-Method Get `
 				-Headers @{
 					"Authorization"       = "Bearer $(gcloud auth print-access-token)"
 					"Content-Type"        = "application/json"
-					"X-Goog-User-Project" = "$ProjectId" 
+					"X-Goog-User-Project" = "$GeProjectId" 
 				}
 			$Agents.agents| Select-Object `
 				displayName, 
@@ -217,8 +221,8 @@ To let an agent use AAAuth for authorization, do the following:
 	
 1.  Select the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
 
-    *   If you use Google identity as identity provider, run the following command:    
-
+    === "Google identity"
+    
         === "bash"
 
                 AUTHORIZER=google-identity
@@ -228,7 +232,7 @@ To let an agent use AAAuth for authorization, do the following:
                 $Authorizer = "google-identity"
                 
 
-    *   If you use workforce identity and Entra as identity provider, run the following command instead:
+    === "Entra"
 
         === "bash"
 
@@ -245,15 +249,15 @@ To let an agent use AAAuth for authorization, do the following:
 
     === "bash"
 
-            curl -s -X PATCH "https://discoveryengine.googleapis.com/v1alpha/$ENGINE/assistants/default_assistant/agents/$AGENT?updateMask=authorizationConfig" \
+            curl -s -X PATCH "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$ENGINE/assistants/default_assistant/agents/$AGENT?updateMask=authorizationConfig" \
                 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
                 -H "Content-Type: application/json" \
-                -H "X-Goog-User-Project: $PROJECT_ID" \
+                -H "X-Goog-User-Project: $GE_PROJECT_ID" \
                 -d @- <<EOF
             {
               "authorizationConfig": {
                 "toolAuthorizations": [
-                  "projects/$PROJECT_ID/locations/global/authorizations/aaauth-$AUTHORIZER"
+                  "projects/$GE_PROJECT_NUMBER/locations/global/authorizations/aaauth-$AUTHORIZER"
                 ]
               }
             }
@@ -263,17 +267,17 @@ To let an agent use AAAuth for authorization, do the following:
     === "PowerShell"
 
             Invoke-RestMethod `
-                -Uri "https://discoveryengine.googleapis.com/v1alpha/$Engine/assistants/default_assistant/agents/$($Agent)?updateMask=authorizationConfig" `
+                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents/$($Agent)?updateMask=authorizationConfig" `
                 -Method PATCH `
                 -Headers @{
                     "Authorization"       = "Bearer $(gcloud auth print-access-token)"
                     "Content-Type"        = "application/json"
-                    "X-Goog-User-Project" = "$ProjectId" 
+                    "X-Goog-User-Project" = "$GeProjectId" 
                 } `
                 -Body (@{
                     "authorizationConfig" = @{
                         toolAuthorizations = @(
-                            "projects/$ProjectId/locations/global/authorizations/aaauth-$Authorizer")
+                            "projects/$GeProjectNumber/locations/global/authorizations/aaauth-$Authorizer")
                     }
                 } | ConvertTo-Json -Depth 3)
 

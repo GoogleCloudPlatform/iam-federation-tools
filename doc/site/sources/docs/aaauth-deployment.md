@@ -21,9 +21,9 @@ Deploying AAAuth requires the following billable components of Google Cloud:
 - [Artifact Registry](https://cloud.google.com/artifact-registry/pricing)
 
 
-## Prepare your Google Cloud project
+## Prepare the deployment
 
-To prepare a Google Cloud project, do the following:
+To prepare the deployment, do the following:
 
 1.  Select or create a Google Cloud project to deploy the application in. We recommend creating
     a dedicated project for deploying AAAuth.
@@ -71,11 +71,11 @@ To prepare a Google Cloud project, do the following:
         cd iam-federation-tools/aaauth
         git checkout latest 
     
-
+You're now ready to deploy AAAuth to Cloud Run.
 
 ## Deploy AAAuth to Cloud Run
 
-This section describes how you deploy AAAuth to Cloud Run by using Terraform.
+To deploy AAAuth to Cloud Run by using Terraform, do the following:
 
 1.  Change to the `terraform` directory:
 
@@ -128,15 +128,16 @@ This section describes how you deploy AAAuth to Cloud Run by using Terraform.
     When the deployment completes, terraform outputs the URL of the Cloud Run service.
     Note down this URL, you'll need it later.
 
+AAAuth is now deployed, but you still need to configure your identity provider.
+
 ## Configure your identity provider
 
-This section describes how you to configure your identity provider so
-that AAAuth can authenticate users. The steps differ depending on the 
-identity provider you use for Gemini Enterprise:
+Configure your identity provider so that AAAuth can authenticate users. The steps 
+differ depending on the identity provider you use for Gemini Enterprise:
 
 === "Google Identity"
 
-    If you've configured Gemini Enterprise to use Google identity, you
+    If you've configured Gemini Enterprise to use Google Identity, you
     must create an OAuth consent screen and client ID:
 
     1.  In the Cloud Console, go to **APIs & Services > Credentials**.

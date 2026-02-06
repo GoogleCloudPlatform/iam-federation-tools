@@ -103,8 +103,22 @@ def my_tool(credential: AuthCredential):
     # Retrieve the "raw" access token
     access_token = credential.oauth2.access_token
     
-    # Use the token to initialize the client library
+    # Example 1: Use the token to initialize the client library.
     service = build(..., credentials=Credentials(access_token))
+
+    # Example 2: Use the token to call a Cloud Run service or an IAP-protected resource
+    #
+    #  - For IAP, configure the AAAuth client ID for programmatic access, see
+    #    https://docs.cloud.google.com/iap/docs/sharing-oauth-clients#programmatic_access
+    #  - For Cloud Run, add the AAAuth client ID as custom audience, see 
+    #    https://docs.cloud.google.com/run/docs/configuring/custom-audiences
+    #
+    response = requests.get(
+        "https://.../", 
+        headers={
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        })
     
 root_agent = Agent(
     ...
