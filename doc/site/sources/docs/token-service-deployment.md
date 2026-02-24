@@ -41,14 +41,14 @@ and configure it so that it can authenticate clients using mutual TLS (mTLS).
     Replace `PROJECT_ID` with the ID of your project. 
 
 
-6.  Create a service account for the the Token Service application:
+6.  Create a service account for the Token Service application:
 
         SERVICE_ACCOUNT=$(gcloud iam service-accounts create token-service --display-name "Token Service" --format "value(email)") 
 
     You later use this service account and attach it to the Cloud Run service. 
 
 
-7.  Grant the service account permission the _Service Account Token Creator_ 
+7.  Grant the service account the _Service Account Token Creator_ 
     (`roles/iam.serviceAccountTokenCreator`) role on itself so that the Token Service 
     application can use the service account to sign JSON Web Tokens: 
  
@@ -271,7 +271,7 @@ You now configure the load balancer to verify mTLS certificates:
     
     
         1.  Copy the PEM-formatted root certificate of your certificate authority to a file named `ca.cer`.  
-        2.  Copy the PEM-formatted intermeduate CA certificate to a file named `intermediate-ca.cer`.  
+        2.  Copy the PEM-formatted intermediate CA certificate to a file named `intermediate-ca.cer`.  
 
     
     !!!Note

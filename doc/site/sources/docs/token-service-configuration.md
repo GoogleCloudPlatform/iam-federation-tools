@@ -40,7 +40,7 @@ The Token Service application supports the following environment variables:
     </td>
     <td>
         <p>
-            The Project number of the project that contains the workload identity pool.
+            The project number of the project that contains the workload identity pool.
         </p>
     </td>
     <td>Required</td>

@@ -88,7 +88,7 @@ you can use a tool such as [jwt.ms :octicons-link-external-16:](https://jwt.ms/)
     
 The ID token contains the following claims:
     
-*   `kid`: the key ID from the service account's JSON Web Ket Sey (JWKS) that was used to sign the token.
+*   `kid`: the key ID from the service account's JSON Web Key Set (JWKS) that was used to sign the token.
 *   `aud`: the URL of the workload identity pool.
 *   `iss`: the public FQDN of the token service.
 *   `jti`: a random ID.
@@ -99,7 +99,7 @@ The ID token contains the following claims:
 
 If the response contains an error message, you can find more detailed error information [in the logs](#diagnose-errors).
     
-You can now use the ID token and exchange it against a Google STS token by using The
+You can now use the ID token and exchange it against a Google STS token by using the
 [STS `token`:octicons-link-external-16:](https://cloud.google.com/iam/docs/reference/sts/rest/v1beta/TopLevel/token) API.
 Alternatively, you can let the token service perform this token exchange for you.
     
@@ -166,7 +166,7 @@ Alternatively, you can grant the principal permission
 
 ### Service account access token
 
-You can request an ID token and impersonate a sevice account in a single step by passing two extra parameters:
+You can request an ID token and impersonate a service account in a single step by passing two extra parameters:
 
 *   `scope`: the OAuth 2.0 scopes to include in the resulting STS token.
 *   `service_account`: the email address of a service account to impersonate.
@@ -271,7 +271,7 @@ to authenticate by using mTLS by doing the following:
 
 ## Diagnose errors
 
-To diagnose authencation errors, open Cloud Logging:
+To diagnose authentication errors, open Cloud Logging:
 
 [Open Logs](https://console.cloud.google.com/logs/query?){ .md-button }
 

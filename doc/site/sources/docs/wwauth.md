@@ -12,14 +12,14 @@ and requires no code changes in the application.
 
 ## Authentication
 
-To let Windows application authenticate using their existing Active Directory credentials, WWAuth combines
+To let Windows applications authenticate using their existing Active Directory credentials, WWAuth combines
 [integrated windows authentication :octicons-link-external-16:](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
 (IWA) and [workload identity federation :octicons-link-external-16:](https://cloud.google.com/iam/docs/workload-identity-federation):
 
 ![Architecture](images/wwauth-labelled.png){ width="570" }
 
 1.  You configure an application to use WWAuth by pointing the environment variable
-    `GOOGLE_APPLICATION_CREDENTIALS` to an WWAuth-enabled credential configuration file.
+    `GOOGLE_APPLICATION_CREDENTIALS` to a WWAuth-enabled credential configuration file.
 1.  The credential configuration file instructs the client library (which is built into the application) to 
     invoke WWAuth every time it needs to authenticate to Google Cloud. This mechanism is 
 	called [executable-sourced credentials :octicons-link-external-16:](https://google.aip.dev/auth/4117).

@@ -39,7 +39,7 @@ identity federation by adding support for additional authentication flows:
 
 ## Implementation
 
-The Token Service ia a Java application that uses Quarkus, CDI, and JAX-RS and is designed to run on Cloud Run. 
+The Token Service is a Java application that uses Quarkus, CDI, and JAX-RS and is designed to run on Cloud Run. 
 It exposes two endpoints:
 
 *   `/token`: An OAuth client credentials flow-compatible endpoint that lets workloads authenticate and obtain an OIDC token.
