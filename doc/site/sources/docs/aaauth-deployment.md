@@ -79,7 +79,7 @@ To deploy AAAuth to Cloud Run by using Terraform, do the following:
 
 1.  Change to the `terraform` directory:
 
-        cd aaauth/terraform
+        cd terraform
 
 1.  Create a file named `terraform.tfvars` and configure it depending on the
     [identity provider :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/configure-identity-provider)

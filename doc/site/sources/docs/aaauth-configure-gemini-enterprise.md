@@ -1,15 +1,16 @@
 # Configure Gemini Enterprise
 
-This article describes how to configure a Gemini Enterprise so
-that agents can use delegated authorization using AAAuth.
-
+This article describes how to configure Gemini Enterprise so
+that ADK agents can use delegated authorization using AAAuth.
 
 ???+ info "Before you begin"
 
     To follow the instructions in this guide, you need the following:
 
     *   [ ] A Gemini Enterprise app
-    *   [ ] An [ADK or A2A agent registration :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/agents-overview) to configure authorization for
+    *   [ ] An [ADK agent registration :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/agents-overview) to configure authorization for
+
+The instructions in this article only apply to ADK agents running on Agent Engine and don't apply to A2A agents.
 
 ## Create an authorization resource
 
@@ -45,20 +46,21 @@ create an  authorization resource:
     Replace `client-id` and `client-secret` depending on 
     [your identity provider :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/configure-identity-provider):
 
-    === "Google identity"
+    === "Google Identity"
     
-        *   `client-id`: the client ID that you created when you [deployed AAAuth](aaauth-deokoyment.md).
-        *   `client-secret`:  the client secret that you created when you [deployed AAAuth](aaauth-deokoyment.md).
+        *   `client-id`: the client ID that you created when you [deployed AAAuth](aaauth-deployment.md).
+        *   `client-secret`:  the client secret that you created when you [deployed AAAuth](aaauth-deployment.md).
 
     === "Entra"
 
         *   `client-id`: the client ID of the Entra App registration used by your 
             workforce identity provider.
-        *   `client-secret`: the client secret that you created when you [deployed AAAuth](aaauth-deokoyment.md).
+        *   `client-secret`: the client secret that you created when you 
+            [deployed AAAuth](aaauth-deployment.md).
 
 1.  Initialize another variable that selects the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
 
-    === "Google identity"
+    === "Google Identity"
 
     
         === "bash"
@@ -191,8 +193,7 @@ To let an agent use AAAuth for authorization, do the following:
 						.displayName, 
 						(.name | split("/") | last),
 						(.authorizationConfig.toolAuthorizations // [] | join(", "))
-					] | @tsv
-				' | column -t -s $'\t' -N "DisplayName","ID","ToolAuthorizations"
+					]'
 
 
     === "PowerShell"
@@ -221,7 +222,7 @@ To let an agent use AAAuth for authorization, do the following:
 	
 1.  Select the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
 
-    === "Google identity"
+    === "Google Identity"
     
         === "bash"
 
