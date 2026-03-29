@@ -1,0 +1,25 @@
+{
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Entra__TenantId": "b9f4725c-1215-4c1d-80f4-ff1eef485c90",
+        "Entra__WorkforceIdentityProviderName": "locations/global/workforcePools/jpassing-argolis/providers/oidc",
+        "__Entra__Scope": "api://87305bb6-0196-4900-911b-5ea1dc12eac0/aaauth",
+        "AuthorizedRedirectUris__0": "http://localhost:5000/authorize/"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7216;http://localhost:5054"
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:6557",
+      "sslPort": 44360
+    }
+  }
+}
