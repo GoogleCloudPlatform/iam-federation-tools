@@ -26,25 +26,6 @@ The application is designed to run on Cloud Run and uses
 
 [<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iam-federation-tools/aaauth/)
 
-## Token Service
-
-_Token Service_ is an application that lets clients exchange custom credentials against
-an ID token that suitable for workload identity federation:
-
-*   Towards a client appliation, the Token Service application acts
-    as an Open ID Connect identity provider. Clients can authenticate using
-    different authentication flows and can obtain an ID token that
-    asserts their identity.
-    
-*   When you register the _Token Service_ [as a workload identity pool provider](https://cloud.google.com/iam/docs/manage-workload-identity-pools-providers), 
-    clients can then use the ID token and exchange it against short-lived Google 
-    credentials by using the Google STS.
-    
-The application is designed to run on Cloud Run and uses 
-[workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation).
-
-[<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iam-federation-tools/token-service/)
-
 ## Workload Authenticator for Windows
 
 _Workload Authenticator for Windows (WWAuth)_ lets Windows applications authenticate to Google Cloud using their 
