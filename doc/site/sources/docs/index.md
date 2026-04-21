@@ -13,14 +13,6 @@ The [AI Agent Authenticator (AAAuth)](aaauth.md) enables delegated authenticatio
 between [Gemini Enterprise and custom ADK or A2A agents](https://docs.cloud.google.com/gemini/enterprise/docs/agents-overview)
 by acting as an intermediary between Gemini Enterprise and your identity provider.
 
-## Token Service
-
-[![Token Service](images/token-service.png){ align=right width="350" }](token-service.md)
-The [Token Service](token-service.md) is an example implementation of a token broker 
-that lets IoT devices and on-premises workloads authenticate 
-to Google Cloud using credentials that workload identity federation doesn't support natively.
-
-
 ## Workload Authenticator for Windows
 
 [Workload Authenticator for Windows (WWAuth)](wwauth.md) lets Windows applications authenticate to Google Cloud using their 
@@ -37,3 +29,12 @@ The tool works by chaining two token exchanges:
     
 Using WWAuth is an alternative to using service account keys
 and doesn't require you to manage and store any secrets or keys.
+
+
+## Token Service (archived)
+
+[![Token Service](images/token-service.png){ align=right width="350" }](token-service.md)
+The [Token Service](token-service.md) was an example implementation of a token broker 
+that lets IoT devices and on-premises workloads authenticate 
+to Google Cloud using credentials that workload identity federation doesn't support natively.
+The project has been archived and is no longer being maintained.

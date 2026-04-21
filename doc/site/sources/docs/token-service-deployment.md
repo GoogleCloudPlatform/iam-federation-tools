@@ -1,5 +1,9 @@
 # Deploy the Token Service
 
+!!! warning
+
+    The Token Service project has been archived and is no longer being maintained.
+    
 This article describes how you can deploy the token service on Cloud Run
 and configure it so that it can authenticate clients using mutual TLS (mTLS).
 
