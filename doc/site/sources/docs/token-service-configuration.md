@@ -1,5 +1,9 @@
 # Configuration
 
+!!! warning
+
+    The Token Service project has been archived and is no longer being maintained.
+    
 You can customize the behavior of the Token Service application by editing the `env` section of the
 [Cloud Run configuration file :octicons-link-external-16:](https://cloud.google.com/run/docs/reference/yaml/v1)
 

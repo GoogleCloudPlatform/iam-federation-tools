@@ -1,5 +1,9 @@
 # Authenticate workloads and devices
 
+!!! warning
+
+    The Token Service project has been archived and is no longer being maintained.
+
 Before an IoT device or on-premises workload can access Google Cloud APIs, it needs to authenticate. 
 One way to do this is to use service account keys. However, service account keys 
 [can leak :octicons-link-external-16:](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys#credential-leakage) 
@@ -33,7 +37,7 @@ identity federation by adding support for additional authentication flows:
     different types of credentials to the client, including short-lived Google credentials.
 
 *   Custom flows: You can add additional, custom authentication flows by extending the
-    the [`ClientCredentialsFlow`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/token-service/src/main/java/com/google/solutions/tokenservice/oauth/ClientCredentialsFlow.java)
+    the [`ClientCredentialsFlow`](https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/archive/token-service/token-service/src/main/java/com/google/solutions/tokenservice/oauth/ClientCredentialsFlow.java)
     base class.
 
 

@@ -1,5 +1,9 @@
 # Upgrade the Token Service
 
+!!! warning
+
+    The Token Service project has been archived and is no longer being maintained.
+    
 To change the configuration of the Token Service or to upgrade to a newer version, 
 do the following:
 

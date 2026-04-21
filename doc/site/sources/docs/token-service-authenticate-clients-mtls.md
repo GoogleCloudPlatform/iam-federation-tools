@@ -1,5 +1,9 @@
 # Authenticate workloads using mutual TLS
 
+!!! warning
+
+    The Token Service project has been archived and is no longer being maintained.
+    
 The following sections contain examples for how workloads can authenticate to the
 token broker using mutual TLS (mTLS) and obtain short-lived Google credentials.
 
