@@ -18,7 +18,7 @@ but doesn't have built-in support for using the forwarded access token for
 purposes such as making MCP tool calls.
 
 The `GeminiEnterpriseDelegatedAuthProvider` addresses this gap and exposes the 
-forwarded access as an [`AuthCredential`](AuthCredential), making it compatible 
+forwarded access token as an [`AuthCredential`](AuthCredential), making it compatible 
 with the ADK built-in authentication facilities.
 
 To use the `GeminiEnterpriseDelegatedAuthProvider`, add the following code to your agent:
@@ -47,7 +47,8 @@ auth_config = AuthConfig(
 )
 ```
 
-To use the authentication provider for an MCP tool set, use the `auth_scheme` parameter as follows:
+To use the authentication provider for an MCP tool set, specify `GeminiEnterpriseDelegatedAuthProviderScheme`
+as `auth_scheme`:
 
 ```
 gce_mcp = McpToolset(
@@ -56,12 +57,13 @@ gce_mcp = McpToolset(
 )
 ```
 
-Similarly, to use the authentication provider for an MCP tool set from Agent Registry, use the `auth_scheme` parameter as follows:
+Similarly, to use the authentication provider for an MCP tool set from Agent Registry, 
+pass `GeminiEnterpriseDelegatedAuthProviderScheme` as follows:
 
 ```
 registry = AgentRegistry(project_id=PROJECT_ID, location=LOCATION)
 registry.get_mcp_toolset(
     f"projects/{PROJECT_ID}/locations/{LOCATION}/mcpServers/agentregistry-00000000-0000-0000-aaaa-aaaaaaaaaaaa",
-    auth_config=GeminiEnterpriseDelegatedAuthProviderScheme()
+    GeminiEnterpriseDelegatedAuthProviderScheme()
 )
 ```
