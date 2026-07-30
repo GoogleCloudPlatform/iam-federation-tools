@@ -34,8 +34,21 @@ auth_config = AuthConfig(
 )
 ```
 
-To use the authentication provider for an MCP tool set, use the `auth_scheme`
-parameter as follows:
+If you've configured more than one authorization for the agent in Gemini Enterprise,
+use the `name` parameter to select the authorization you want to use:
+
+```
+from .geminienterprise_auth import *
+
+CredentialManager.register_auth_provider(GeminiEnterpriseDelegatedAuthProvider())
+auth_config = AuthConfig(
+    auth_scheme=GeminiEnterpriseDelegatedAuthProviderScheme(
+        name="second-authorization"
+    )
+)
+```
+
+To use the authentication provider for an MCP tool set, use the `auth_scheme` parameter as follows:
 
 ```
 gce_mcp = McpToolset(
