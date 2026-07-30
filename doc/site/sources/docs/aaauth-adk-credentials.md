@@ -9,7 +9,7 @@ By default, the ADK uses the agent's own identity to authenticate MCP tool calls
 let it use the identity of the end user instead, you must use a custom
 authentication provider.
 
-The [`geminienterprise_auth.py` module](https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/aaauth/adk/geminienterprise_auth.py)
+The [`geminienterprise_auth.py` module](https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/adk/geminienterprise_auth.py)
 provided in this repository implements a custom authentication provider that
 uses the end user credentials forwarded by Gemini Enterprise.
 
