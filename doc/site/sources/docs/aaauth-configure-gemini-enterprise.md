@@ -200,7 +200,7 @@ To let an agent use AAAuth for authorization, do the following:
 				
 				
 			$Agents = Invoke-RestMethod `
-				-Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents" `
+				-Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GeProjectId/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents" `
 				-Method Get `
 				-Headers @{
 					"Authorization"       = "Bearer $(gcloud auth print-access-token)"
@@ -268,7 +268,7 @@ To let an agent use AAAuth for authorization, do the following:
     === "PowerShell"
 
             Invoke-RestMethod `
-                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GE_PROJECT_ID/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents/$($Agent)?updateMask=authorizationConfig" `
+                -Uri "https://discoveryengine.googleapis.com/v1alpha/projects/$GeProjectId/locations/global/collections/default_collection/engines/$Engine/assistants/default_assistant/agents/$($Agent)?updateMask=authorizationConfig" `
                 -Method PATCH `
                 -Headers @{
                     "Authorization"       = "Bearer $(gcloud auth print-access-token)"
