@@ -5,9 +5,9 @@ This folder contains a selection of authentication providers for ADK agents.
 
 ## Gemini Enterprise authentication provider
 
-The `GeminiEnterpriseDelegatedAuthProvider` lets agents use credentials forwarded 
-by [Gemini Enterprise](https://docs.cloud.google.com/gemini/enterprise/docs) and act on 
-the end user's behalf.
+The [`GeminiEnterpriseDelegatedAuthProvider`](geminienterprise_auth.py) lets agents 
+use credentials forwarded by [Gemini Enterprise](https://docs.cloud.google.com/gemini/enterprise/docs) 
+and act on the end user's behalf.
 
 When you register an ADK agent in Gemini Enterprise, you can 
 [configure authorization](https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-adk-agent#authorize-your-agent). 
@@ -53,7 +53,7 @@ To use the authentication provider for an MCP tool set, use the `auth_scheme` pa
 ```
 gce_mcp = McpToolset(
     connection_params=StreamableHTTPConnectionParams(url="https://compute.googleapis.com/mcp"),
-    auth_scheme=auth_config.auth_scheme,
+    auth_scheme=auth_config.auth_scheme,        # <<-- 
 )
 ```
 
@@ -63,6 +63,6 @@ Similarly, to use the authentication provider for an MCP tool set from Agent Reg
 registry = AgentRegistry(project_id=PROJECT_ID, location=LOCATION)
 registry.get_mcp_toolset(
     f"projects/{PROJECT_ID}/locations/{LOCATION}/mcpServers/agentregistry-00000000-0000-0000-aaaa-aaaaaaaaaaaa",
-    auth_config.auth_scheme,
+    auth_config.auth_scheme,                    # <<--
 )
 ```
