@@ -58,7 +58,7 @@ class GeminiEnterpriseDelegatedAuthProvider(BaseAuthProvider):
   """Auth provider for Gemini Enterprise-managed authentication."""
 
   def __init__(self):
-    # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessioManager
+    # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
     # ignores custom authentication and forces connection to use ADC
     # instead.
     
@@ -75,7 +75,7 @@ class GeminiEnterpriseDelegatedAuthProvider(BaseAuthProvider):
   async def get_auth_credential(
       self,
       auth_config: AuthConfig,
-      context: CallbackContext,
+      context: CallbackContext | None,
   ) -> AuthCredential:
     """Retrieves Gemini Enterprise-provided credentials from the user's session.
 
@@ -110,7 +110,7 @@ class GeminiEnterpriseDelegatedAuthProvider(BaseAuthProvider):
     else:
       # There are multiple tokens, and we don't know which one to use.
       raise ValueError(
-          f"Gemini Enterprise provided tokens for multiple authorizations."
+          f"No matching Gemini Enterprise authorization found in session."
       )
 
     # Wrap token as an AuthCredential.
