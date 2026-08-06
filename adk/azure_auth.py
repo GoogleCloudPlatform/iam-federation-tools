@@ -108,9 +108,6 @@ class AzureServiceAuthProvider(BaseAuthProvider):
 
     Returns:
       An AzureAuthCredential instance.
-
-    Raises:
-      ValueError: If the token exchange fails.
     """
     auth_scheme = auth_config.auth_scheme
     if not isinstance(auth_scheme, AzureServiceAuthProviderScheme):
