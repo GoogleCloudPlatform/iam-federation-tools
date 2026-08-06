@@ -42,8 +42,8 @@ that corresponds to your agent:
         +   **Scenario**: **Other issuer**
         +   **Issuer**: `https://accounts.google.com`            
         +   **Type**: **Explicit subject identifier**.
-        +   **Value**: Email address of the service account.
-        +   **Name**: `AgentIdentity`.
+        +   **Value**: ID of the service account. The ID looks similar to the following: `102770123456789012345`.
+        +   **Name**: `GoogleServiceAaccount`.
         +   **Audience**: Keep `api://AzureADTokenExchange` or enter a custom audience.
 
     === "Agent identity"

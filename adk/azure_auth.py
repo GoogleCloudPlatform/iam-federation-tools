@@ -18,6 +18,10 @@ import logging
 
 from typing import Literal
 from typing import Optional
+from pydantic import Field, ConfigDict
+from typing_extensions import override
+
+import asyncio
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.auth.auth_credential import AuthCredential
@@ -30,9 +34,6 @@ from google.adk.auth.auth_schemes import CustomAuthScheme
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 from azure.identity import ClientAssertionCredential
-
-from pydantic import Field, BaseModel, ConfigDict
-from typing_extensions import override
 
 logger = logging.getLogger('google_solutions.' + __name__)
 
@@ -108,6 +109,9 @@ class AzureServiceAuthProvider(BaseAuthProvider):
 
     Returns:
       An AzureAuthCredential instance.
+
+    Raises:
+      ValueError: If the token exchange fails.
     """
     auth_scheme = auth_config.auth_scheme
     if not isinstance(auth_scheme, AzureServiceAuthProviderScheme):
@@ -123,7 +127,14 @@ class AzureServiceAuthProvider(BaseAuthProvider):
 
     # Wrap token as an AuthCredential. Include the underlying credential so that
     # it can be used to initialize Azure client libraries.
-    return AzureAuthCredential.from_client_assertion(
-        credential=credential,
-        scope=str(auth_scheme.scope or f"api://{auth_scheme.client_id}/.default"),
-    )
+
+    logger.info("Obtaining Azure access token for scope '%s'", auth_scheme.scope)
+    
+    try:
+        return await asyncio.to_thread(
+            AzureAuthCredential.from_client_assertion,
+            credential,
+            str(auth_scheme.scope or f"api://{auth_scheme.client_id}/.default"),
+        )
+    except Exception as e:
+        raise ValueError(f"Failed to obtain Azure access token: {e}") from e
