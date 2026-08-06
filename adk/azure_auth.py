@@ -59,8 +59,8 @@ class AzureServiceAuthProviderScheme(CustomAuthScheme):
   )
   tenant_id: str
   client_id: str
+  audience: str = "api://AzureADTokenExchange"
   scope: Optional[str] = None
-  audience: Optional[str] = "api://AzureADTokenExchange"
 
 class AzureAuthCredential(AuthCredential):
   """An Azure credential
@@ -88,7 +88,7 @@ class AzureAuthCredential(AuthCredential):
       )
 
 class AzureServiceAuthProvider(BaseAuthProvider):
-  """Auth provider for for federated authentication to Azure."""
+  """Auth provider for federated authentication to Azure."""
 
   @property
   @override
@@ -129,7 +129,7 @@ class AzureServiceAuthProvider(BaseAuthProvider):
     # it can be used to initialize Azure client libraries.
 
     logger.info("Obtaining Azure access token for scope '%s'", auth_scheme.scope)
-    
+
     try:
         return await asyncio.to_thread(
             AzureAuthCredential.from_client_assertion,

@@ -43,7 +43,7 @@ that corresponds to your agent:
         +   **Issuer**: `https://accounts.google.com`            
         +   **Type**: **Explicit subject identifier**.
         +   **Value**: ID of the service account. The ID looks similar to the following: `102770123456789012345`.
-        +   **Name**: `GoogleServiceAaccount`.
+        +   **Name**: `GoogleServiceAccount`.
         +   **Audience**: Keep `api://AzureADTokenExchange` or enter a custom audience.
 
     === "Agent identity"
@@ -52,7 +52,7 @@ that corresponds to your agent:
         +   **Issuer**: 
         
             ```
-            https://sts.googleapis.com/v1/organizations/ORG_ID /locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog
+            https://sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog
             ```
         
             Replace `ORG_ID` with the organization ID of the Google Cloud organization that contains the agent.
