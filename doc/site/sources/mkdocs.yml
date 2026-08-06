@@ -69,6 +69,7 @@ markdown_extensions:
 nav:
   - 'Overview': 'index.md'
   - 'ADK authentication providers':
+    - 'Overview': adk.md
     - 'Gemini Enterprise': adk-geminienterprise.md
     - 'Azure federation': adk-azure.md
   - 'AI Agent Authenticator':

@@ -75,8 +75,7 @@ that corresponds to your agent:
         +   **Name**: `AgentIdentity`.
         +   **Audience**: Keep `api://AzureADTokenExchange` or enter a custom audience.
 
-
-## Use the `AzureServiceAuthProvider`
+## Use the authentication provider
 
 To let your ADK agent use workload identity federation, do the following:
 

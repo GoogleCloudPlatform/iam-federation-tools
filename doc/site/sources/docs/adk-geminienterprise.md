@@ -34,7 +34,7 @@ Delegated authorization works with any OAuth 2.0-compliant identity provider,
 including [AAAuth](aaauth.md), but the exact configuration parameters depend on identity provider
 you use.
 
-## Use the `GeminiEnterpriseDelegatedAuthProvider`
+## Use the authentication provider
 
 To let your ADK agent use delegated authorization, do the following:
 

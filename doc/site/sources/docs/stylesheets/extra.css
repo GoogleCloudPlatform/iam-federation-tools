@@ -21,6 +21,7 @@ body {
 .md-main__inner {
     background-color: white;
     box-shadow: 0 0 0.1rem #0000001a, 0 0.1rem 0.2rem #0003;
+    min-height: 700px;
 }
 
 .md-search__input {
