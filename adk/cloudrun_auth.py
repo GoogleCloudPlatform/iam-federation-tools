@@ -103,8 +103,8 @@ class CloudRunServiceAuthProvider(BaseAuthProvider):
             "CloudRunServiceAuthProviderScheme "
             "requires `service_account` when using Agent Identity"
         )
-      
-      source_credentials, _ = google.auth.default()
+
+      source_credentials, _ = await asyncio.to_thread(google.auth.default)
       impersonated_target = google.auth.impersonated_credentials.Credentials(
           source_credentials=source_credentials,
           target_principal=auth_scheme.service_account,
@@ -117,6 +117,7 @@ class CloudRunServiceAuthProvider(BaseAuthProvider):
       )
       await asyncio.to_thread(id_token_credentials.refresh, Request())
       id_token_value = id_token_credentials.token
+      
     else:
       # Use ID token from metadata server
       id_token_value = await asyncio.to_thread(
