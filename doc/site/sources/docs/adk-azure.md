@@ -20,8 +20,8 @@ and exchange it for an Entra-issued access token. Agents can then use this
 token to perform authenticated calls to Azure APIs or other APIs that
 require Entra authentication.
 
-[`AzureServiceAuthProvider`](azure_auth.py) is an ADK authentication provider 
-that implements the necessary logic to obtain an ID token and perform a token exchange.
+[`AzureServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/azure_auth.py) 
+is an ADK authentication provider that implements the necessary logic to obtain an ID token and perform a token exchange.
 
 Using `AzureServiceAuthProvider` is an alternative to using 
 [2-legged OAuth with auth manager :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/auth-with-2lo)

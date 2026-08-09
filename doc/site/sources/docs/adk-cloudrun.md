@@ -1,4 +1,4 @@
-# Authenticating to Cloud Run
+# Cloud Run service authentication
 
 This article describes how you can let an ADK agent authenticate to an 
 API or MCP server that runs on Cloud Run and 
@@ -56,7 +56,7 @@ uses agent identity or an attached service account:
     Instead, they must impersonate a service account by using
     [`generateIdToken` :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/generateIdToken).
 
-[`CloudRunServiceAuthProvider`](cloudrun_auth.py) is an ADK authentication provider 
+[`CloudRunServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/cloudrun_auth.py) is an ADK authentication provider 
 that implements the necessary logic to obtain an ID token.
 
 ## Use the authentication provider

@@ -14,3 +14,11 @@ This folder contains authentication providers for ADK agents:
 
     For more information about this provider and how to use it, see 
     [Azure workload identity federation](https://googlecloudplatform.github.io/iam-federation-tools/adk-azure/).
+    
+
+*   [`CloudRunServiceAuthProvider`](cloudrun_auth.py) is an ADK authentication provider 
+    that lets agents authenticate to APIs and MCP servers that run on Cloud Run and 
+    require service-to-service authentication.
+
+    For more information about this provider and how to use it, see 
+    [Cloud Run service authentication](https://googlecloudplatform.github.io/iam-federation-tools/adk-cloudrun/).
