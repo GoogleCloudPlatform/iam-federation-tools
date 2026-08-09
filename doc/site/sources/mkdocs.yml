@@ -70,8 +70,11 @@ nav:
   - 'Overview': 'index.md'
   - 'ADK authentication providers':
     - 'Overview': adk.md
-    - 'Gemini Enterprise': adk-geminienterprise.md
-    - 'Azure federation': adk-azure.md
+    - 'User authentication':
+      - 'Gemini Enterprise': adk-geminienterprise.md
+    - 'Service authentication':
+      - 'Azure': adk-azure.md
+      - 'Cloud Run': adk-cloudrun.md
   - 'AI Agent Authenticator':
     - 'Overview': aaauth.md
     - 'Deploy the service': aaauth-deployment.md
