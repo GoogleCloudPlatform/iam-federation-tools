@@ -6,7 +6,7 @@ to Microsoft Azure by using [workload identity federation :octicons-link-externa
 Follow the steps in this article if all of the following applies:
 
 *   [ ] Your agent is deployed on Agent Platform or Cloud Run
-*   [ ] Your agent uses agent identity or has an attached service account
+*   [ ] Your agent is configured to use agent identity or has an attached service account
 *   [ ] You want the agent to access an API or MCP tool that requires 
         Entra authentication
 
@@ -20,8 +20,8 @@ and exchange it for an Entra-issued access token. Agents can then use this
 token to perform authenticated calls to Azure APIs or other APIs that
 require Entra authentication.
 
-[`AzureServiceAuthProvider`](azure_auth.py) is an ADK authentication provider 
-that implements the necessary logic to obtain an ID token and perform a token exchange.
+[`AzureServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/azure_auth.py) 
+is an ADK authentication provider that implements the necessary logic to obtain an ID token and perform a token exchange.
 
 Using `AzureServiceAuthProvider` is an alternative to using 
 [2-legged OAuth with auth manager :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/auth-with-2lo)
