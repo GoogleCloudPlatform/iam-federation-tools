@@ -11,3 +11,7 @@ ADK [provides built-in support for :octicons-link-external-16:](https://adk.dev/
 +   [Azure workload identity federation](adk-azure.md) describes how you
     can let ADK agents authenticate to Microsoft Azure by using 
     workload identity federation.
+
++   [Cloud Run service authentication](adk-cloudrun.md) describes how you
+    can let ADK agents authenticate to APIs and MCP servers that run on Cloud Run and 
+    require service-to-service authentication.
