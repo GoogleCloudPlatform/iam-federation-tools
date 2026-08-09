@@ -56,7 +56,7 @@ uses agent identity or an attached service account:
     Instead, they must impersonate a service account by using
     [`generateIdToken` :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/generateIdToken).
 
-[`CloudRunServiceAuthProvider`](azure_cloudrun.py) is an ADK authentication provider 
+[`CloudRunServiceAuthProvider`](cloudrun_auth.py) is an ADK authentication provider 
 that implements the necessary logic to obtain an ID token.
 
 ## Use the authentication provider
