@@ -20,10 +20,10 @@ and exchange it for an Entra-issued access token. Agents can then use this
 token to perform authenticated calls to Azure APIs or other APIs that
 require Entra authentication.
 
-[`AzureServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/azure_auth.py) 
+[`AzureFederatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/azure_auth.py) 
 is an ADK authentication provider that implements the necessary logic to obtain an ID token and perform a token exchange.
 
-Using `AzureServiceAuthProvider` is an alternative to using 
+Using `AzureFederatedAuthProvider` is an alternative to using 
 [2-legged OAuth with auth manager :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/auth-with-2lo)
 that lets you avoid the need to store client secrets.
 
@@ -84,8 +84,8 @@ To let your ADK agent use workload identity federation, do the following:
     ```
     from .azure_auth import *
 
-    CredentialManager.register_auth_provider(AzureServiceAuthProvider())
-    az_auth_scheme=AzureServiceAuthProviderScheme(
+    CredentialManager.register_auth_provider(AzureFederatedAuthProvider())
+    az_auth_scheme=AzureFederatedAuthProviderScheme(
         tenant_id="TENANT_ID",
         client_id="CLIENT_ID",
         audience="AUDIENCE",
@@ -101,7 +101,7 @@ To let your ADK agent use workload identity federation, do the following:
     +   `SCOPE` (optional): The required OAuth scope. If you omit this parameter, the agent requests
         a token for `api://CLIENT_ID/.default`.
 
-2.  Pass the `AzureServiceAuthProviderScheme` to the 
+2.  Pass the `AzureFederatedAuthProviderScheme` to the 
     constructor of relevant MCP tool set. For example:
 
     ```
