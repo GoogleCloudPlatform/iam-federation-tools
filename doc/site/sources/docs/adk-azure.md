@@ -85,7 +85,7 @@ To let your ADK agent use workload identity federation, do the following:
     from .azure_auth import *
 
     CredentialManager.register_auth_provider(AzureFederatedAuthProvider())
-    az_auth_scheme=AzureFederatedAuthProviderScheme(
+    az_auth_scheme = AzureFederatedAuthProviderScheme(
         tenant_id="TENANT_ID",
         client_id="CLIENT_ID",
         audience="AUDIENCE",
@@ -105,9 +105,9 @@ To let your ADK agent use workload identity federation, do the following:
     constructor of relevant MCP tool set. For example:
 
     ```
-    # Tool set for Compute Engine
+    # Tool set from URL
     toolset = McpToolset(
-        connection_params=StreamableHTTPConnectionParams(url="https://example.azure-api.net/mcp"),
+        connection_params = StreamableHTTPConnectionParams(url="https://example.azure-api.net/mcp"),
         auth_scheme=az_auth_scheme
     )
     
