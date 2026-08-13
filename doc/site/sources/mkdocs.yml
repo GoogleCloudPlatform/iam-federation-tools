@@ -73,8 +73,9 @@ nav:
     - 'User authentication':
       - 'Gemini Enterprise': adk-geminienterprise.md
     - 'Service authentication':
-      - 'Azure': adk-azure.md
       - 'Cloud Run': adk-cloudrun.md
+      - 'Azure': adk-azure.md
+      - 'AWS': adk-aws.md
   - 'AI Agent Authenticator':
     - 'Overview': aaauth.md
     - 'Deploy the service': aaauth-deployment.md

@@ -1,4 +1,4 @@
-# Azure workload identity federation
+# Federated federation to Azure
 
 This article describes how you can let an ADK agent authenticate
 to Microsoft Azure by using [workload identity federation :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
@@ -10,7 +10,7 @@ Follow the steps in this article if all of the following applies:
 *   [ ] You want the agent to access an API or MCP tool that requires 
         Entra authentication
 
-## Workload identity federation
+## Approach
 
 ADK agents running on Agent Platform or Cloud Run can obtain an ID token that 
 asserts their agent identity or the identity of their attached service account.
