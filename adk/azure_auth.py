@@ -38,7 +38,7 @@ from azure.identity import ClientAssertionCredential
 
 logger = logging.getLogger('google_solutions.' + __name__)
 
-class AzureServiceAuthProviderScheme(CustomAuthScheme):
+class AzureFederatedAuthProviderScheme(CustomAuthScheme):
   """Authentication scheme for federated service authentication to Azure.
 
   This scheme obtains an ID token/JWT-SVID from the agent's
@@ -48,15 +48,15 @@ class AzureServiceAuthProviderScheme(CustomAuthScheme):
   for purposes such as authenticating MCP calls.
 
   Attributes:
-    type_: The type of the security scheme, always "AzureServiceAuthProviderScheme".
+    type_: The type of the security scheme, always "AzureFederatedAuthProviderScheme".
     tenant_id: ID of the Entra tenant containing the app registration
     client_id: Application/client ID of the app registration
     audience (Optional): Expected audience
     scope (Optional): OAuth2 scope, in format "api://APP-ID/.default
   """
 
-  type_: Literal["AzureServiceAuthProviderScheme"] = Field(
-      default="AzureServiceAuthProviderScheme", alias="type"
+  type_: Literal["AzureFederatedAuthProviderScheme"] = Field(
+      default="AzureFederatedAuthProviderScheme", alias="type"
   )
   tenant_id: str
   client_id: str
@@ -79,7 +79,9 @@ class AzureAuthCredential(AuthCredential):
 
   @classmethod
   def from_client_assertion(
-      cls, credential: ClientAssertionCredential, scope: str
+      cls, 
+      credential: ClientAssertionCredential, 
+      scope: str
   ) -> AzureAuthCredential:
       token_response = credential.get_token(scope)
       return cls(
@@ -88,7 +90,7 @@ class AzureAuthCredential(AuthCredential):
           azure_credential=credential,
       )
 
-class AzureServiceAuthProvider(BaseAuthProvider):
+class AzureFederatedAuthProvider(BaseAuthProvider):
   """Auth provider for federated authentication to Azure."""
 
   def __init__(self):
@@ -102,8 +104,8 @@ class AzureServiceAuthProvider(BaseAuthProvider):
 
   @property
   @override
-  def supported_auth_schemes(self) -> tuple[type[AzureServiceAuthProviderScheme], ...]:
-    return (AzureServiceAuthProviderScheme,)
+  def supported_auth_schemes(self) -> tuple[type[AzureFederatedAuthProviderScheme], ...]:
+    return (AzureFederatedAuthProviderScheme,)
 
   @override
   async def get_auth_credential(
@@ -124,9 +126,9 @@ class AzureServiceAuthProvider(BaseAuthProvider):
       ValueError: If the token exchange fails.
     """
     auth_scheme = auth_config.auth_scheme
-    if not isinstance(auth_scheme, AzureServiceAuthProviderScheme):
+    if not isinstance(auth_scheme, AzureFederatedAuthProviderScheme):
       raise ValueError(
-          f"Expected AzureServiceAuthProviderScheme, got {type(auth_scheme)}"
+          f"Expected AzureFederatedAuthProviderScheme, got {type(auth_scheme)}"
       )
 
     # Initialize Azure credential that uses the agent's ID token as client assertion.
