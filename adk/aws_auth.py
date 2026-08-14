@@ -81,7 +81,7 @@ class AwsSigV4Scheme(CustomAuthScheme):
   )
   role_arn: str
   role_session_name: str
-  duration: int = Field(default=1200, gt=900)
+  duration: int = Field(default=1200, ge=900)
   audience: Optional[str] = "https://sts.amazonaws.com"
 
 class AwsFederatedAuthProvider(BaseAuthProvider):
