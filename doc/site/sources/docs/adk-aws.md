@@ -80,7 +80,7 @@ your agent uses agent identity or an attached service account:
         Replace `ORG_ID` with the organization ID of the Google Cloud organization that contains the agent.
     +   **Audience**: `https://sts.amazonaws.com`
 
-    Configure the trust policy as follows:
+    Use the identity provider to configure the trust policy as follows:
 
     ```
     {
@@ -119,7 +119,7 @@ To let your ADK agent use AWS federation, do the following:
 1.  Add the following code to your agent to initialize a `AwsSigV4Scheme` and register the provider:
 
     ```
-    from .aws_auth import AwsSigV4Scheme, AwsFederatedAuthProvider
+    from aws_auth import AwsSigV4Scheme, AwsFederatedAuthProvider
 
     aws_auth_scheme = AwsSigV4Scheme(
         role_arn="arn:aws:iam::ACCOUNT_ID:role/ROLE",
@@ -145,7 +145,7 @@ To let your ADK agent use AWS federation, do the following:
     For example, initialize a toolset for the AWS MCP server as follows:
 
     ```
-    from .aws_auth import AwsMcpToolset
+    from aws_auth import AwsMcpToolset
 
     aws_toolset = AwsMcpToolset(
         "eu-central-1",

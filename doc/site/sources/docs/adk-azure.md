@@ -82,7 +82,7 @@ To let your ADK agent use workload identity federation, do the following:
 1.  Add the following code to your agent's initialization logic to register the provider:
 
     ```
-    from .azure_auth import *
+    from azure_auth import *
 
     CredentialManager.register_auth_provider(AzureFederatedAuthProvider())
     az_auth_scheme = AzureFederatedAuthProviderScheme(
