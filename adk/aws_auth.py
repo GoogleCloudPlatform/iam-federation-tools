@@ -71,7 +71,7 @@ class AwsSigV4Scheme(CustomAuthScheme):
     type_: The type of the security scheme, always "AwsSigV4Scheme".
     role_arn: ARN of the role to assume
     role_session_name: Name of the role session
-    duration (Opional): Duration of session, in seconds
+    duration (Optional): Duration of session, in seconds
     audience (Optional): Expected audience (accounts.google.com:oaud)
       in trust policy
   """
@@ -200,15 +200,19 @@ class AwsMcpToolset(McpToolset):
 
       # Create signature over request body
       credentials = await asyncio.to_thread(credential.session.get_credentials)
+      if not credentials:
+        raise ValueError("No AWS credentials found in the session")
+      
       signer = SigV4Auth(
         credentials, 
         self.toolset.service_name, 
         self.toolset.region_name)
 
+      await request.aread()
       aws_request = AWSRequest(
         method=request.method,
         url=str(request.url),
-        data=request.read(),
+        data=request.content,
         headers=dict(request.headers),
       )
       signer.add_auth(aws_request)

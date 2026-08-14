@@ -1,4 +1,4 @@
-# Federated federation to AWS
+# Federated authentication to AWS
 
 This article describes how you can let an ADK agent use 
 [`AssumeRoleWithWebIdentity` :octicons-link-external-16:](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html)

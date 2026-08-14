@@ -1,4 +1,4 @@
-# Federated federation to Azure
+# Federated authentication to Azure
 
 This article describes how you can let an ADK agent authenticate
 to Microsoft Azure by using [workload identity federation :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
