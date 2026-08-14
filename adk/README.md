@@ -31,3 +31,9 @@ and MCP servers using a service identity:
 
     For more information about this provider and how to use it, see 
     [Azure workload identity federation](https://googlecloudplatform.github.io/iam-federation-tools/adk-azure/).
+    
+*   [`AwsFederatedAuthProvider`](aws_auth.py) is an ADK authentication provider 
+    that lets agents assume an AWS role and call AWS APIs and MCP tools that use SigV4 authentication. 
+
+    For more information about this provider and how to use it, see 
+    [AWS federation](https://googlecloudplatform.github.io/iam-federation-tools/adk-aws/).
