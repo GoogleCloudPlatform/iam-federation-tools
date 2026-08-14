@@ -64,6 +64,53 @@ your agent uses agent identity or an attached service account:
     
     Replace `ID` with the ID of the service account. The ID looks similar to the following: `102770123456789012345`.
             
+=== "Agent identity"
+
+    The tokens issued by Agent identity are not signed by the Google JWKS and can't be validated
+    using AWS built-in support for Google federation. Therefore, you must
+    [create an OIDC identity provider :octicons-link-external-16:](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) for agent identity:
+
+    +   **Provider type**: **OpenID Connect**
+    +   **Provider URL**: 
+    
+        ```
+        https://sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog
+        ```
+    
+        Replace `ORG_ID` with the organization ID of the Google Cloud organization that contains the agent.
+    +   **Audience**: `https://sts.amazonaws.com`
+
+    Configure the trust policy as follows:
+
+    ```
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Federated": "OIDC_PROVIDER_ARN"
+          },
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Condition": {
+            "StringEquals": {
+              "sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog:sub": "spiffe://agents.global.org-ORG_ID.system.id.goog/resources/aiplatform/RESOURCE_NAME"
+            }
+          }
+        }
+      ]
+    }
+    ```
+    
+    Replace the following:
+    
+    +   `OIDC_PROVIDER_ARN`: the ARN of the OIDC identity provider that you created in the previous step
+    +   `ORG_ID`: the organization ID of the Google Cloud organization that contains the agent
+    +   `RESOURCE_NAME`: the resource name of the Agent Runtime deployment as shown in the 
+        Cloud Console under **Agent Platform > Agents > Deployments**. 
+    
+        The resource name looks similar to `projects/1234567890/locations/asia-southeast1/reasoningEngines/5678901234567890`. 
+
 
 ## Use the authentication provider
 
@@ -72,6 +119,8 @@ To let your ADK agent use AWS federation, do the following:
 1.  Add the following code to your agent to initialize a `AwsSigV4Scheme` and register the provider:
 
     ```
+    from .aws_auth import AwsSigV4Scheme, AwsFederatedAuthProvider
+
     aws_auth_scheme = AwsSigV4Scheme(
         role_arn="arn:aws:iam::ACCOUNT_ID:role/ROLE",
         role_session_name="SESSION_NAME",
@@ -96,6 +145,8 @@ To let your ADK agent use AWS federation, do the following:
     For example, initialize a toolset for the AWS MCP server as follows:
 
     ```
+    from .aws_auth import AwsMcpToolset
+
     aws_toolset = AwsMcpToolset(
         "eu-central-1",
         "bedrock-agentcore",
