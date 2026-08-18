@@ -41,17 +41,17 @@ jobs:
       security-events: write
       
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
+      uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
       with:
         languages: csharp
         source-root: aaauth
         build-mode: manual
         
     - name: Install .NET
-      uses: actions/setup-dotnet@v6
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
       with:
         dotnet-version: 8.0.x
 
@@ -64,6 +64,6 @@ jobs:
       working-directory: aaauth/sources
       
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
       with:
         category: "/language:csharp"
