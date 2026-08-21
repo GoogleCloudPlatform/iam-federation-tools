@@ -6,6 +6,11 @@ and act on their behalf:
 
 +   [Gemini Enterprise delegated authorization](adk-geminienterprise.md) describes
     how you to configure Gemini Enterprise and ADK agents to use delegated authorization.
++   [Microsoft Entra Agent ID on-behalf-of authorization](adk-entra-agentidentity.md)
+    describes how you can use Microsoft Entra Agent ID to manage
+    access for an ADK agent, and let ADK agents access Google Cloud resources
+    and other resources on behalf of Entra users.
+
 
 The following articles describe how you can use custom authentication providers
 to let ADK agents authenticate to APIs and MCP servers on their own behalf:
