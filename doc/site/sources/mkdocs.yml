@@ -68,10 +68,11 @@ markdown_extensions:
   - pymdownx.superfences
 nav:
   - 'Overview': 'index.md'
-  - 'ADK authentication providers':
+  - 'ADK authentication':
     - 'Overview': adk.md
     - 'User authentication':
       - 'Gemini Enterprise': adk-geminienterprise.md
+      - 'Entra Agent ID': adk-entra-agentidentity.md
     - 'Service authentication':
       - 'Cloud Run': adk-cloudrun.md
       - 'Azure': adk-azure.md
