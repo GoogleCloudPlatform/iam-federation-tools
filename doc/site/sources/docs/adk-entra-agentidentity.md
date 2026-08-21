@@ -34,7 +34,7 @@ in the following way:
     Google Cloud resources such as BigQuery on behalf of the user.
 *   To authenticate to Entra Agent ID, agents use their Google Cloud agent 
     identity, in a similar way to how agents deployed on Azure would use 
-    [Azure managed identity :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/w).
+    [Azure managed identity :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview).
 
 ## Authentication process
 
@@ -161,7 +161,7 @@ by doing the following:
 
     `https://vertexaisearch.cloud.google.com/oauth-redirect` (Type: Web)
 
-1.  Go to **Authentication** and add a the following redirect URIs:
+1.  Go to **Authentication** and add the following redirect URIs:
 
     +   `https://vertexaisearch.cloud.google.com/oauth-redirect` (Type: Web)
     +   `https://vertexaisearch.cloud.google.com/static/oauth/oauth.html` (Type: Web)
@@ -199,7 +199,7 @@ by doing the following:
 
 You can let agents access Google Cloud resources on behalf of an Entra user by
 using workforce identity federation, but it might require some modifications
-to your exising workforce identity federation setup.
+to your existing workforce identity federation setup.
 
 ### Configure access tokens claims
 
@@ -236,10 +236,10 @@ do the following:
 
 1.  Click **Save**.
 1.  Go to **Token configuration**.
-1.  Check of there are any optional claims configured for ID tokens
+1.  Check if there are any optional claims configured for ID tokens
     that aren't configured for access tokens. If there are, add the 
     same claims to access tokens so that the configuration for ID tokens
-    and access tokens is eqiuivalent.
+    and access tokens is equivalent.
 
 ### Add a scope
 
@@ -277,7 +277,7 @@ Replace the following:
 ## Use Entra Agent ID in the ADK
 
 To let your ADK agent use Entra Agent ID on-behalf-of authorization, you use
-a combination of 3 custom auth provider:
+a combination of 3 custom auth providers:
 
 +   [`GeminiEnterpriseDelegatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/geminienterprise_auth.py) 
     to authenticate the user.

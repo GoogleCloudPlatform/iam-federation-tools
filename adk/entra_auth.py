@@ -121,7 +121,7 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
   
     if not agent_identity_token_response:
       raise ValueError(
-          f"Agent identity authentication failed:"
+          f"Agent identity authentication failed"
       )
     elif "access_token" not in agent_identity_token_response:
       error = agent_identity_token_response.get("error", "unknown_error")
@@ -154,8 +154,8 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
       An AuthCredential instance.
 
     Raises:
-      ValueError: If auth_scheme is not a FakeAuthProviderScheme or 
-        Gemini Enterprise did not provide a token.
+      ValueError: If auth_scheme is not an AgentIdentityOnBehalfOfUserScheme or 
+        the token exchange failed.
     """
 
     auth_scheme = auth_config.auth_scheme
@@ -197,7 +197,7 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
 
       if not obo_token_response:
         raise ValueError(
-            f"On-behalf-of token exchange failed:"
+            f"The on-behalf-of token exchange failed"
         )
       elif "access_token" not in obo_token_response:
         error = obo_token_response.get("error", "unknown_error")
