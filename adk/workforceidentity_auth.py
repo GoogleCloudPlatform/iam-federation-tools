@@ -39,7 +39,7 @@ from typing_extensions import override
 logger = logging.getLogger('google_solutions.' + __name__)
 
 class WorkforceIdentityFederatedAuthProviderScheme(CustomAuthScheme):
-  """Authentication scheme for Workforce identity-federated authentication.
+  """Authentication scheme for Workforce identity-federation.
 
   Attributes:
     user_auth_scheme: Scheme to authenticate the user with.
@@ -58,7 +58,11 @@ class WorkforceIdentityFederatedAuthProviderScheme(CustomAuthScheme):
   scope: Optional[str] = "https://www.googleapis.com/auth/cloud-platform"
 
 class WorkforceIdentityFederatedAuthProvider(BaseAuthProvider):
-  """Auth provider for  Workforce identity-federated authentication.."""
+  """Auth provider for workforce identity federation.
+  
+    The provider uses 'user_auth_scheme' from the scheme to obtain
+    a user credential and exchanges it for an STS access token.
+  """
 
   def __init__(self):
     # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
@@ -80,18 +84,18 @@ class WorkforceIdentityFederatedAuthProvider(BaseAuthProvider):
       auth_config: AuthConfig,
       context: CallbackContext,
   ) -> AuthCredential:
-    """Exchanged user credentials for temporary workforce identity credentials.
+    """Exchange user credentials for an STS access token.
 
     Args:
       auth_config: The authentication configuration.
       context: Optional context for the callback.
 
     Returns:
-      An AuthCredential instance.
+      An AuthCredential instance that contains an STS access token.
 
     Raises:
       ValueError: If auth_scheme is not a WorkforceIdentityFederatedAuthProviderScheme or 
-        Gemini Enterprise did not provide a token.
+        obtaining a user credential failed.
     """
     auth_scheme = auth_config.auth_scheme
     if not isinstance(auth_scheme, WorkforceIdentityFederatedAuthProviderScheme):
@@ -134,12 +138,18 @@ class WorkforceIdentityFederatedAuthProvider(BaseAuthProvider):
       })
 
     if response.status != 200:
-      raise ValueError(f"STS token exchange failed: {response.status}: {response.data.decode('utf-8')}")
+      raise ValueError(f"The STS token exchange failed: {response.status}: {response.data.decode('utf-8')}")
 
     # Wrap token as an AuthCredential.
+    token_data = json.loads(response.data.decode("utf-8"))
+    access_token = token_data.get("access_token")
+
+    if not access_token:
+      raise ValueError("The STS token exchange response did not contain an access_token")
+    
     return AuthCredential(
         auth_type=AuthCredentialTypes.OAUTH2,
         oauth2=OAuth2Auth(
-            access_token=json.loads(response.data).get("access_token")
+            access_token=access_token
         ),
     )

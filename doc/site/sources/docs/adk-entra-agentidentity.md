@@ -48,8 +48,9 @@ the user, obtain an Entra access token for them, and forward that token to the
 agent. 
 
 The agent, before being able to act on behalf of the user, must authenticate to Entra itself.
-To do that, it uses its Google Cloud agent identity to obtain an [ID token]()
-and uses that as a [federated credential]().
+To do that, it uses its Google Cloud agent identity to obtain an 
+[ID token](https://docs.cloud.google.com/docs/authentication/token-types#agent-identity-id-tokens)
+and uses that as a federated credential.
 
 To access a resource on behalf of the user, the agent can now initiate 
 an _on-behalf-of_ flow. The result of this flow is an access token that
@@ -185,7 +186,7 @@ by doing the following:
     +   **Authorization URI**:
 
         ```
-        https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize?response_type=code&client_id=CLIENT_ID&scope=api://BLUEPRINT_APP_ID/access_agent
+        https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize?response_type=code&client_id=CLIENT_ID&scope=offline_access%20api://BLUEPRINT_APP_ID/access_agent
         ```
 
         Replace the following:
@@ -279,9 +280,9 @@ To let your ADK agent use Entra Agent ID on-behalf-of authorization, you use
 a combination of 3 custom auth provider:
 
 +   [`GeminiEnterpriseDelegatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/geminienterprise_auth.py) 
-    to authenticate the user
+    to authenticate the user.
 +   [`AgentIdentityAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/entra_auth.py) 
-    to interact with Entra agent identity
+    to interact with Entra agent identity.
 +   [`WorkforceIdentityFederatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/workforceidentity_auth.py)
     to obtain temporary Google Cloud credentials.
 

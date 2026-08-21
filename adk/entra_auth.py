@@ -41,7 +41,7 @@ from msal import ConfidentialClientApplication
 logger = logging.getLogger('google_solutions.' + __name__)
 
 class AgentIdentityOnBehalfOfUserScheme(CustomAuthScheme):
-  """Authentication scheme for Agent identity on-behalf-of authentication.
+  """Authentication scheme for Entra Agent ID on-behalf-of authentication.
 
   Attributes:
     tenant_id: Entra tenant ID.
@@ -68,7 +68,7 @@ class AgentIdentityOnBehalfOfUserScheme(CustomAuthScheme):
 
 
 class AgentIdentityAuthProvider(BaseAuthProvider):
-  """Provider for Agent identity on-behalf-of authentication. """
+  """Provider for Entra Agent ID on-behalf-of authentication. """
 
   def __init__(self):
    
@@ -124,8 +124,8 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
           f"Agent identity authentication failed:"
       )
     elif "access_token" not in agent_identity_token_response:
-      error = agent_identity_token_response["error"]
-      error_description = agent_identity_token_response["error_description"]
+      error = agent_identity_token_response.get("error", "unknown_error")
+      error_description = agent_identity_token_response.get("error_description", "")
       raise ValueError(
           f"Agent identity authentication failed: {error_description} ({error})"
       )
@@ -192,7 +192,7 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
       # Perform OBO token exchange.
       obo_token_response = agent_identity_app.acquire_token_on_behalf_of(
         user_assertion=user_credential.oauth2.access_token,
-        scopes={auth_scheme.scope}
+        scopes=[auth_scheme.scope]
       )
 
       if not obo_token_response:
@@ -200,10 +200,10 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
             f"On-behalf-of token exchange failed:"
         )
       elif "access_token" not in obo_token_response:
-        error = obo_token_response["error"]
-        error_description = obo_token_response["error_description"]
+        error = obo_token_response.get("error", "unknown_error")
+        error_description = obo_token_response.get("error_description", "")
         raise ValueError(
-            f"On-behalf-of token exchange: {error_description} ({error})"
+            f"The on-behalf-of token exchange failed: {error_description} ({error})"
         )
       else:
         obo_access_token = obo_token_response["access_token"]
