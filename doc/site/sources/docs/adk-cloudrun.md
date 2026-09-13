@@ -1,4 +1,8 @@
-# Cloud Run service authentication
+---
+title: Letting ADK agents authenticate to Cloud Run services
+---
+
+# Letting ADK agents authenticate to Cloud Run services
 
 This article describes how you can let an ADK agent authenticate to an 
 API or MCP server that runs on Cloud Run and 

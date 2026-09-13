@@ -1,4 +1,8 @@
-# Microsoft Entra Agent ID on-behalf-of authorization
+---
+title: Using Microsoft Entra Agent ID on-behalf-of authorization for ADK agents
+---
+
+# Using Microsoft Entra Agent ID on-behalf-of authorization for ADK agents
 
 This article describes how you can use Microsoft Entra Agent ID to manage
 access for an ADK agent, and let ADK agents access Google Cloud resources
