@@ -60,12 +60,12 @@ uses agent identity or an attached service account:
     Instead, they must impersonate a service account by using
     [`generateIdToken` :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/generateIdToken).
 
-[`CloudRunServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/cloudrun_auth.py) is an ADK authentication provider 
-that implements the necessary logic to obtain an ID token.
+[`CloudRunServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/cloudrun_auth.py) 
+is an ADK authentication provider that implements the necessary logic to obtain an ID token.
 
 ## Use the authentication provider
 
-To let your ADK agent use workload identity federation, do the following:
+To use the `CloudRunServiceAuthProvider`, do the following:
 
 1.  Add the following code to your agent's initialization logic to register the provider:
 
@@ -92,9 +92,9 @@ To let your ADK agent use workload identity federation, do the following:
     constructor of relevant MCP tool set. For example:
 
     ```
-    # Tool set for Compute Engine
+    # Custom MCP tool set
     toolset = McpToolset(
-        connection_params=StreamableHTTPConnectionParams(url="example.asia-southeast1.run.app/mcp"),
+        connection_params=StreamableHTTPConnectionParams(url="https://example.asia-southeast1.run.app/mcp"),
         auth_scheme=cloudrun_auth_scheme
     )
     
