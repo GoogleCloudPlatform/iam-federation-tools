@@ -75,6 +75,7 @@ nav:
       - 'Entra Agent ID': adk-entra-agentidentity.md
     - 'Service authentication':
       - 'Cloud Run': adk-cloudrun.md
+      - 'IAP': adk-iap.md
       - 'Azure': adk-azure.md
       - 'AWS': adk-aws.md
   - 'AI Agent Authenticator':

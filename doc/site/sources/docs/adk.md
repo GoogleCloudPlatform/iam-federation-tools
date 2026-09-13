@@ -18,6 +18,9 @@ to let ADK agents authenticate to APIs and MCP servers on their own behalf:
 +   [Cloud Run service authentication](adk-cloudrun.md) describes how to 
     authenticate to APIs and MCP servers that run on Cloud Run and 
     require service-to-service authentication.
++   [IAP service authentication](adk-iap.md) describes how to 
+    authenticate to APIs and MCP servers that are protected by
+    Identity-Aware-Proxy (IAP).
 +   [Azure workload identity federation](adk-azure.md) describes how to 
     authenticate to Microsoft Azure by using workload identity federation.
 +   [AWS federation](adk-aws.md) describes how to authenticate to AWS 
