@@ -1,4 +1,8 @@
-# Gemini Enterprise delegated authorization
+---
+title: Delegating access from Gemini Enterprise to an ADK agents
+---
+
+# Delegating access from Gemini Enterprise to an ADK agent
 
 This article describes how you can configure Gemini Enterprise and
 an ADK agent to use delegated authorization.
