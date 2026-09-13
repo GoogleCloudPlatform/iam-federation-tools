@@ -18,7 +18,7 @@ Follow the steps in this article if all of the following applies:
 
 ## IAP programmatic authentication
 
-IAP lets clients [authenticate programtically :octicons-link-external-16:](https://docs.cloud.google.com/iap/docs/authentication-howto#authenticate-service-account)
+IAP lets clients [authenticate programmatically :octicons-link-external-16:](https://docs.cloud.google.com/iap/docs/authentication-howto#authenticate-service-account)
 using two types of tokens:
 
 1.  [Service account JSON Web Token assertions :octicons-link-external-16:](https://docs.cloud.google.com/docs/authentication/token-types#sa-jwt-assertions)

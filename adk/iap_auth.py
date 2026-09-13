@@ -31,10 +31,6 @@ from google.adk.auth.auth_tool import AuthConfig
 from google.adk.auth.base_auth_provider import BaseAuthProvider
 from google.adk.auth.auth_schemes import CustomAuthScheme
 
-import google.auth
-import google.auth.impersonated_credentials
-from google.oauth2 import id_token
-from google.auth.transport.requests import Request
 from google.cloud import iam_credentials_v1
 
 from pydantic import Field
@@ -69,6 +65,9 @@ class IapServiceAuthProvider(BaseAuthProvider):
   """Authentication provider for service authentication to IAP."""
 
   def __init__(self):
+    # Initialize IAM credentials client and authenticate using ADC.
+    self._iam_client = iam_credentials_v1.IAMCredentialsClient()
+
     # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
     # ignores custom authentication and forces connection to use ADC
     # instead.
@@ -109,12 +108,12 @@ class IapServiceAuthProvider(BaseAuthProvider):
 
     # Sign the JWT using the designated service account's key
     jwt = await asyncio.to_thread(
-        lambda: iam_credentials_v1.IAMCredentialsClient()
-        .sign_jwt(
-            name=f"projects/-/serviceAccounts/{auth_scheme.service_account}",
-            payload=json.dumps(payload),
-        )
-        .signed_jwt
+        lambda: self._iam_client
+          .sign_jwt(
+              name=f"projects/-/serviceAccounts/{auth_scheme.service_account}",
+              payload=json.dumps(payload),
+          )
+          .signed_jwt
     )
 
     # Return token as access token so that it can be used for MCP tool calls
