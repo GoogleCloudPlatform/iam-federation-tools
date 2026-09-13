@@ -1,5 +1,5 @@
 ---
-title: Delegating access from Gemini Enterprise to an ADK agents
+title: Delegating access from Gemini Enterprise to an ADK agent
 ---
 
 # Delegating access from Gemini Enterprise to an ADK agent
