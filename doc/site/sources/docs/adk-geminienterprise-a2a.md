@@ -46,7 +46,7 @@ To let your A2A agent use delegated authorization, do the following:
 1.  Add the following code to your agent's initialization logic to register the provider:
 
     ```
-    from .httpheader_auth import *
+    from httpheader_auth import HttpHeaderAuthProvider, HttpHeaderAuthProviderScheme
 
     CredentialManager.register_auth_provider(HttpHeaderAuthProvider())
     header_auth_scheme=HttpHeaderAuthProviderScheme()
@@ -57,7 +57,7 @@ To let your A2A agent use delegated authorization, do the following:
     use the `name` and `scheme` parameters to customize how the token is extracted:
 
     ```
-    from .httpheader_auth import *
+    from httpheader_auth import HttpHeaderAuthProvider, HttpHeaderAuthProviderScheme
 
     CredentialManager.register_auth_provider(HttpHeaderAuthProvider())
     header_auth_scheme=HttpHeaderAuthProviderScheme(

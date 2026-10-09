@@ -45,7 +45,7 @@ To let your ADK agent use delegated authorization, do the following:
 1.  Add the following code to your agent's initialization logic to register the provider:
 
     ```
-    from .geminienterprise_auth import *
+    from geminienterprise_auth import GeminiEnterpriseDelegatedAuthProvider, GeminiEnterpriseDelegatedAuthProviderScheme
 
     CredentialManager.register_auth_provider(GeminiEnterpriseDelegatedAuthProvider())
     ge_auth_scheme=GeminiEnterpriseDelegatedAuthProviderScheme()
@@ -55,7 +55,7 @@ To let your ADK agent use delegated authorization, do the following:
     use the `name` parameter to specify the name of the authorization to use:
 
     ```
-    from .geminienterprise_auth import *
+    from geminienterprise_auth import GeminiEnterpriseDelegatedAuthProvider, GeminiEnterpriseDelegatedAuthProviderScheme
 
     CredentialManager.register_auth_provider(GeminiEnterpriseDelegatedAuthProvider())
     ge_auth_scheme=GeminiEnterpriseDelegatedAuthProviderScheme(
