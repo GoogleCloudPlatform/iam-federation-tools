@@ -11,7 +11,7 @@ Follow the steps in this article if all of the following applies:
 
 *   [ ] Your agent is deployed on Cloud Run and supports 
         [A2A :octicons-link-external-16:](https://google.github.io/adk-docs/a2a/)
-*   [ ] The agent is registered in Gemini Enterprise as an _A2A agent_.
+*   [ ] The agent is registered in Gemini Enterprise as an _A2A agent_
 *   [ ] Users access the agent by using the Gemini Enterprise web app
 *   [ ] You want the agent to perform API calls or MCP tool calls under the user's identity
 
@@ -24,16 +24,10 @@ letting them interact with your agent, and
 [forwards the resulting access token in the `Authorization` HTTP request header :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-a2a-agent#auth-headers)
 (`Authorization: Bearer TOKEN`).
 
-Unlike [ADK agents deployed on Agent Platform](adk-geminienterprise.md), which
-receive forwarded tokens in `context.session.state`, A2A agents receive the
-forwarded access token in an incoming HTTP request header. However, 
-by default, the ADK does not allow agents or tools to access these HTTP headers.
-
 [`HttpHeaderAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/httpheader_auth.py)
-is an ADK authentication provider that addresses this gap: Using a Starlette hook,
-the provider can capture a HTTP header and make the forwarded token available
-as an [`AuthCredential`](AuthCredential) so that it can be used for MCP
-tool calls.
+is an ADK authentication provider lets ADK agents use the forwarded
+access token as an [`AuthCredential`](AuthCredential) to make MCP
+tool calls or API requests.
 
 ## Set up delegated authorization in Gemini Enterprise
 
@@ -59,8 +53,7 @@ To let your A2A agent use delegated authorization, do the following:
     ```
 
     By default, `HttpHeaderAuthProviderScheme` extracts a `Bearer` token from the
-    `Authorization` HTTP request header. If an upstream proxy or gateway forwards
-    the token in a different HTTP header or uses a different scheme, you can
+    `Authorization` HTTP request header. If you need to use a different HTTP header, 
     use the `name` and `scheme` parameters to customize how the token is extracted:
 
     ```
@@ -69,7 +62,7 @@ To let your A2A agent use delegated authorization, do the following:
     CredentialManager.register_auth_provider(HttpHeaderAuthProvider())
     header_auth_scheme=HttpHeaderAuthProviderScheme(
         name="X-Forwarded-Access-Token",
-        scheme=""
+        scheme="Custom"
     )
     ```
 

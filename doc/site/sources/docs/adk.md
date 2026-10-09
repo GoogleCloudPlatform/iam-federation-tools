@@ -6,7 +6,7 @@ and act on their behalf:
 
 +   [Gemini Enterprise delegated authorization (ADK)](adk-geminienterprise.md) describes
     how to configure Gemini Enterprise and ADK agents to use delegated authorization.
-+   [Gemini Enterprise delegated authorization (A2A)](aadk-geminienterprise-a2a) describes
++   [Gemini Enterprise delegated authorization (A2A)](adk-geminienterprise-a2a.md) describes
     how to configure Gemini Enterprise and A2A agents built with the ADK to use
     delegated authorization.
 +   [Microsoft Entra Agent ID on-behalf-of authorization](adk-entra-agentidentity.md)
