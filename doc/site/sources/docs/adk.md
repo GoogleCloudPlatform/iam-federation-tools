@@ -4,8 +4,11 @@ The following articles describe how you can use custom authentication providers
 to let ADK agents authenticate users
 and act on their behalf:
 
-+   [Gemini Enterprise delegated authorization](adk-geminienterprise.md) describes
-    how you to configure Gemini Enterprise and ADK agents to use delegated authorization.
++   [Gemini Enterprise delegated authorization (ADK)](adk-geminienterprise.md) describes
+    how to configure Gemini Enterprise and ADK agents to use delegated authorization.
++   [Gemini Enterprise delegated authorization (A2A)](aadk-geminienterprise-a2a) describes
+    how to configure Gemini Enterprise and A2A agents built with the ADK to use
+    delegated authorization.
 +   [Microsoft Entra Agent ID on-behalf-of authorization](adk-entra-agentidentity.md)
     describes how you can use Microsoft Entra Agent ID to manage
     access for an ADK agent, and let ADK agents access Google Cloud resources

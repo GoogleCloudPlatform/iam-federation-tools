@@ -71,7 +71,8 @@ nav:
   - 'ADK authentication':
     - 'Overview': adk.md
     - 'User authentication':
-      - 'Gemini Enterprise': adk-geminienterprise.md
+      - 'Gemini Enterprise (ADK)': adk-geminienterprise.md
+      - 'Gemini Enterprise (A2A)': adk-geminienterprise-a2a.md
       - 'Entra Agent ID': adk-entra-agentidentity.md
     - 'Service authentication':
       - 'Cloud Run': adk-cloudrun.md
