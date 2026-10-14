@@ -38,7 +38,7 @@ extra:
   generator: false
   analytics:
     provider: google
-    property: G-22DMVKM80H
+    property: G-1LP5XLZMWH
     
 extra_css:
   - stylesheets/extra.css
