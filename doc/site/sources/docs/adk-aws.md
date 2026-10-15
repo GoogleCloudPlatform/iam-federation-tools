@@ -120,7 +120,8 @@ your agent uses agent identity or an attached service account:
 
 To let your ADK agent use AWS federation, do the following:
 
-1.  Add the following code to your agent to initialize a `AwsSigV4Scheme` and register the provider:
+1.  Verify that you are using ADK 2.9.0 or a newer version.
+2.  Add the following code to your agent to initialize a `AwsSigV4Scheme` and register the provider:
 
     ```
     from aws_auth import AwsSigV4Scheme, AwsFederatedAuthProvider
@@ -143,7 +144,7 @@ To let your ADK agent use AWS federation, do the following:
     +   `STS_REGION`: the AWS region to use for STS, for example `eu-central-1`.
 
 
-2.  Initialize an instance of `AwsMcpToolset` (as a replacement for `McpToolset`)
+3.  Initialize an instance of `AwsMcpToolset` (as a replacement for `McpToolset`)
     and pass the `AwsSigV4Scheme` instance. 
     
     For example, initialize a toolset for the AWS MCP server as follows:
@@ -158,16 +159,4 @@ To let your ADK agent use AWS federation, do the following:
         aws_auth_scheme
     )
     ```
-
-3.  Include the following environment variable in your deployment to disable mTLS:
-
-    ```
-    GOOGLE_API_USE_CLIENT_CERTIFICATE=False
-    ```
-
-    If you use `adk deploy` to deploy the agent, add the environment variable to your `.agent_engine_config.json`.
-
-    !!! important
-    
-        If you leave mTLS enabled, the [ADK ignores the authentication scheme passed in the constructor and uses application default credentials instead :octicons-link-external-16:](https://github.com/google/adk-python/blob/3bb10115d3ae69cfc42bebcdfa4a935031c8e1a1/src/google/adk/tools/mcp_tool/mcp_session_manager.py#L639).
 
