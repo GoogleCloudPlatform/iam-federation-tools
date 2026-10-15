@@ -17,47 +17,62 @@ Follow the steps in this article if all of the following applies:
 
 ## Cloud Run service-to-service authentication
 
-To authenticate to Cloud Run, an ADK agent must provide an ID token that meets
-the following criteria:
+To authenticate to Cloud Run, an ADK agent must provide a
+[service account ID token :octicons-link-external-16:](https://docs.cloud.google.com/docs/authentication/token-types#sa-id-tokens)
+or an [agent identity ID token (JWT-SVID) :octicons-link-external-16:](https://docs.cloud.google.com/docs/authentication/token-types#agent-identity-id-tokens)
+that meets the following criteria:
 
 +   The `aud` claim must match the Cloud Run app's URL or its
     [custom audience :octicons-link-external-16:](https://docs.cloud.google.com/run/docs/configuring/custom-audiences).
-+   The `sub` claim must identify a service account with `roles/run.invoker`
++   The `sub` claim must identify a service account or agent identity with `roles/run.invoker`
     access to the Cloud Run app.
-+   The `iss` claim must equal `https://accounts.google.com`, indicating that the
-    ID token is issued by Google.
++   The `iss` claim must identify Google (`https://accounts.google.com`) or the agent identity pool
+    (`https://sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog`)
+    as the issuer.
 
-The following example shows a decoded ID token that lets an ADK agent 
+The following examples show decoded ID tokens that let an ADK agent 
 authenticate to a Cloud Run app `https://example.asia-southeast1.run.app/mcp/`:
 
-``` hl_lines="6-7"
-{
-  "alg": "RS256",
-  "kid": "f10f87405a979c1df36df26606734f33cd85c271",
-  "typ": "JWT"
-}.{
-  "aud": "https://example.asia-southeast1.run.app/",
-  "sub": "102771234567890",
-  "azp": "102771234567890",
-  "email": "service-1234567890@gcp-sa-aiplatform-re.iam.gserviceaccount.com",
-  "email_verified": true,
-  "exp": 1786318370,
-  "iat": 1786314770,
-  "iss": "https://accounts.google.com"
-}.[Signature]
-```
+=== "Service account"
 
-The right way to obtain a suitable ID token depends on whether the ADK agent
-uses agent identity or an attached service account:
+    ``` hl_lines="6-7"
+    {
+      "alg": "RS256",
+      "kid": "f10f87405a979c1df36df26606734f33cd85c271",
+      "typ": "JWT"
+    }.{
+      "aud": "https://example.asia-southeast1.run.app/",
+      "sub": "102771234567890",
+      "azp": "102771234567890",
+      "email": "service-1234567890@gcp-sa-aiplatform-re.iam.gserviceaccount.com",
+      "email_verified": true,
+      "exp": 1786318370,
+      "iat": 1786314770,
+      "iss": "https://accounts.google.com"
+    }.[Signature]
+    ```
 
-+   Agents deployed with an attached service account can obtain a suitable
-    ID token from their metadata server. 
-+   Agents that use agent identity can't use the ID token provided by their
-    metadata server because that ID token is a 
-    [JWT-SVID :octicons-link-external-16:](https://docs.cloud.google.com/docs/authentication/token-types#agent-identity-id-tokens)
-    and does not meet the criteria above.
+=== "Agent identity"
 
-    Instead, they must impersonate a service account by using
+    ``` hl_lines="6-7"
+    {
+      "alg": "RS256",
+      "kid": "77c25e373a13b82bb3c4bf5b7d26ddcd5fb7fb7f",
+      "typ": "JWT"
+    }.{
+      "aud": "https://example.asia-southeast1.run.app/",
+      "sub": "spiffe://agents.global.org-1234567890.system.id.goog/resources/aiplatform/projects/1234567890/locations/asia-southeast1/reasoningEngines/5678901234567890",
+      "exp": 1786318370,
+      "iat": 1786314770,
+      "iss": "https://sts.googleapis.com/v1/organizations/1234567890/locations/global/workloadIdentityPools/agents.global.org-1234567890.system.id.goog"
+    }.[Signature]
+    ```
+
+Agents can obtain a suitable ID token in two ways:
+
++   By querying their metadata server, which issues an ID token for the agent's
+    own identity (its agent identity or attached service account).
++   By impersonating a service account using
     [`generateIdToken` :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/generateIdToken).
 
 [`CloudRunServiceAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/cloudrun_auth.py) 
@@ -73,19 +88,24 @@ To use the `CloudRunServiceAuthProvider`, do the following:
     from cloudrun_auth import *
     CredentialManager.register_auth_provider(CloudRunServiceAuthProvider())
     cloudrun_auth_scheme=CloudRunServiceAuthProviderScheme(
+        service_url="https://example.asia-southeast1.run.app/"
+    )
+    ```
+
+    Replace `https://example.asia-southeast1.run.app/` with the base URL of the Cloud Run app, or its custom audience.
+
+    By default, `CloudRunServiceAuthProviderScheme` uses the agent's own identity (its agent identity or attached service account) to obtain an ID token. If you want the agent to impersonate a service account instead, specify the `service_account` parameter:
+
+    ```
+    from cloudrun_auth import *
+    CredentialManager.register_auth_provider(CloudRunServiceAuthProvider())
+    cloudrun_auth_scheme=CloudRunServiceAuthProviderScheme(
         service_url="https://example.asia-southeast1.run.app/",
         service_account="cloudrun-client@example-project.iam.gserviceaccount.com"
     )
     ```
 
-    Replace the following:
-
-    +   `service_url`: the base URL of the Cloud Run app, or its custom audience.
-    +   `service_account`: email address of the service account to use for obtaining 
-        an ID token.
-
-        This parameter is only required for agents that use agent identity.
-        The agent must have _Service Account Token Creator_ access to the service account.
+    To impersonate a service account, the agent must have _Service Account Token Creator_ (`roles/iam.serviceAccountTokenCreator`) access to the service account.
 
 
 2.  Pass the `CloudRunServiceAuthProviderScheme` to the 
