@@ -48,14 +48,10 @@ class CloudRunServiceAuthProviderScheme(CustomAuthScheme):
   If the agent is deployed with an attached service account,
   the scheme uses the attached service account's identity.
 
-  If the agent is deployed with an agent identity, the
-  scheme uses a designated service account to obtain an ID token.
-
   Attributes:
     type_: The type of the security scheme, always "CloudRunServiceAuthProviderScheme".
     service_url: URL of the Cloud Run service to authenticate to
-    service_account: Service account to use for authentication, only required
-        if the agent uses Agent Identity
+    service_account: Service account to use for authentication, optional
   """
 
   type_: Literal["CloudRunServiceAuthProviderScheme"] = Field(
@@ -66,15 +62,6 @@ class CloudRunServiceAuthProviderScheme(CustomAuthScheme):
 
 class CloudRunServiceAuthProvider(BaseAuthProvider):
   """Authentication provider for service authentication to Cloud Run."""
-
-  def __init__(self):
-    # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
-    # ignores custom authentication and forces connection to use ADC
-    # instead.
-    
-    if (os.environ.get('GOOGLE_API_USE_CLIENT_CERTIFICATE', 'true').lower() == 'true'):
-      logger.warning('To use Cloud Run service authentication for MCP, ' \
-      'the environment variable GOOGLE_API_USE_CLIENT_CERTIFICATE must be set to false')
 
   @property
   @override
@@ -93,17 +80,8 @@ class CloudRunServiceAuthProvider(BaseAuthProvider):
           f"Expected CloudRunServiceAuthProviderScheme, got {type(auth_scheme)}"
       )
 
-    if os.environ.get("GOOGLE_API_CERTIFICATE_CONFIG"):
-      # Agent uses Agent Identity. The ID token (JWT-SVID) is not suitable for 
-      # authenticating to Cloud Run, so we need to impersonate a service account
-      # to obtain a suitable ID token.
-      
-      if not auth_scheme.service_account:
-        raise ValueError(
-            "CloudRunServiceAuthProviderScheme "
-            "requires `service_account` when using Agent Identity"
-        )
-
+    if auth_scheme.service_account:
+      # Use ID token from service account
       source_credentials, _ = await asyncio.to_thread(google.auth.default)
       impersonated_target = google.auth.impersonated_credentials.Credentials(
           source_credentials=source_credentials,
@@ -126,8 +104,7 @@ class CloudRunServiceAuthProvider(BaseAuthProvider):
         auth_scheme.service_url
       )
 
-    # Return ID token as access token so that it can be used for 
-    # MCP tool calls
+    # Return ID token as access token so that it can be used for MCP tool calls
     return AuthCredential(
         auth_type=AuthCredentialTypes.OAUTH2,
         oauth2=OAuth2Auth(
