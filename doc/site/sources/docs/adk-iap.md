@@ -46,7 +46,8 @@ is an ADK authentication provider that implements (1):
 
 To use the `IapServiceAuthProvider`, do the following:
 
-1.  Add the following code to your agent's initialization logic to register the provider:
+1.  Verify that you are using ADK 2.9.0 or a newer version.
+2.  Add the following code to your agent's initialization logic to register the provider:
 
     ```
     from iap_auth import *
@@ -65,7 +66,7 @@ To use the `IapServiceAuthProvider`, do the following:
 
         The agent must have _Service Account Token Creator_ access to the service account.
 
-2.  Pass the `IapServiceAuthProviderScheme` to the 
+3.  Pass the `IapServiceAuthProviderScheme` to the 
     constructor of relevant MCP tool set. For example:
 
     ```
@@ -82,16 +83,4 @@ To use the `IapServiceAuthProvider`, do the following:
         iap_auth_scheme
     )
     ```
-
-3.  Include the following environment variable in your deployment to disable mTLS:
-
-    ```
-    GOOGLE_API_USE_CLIENT_CERTIFICATE=False
-    ```
-
-    If you use `adk deploy` to deploy the agent, add the environment variable to your `.agent_engine_config.json`.
-
-    !!! important
-    
-        If you leave mTLS enabled, the [ADK ignores the authentication scheme passed in the constructor and uses application default credentials instead :octicons-link-external-16:](https://github.com/google/adk-python/blob/3bb10115d3ae69cfc42bebcdfa4a935031c8e1a1/src/google/adk/tools/mcp_tool/mcp_session_manager.py#L639).
 

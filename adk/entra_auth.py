@@ -15,7 +15,6 @@
 from __future__ import annotations
 
 import logging
-import os
 
 from typing import Literal
 from typing import Optional
@@ -69,16 +68,6 @@ class AgentIdentityOnBehalfOfUserScheme(CustomAuthScheme):
 
 class AgentIdentityAuthProvider(BaseAuthProvider):
   """Provider for Entra Agent ID on-behalf-of authentication. """
-
-  def __init__(self):
-   
-    # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
-    # ignores custom authentication and forces connection to use ADC
-    # instead.
-    
-    if (os.environ.get('GOOGLE_API_USE_CLIENT_CERTIFICATE', 'true').lower() == 'true'):
-      logger.warning('To use MSAL authentication for MCP, ' \
-      'the environment variable GOOGLE_API_USE_CLIENT_CERTIFICATE must be set to false')
 
   @property
   @override

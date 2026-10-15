@@ -83,7 +83,8 @@ that corresponds to your agent:
 
 To let your ADK agent use workload identity federation, do the following:
 
-1.  Add the following code to your agent's initialization logic to register the provider:
+1.  Verify that you are using ADK 2.9.0 or a newer version.
+2.  Add the following code to your agent's initialization logic to register the provider:
 
     ```
     from azure_auth import *
@@ -105,7 +106,7 @@ To let your ADK agent use workload identity federation, do the following:
     +   `SCOPE` (optional): The required OAuth scope. If you omit this parameter, the agent requests
         a token for `api://CLIENT_ID/.default`.
 
-2.  Pass the `AzureFederatedAuthProviderScheme` to the 
+3.  Pass the `AzureFederatedAuthProviderScheme` to the 
     constructor of relevant MCP tool set. For example:
 
     ```
@@ -122,16 +123,4 @@ To let your ADK agent use workload identity federation, do the following:
         az_auth_scheme
     )
     ```
-
-3.  Include the following environment variable in your deployment to disable mTLS:
-
-    ```
-    GOOGLE_API_USE_CLIENT_CERTIFICATE=False
-    ```
-
-    If you use `adk deploy` to deploy the agent, add the environment variable to your `.agent_engine_config.json`.
-
-    !!! important
-    
-        If you leave mTLS enabled, the [ADK ignores the authentication scheme passed in the constructor and uses application default credentials instead :octicons-link-external-16:](https://github.com/google/adk-python/blob/3bb10115d3ae69cfc42bebcdfa4a935031c8e1a1/src/google/adk/tools/mcp_tool/mcp_session_manager.py#L639).
 

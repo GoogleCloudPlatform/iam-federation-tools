@@ -292,6 +292,7 @@ a combination of 3 custom auth providers:
 
 In your agent's source code, set up the providers as follows:
 
+1.  Verify that you are using ADK 2.9.0 or a newer version.
 1.  Register the `GeminiEnterpriseDelegatedAuthProvider` to let your agent access
     the access token that the Gemini Enterprise web app obtains for the user:
 
@@ -348,16 +349,4 @@ In your agent's source code, set up the providers as follows:
 
 1.  Pass the `WorkforceIdentityFederatedAuthProviderScheme` to the 
     constructor of relevant MCP tool sets or use it to initialize an `AuthConfig`.
-
-1.  Include the following environment variable in your deployment to disable mTLS:
-
-    ```
-    GOOGLE_API_USE_CLIENT_CERTIFICATE=False
-    ```
-
-    If you use `adk deploy` to deploy the agent, add the environment variable to your `.agent_engine_config.json`.
-
-    !!! important
-    
-        If you leave mTLS enabled, the [ADK ignores the authentication scheme passed in the constructor and uses application default credentials instead :octicons-link-external-16:](https://github.com/google/adk-python/blob/3bb10115d3ae69cfc42bebcdfa4a935031c8e1a1/src/google/adk/tools/mcp_tool/mcp_session_manager.py#L639).
 

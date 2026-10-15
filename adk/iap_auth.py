@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 import time
 import json
 
@@ -67,14 +66,6 @@ class IapServiceAuthProvider(BaseAuthProvider):
   def __init__(self):
     # Initialize IAM credentials client and authenticate using ADC.
     self._iam_client = iam_credentials_v1.IAMCredentialsClient()
-
-    # When GOOGLE_API_USE_CLIENT_CERTIFICATE is true, MCPSessionManager
-    # ignores custom authentication and forces connection to use ADC
-    # instead.
-    
-    if (os.environ.get('GOOGLE_API_USE_CLIENT_CERTIFICATE', 'true').lower() == 'true'):
-      logger.warning('To use IAP service authentication for MCP, ' \
-      'the environment variable GOOGLE_API_USE_CLIENT_CERTIFICATE must be set to false')
 
   @property
   @override
