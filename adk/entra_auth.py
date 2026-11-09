@@ -39,8 +39,9 @@ from msal import ConfidentialClientApplication
 
 logger = logging.getLogger('google_solutions.' + __name__)
 
-class AgentIdentityOnBehalfOfUserScheme(CustomAuthScheme):
-  """Authentication scheme for Entra Agent ID on-behalf-of authentication.
+
+class AgentIdentityScheme(CustomAuthScheme):
+  """Authentication scheme for Entra Agent ID.
 
   Attributes:
     tenant_id: Entra tenant ID.
@@ -50,18 +51,29 @@ class AgentIdentityOnBehalfOfUserScheme(CustomAuthScheme):
       service account/agent identity ID token from the MDS.
     agent_identity_id: Object ID of the agent identity.
     scope: Scope to obtain a token for.
-    user_auth_scheme: Scheme to authenticate the user with.
-    type_: The type of the security scheme, always "MsalAgentIdentityOnBehalfOfUserScheme".
+    type_: The type of the security scheme, always "AgentIdentityScheme".
   """
 
-  type_: Literal["MsalAgentIdentityOnBehalfOfUserScheme"] = Field(
-      default="MsalAgentIdentityOnBehalfOfUserScheme", alias="type"
+  type_: Literal["AgentIdentityScheme"] = Field(
+      default="AgentIdentityScheme", alias="type"
   )
   tenant_id: str
   blueprint_id: str
   blueprint_secret: Optional[str] = None
   agent_identity_id: str
   scope: str
+
+class AgentIdentityOnBehalfOfUserScheme(AgentIdentityScheme):
+  """Authentication scheme for Entra Agent ID on-behalf-of authentication.
+
+  Attributes:
+    user_auth_scheme: Scheme to use for obtaining the user credential.
+    type_: The type of the security scheme, always "AgentIdentityOnBehalfOfUserScheme".
+  """
+
+  type_: Literal["AgentIdentityOnBehalfOfUserScheme"] = Field(
+      default="AgentIdentityOnBehalfOfUserScheme", alias="type"
+  )
   user_auth_scheme: AuthScheme
 
 
@@ -71,13 +83,13 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
 
   @property
   @override
-  def supported_auth_schemes(self) -> tuple[type[AgentIdentityOnBehalfOfUserScheme], ...]:
-    return (AgentIdentityOnBehalfOfUserScheme,)
+  def supported_auth_schemes(self) -> tuple[type[AgentIdentityScheme], type[AgentIdentityOnBehalfOfUserScheme]]:
+    return (AgentIdentityScheme, AgentIdentityOnBehalfOfUserScheme)
 
 
   def get_agent_identity_exchange_token(
       self,
-      auth_scheme: AgentIdentityOnBehalfOfUserScheme) -> str:
+      auth_scheme: AgentIdentityScheme) -> str:
     """ Get exchange token for the agent identity """
 
     if auth_scheme.blueprint_secret:
@@ -143,14 +155,30 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
       An AuthCredential instance.
 
     Raises:
-      ValueError: If auth_scheme is not an AgentIdentityOnBehalfOfUserScheme or 
+      ValueError: If auth_scheme is not an AgentIdentityScheme or 
         the token exchange failed.
     """
 
     auth_scheme = auth_config.auth_scheme
-    if isinstance(auth_scheme, AgentIdentityOnBehalfOfUserScheme):
-      # Request a token for the user
+    if not isinstance(auth_scheme, AgentIdentityScheme):
+      raise ValueError(
+          f"Unsupported auth scheme {type(auth_scheme)}"
+      )
+    
 
+    # Request a token for the agent identity
+    agent_identity_access_token = self.get_agent_identity_exchange_token(auth_scheme)
+
+    agent_identity_app = ConfidentialClientApplication(
+      authority=f"https://login.microsoftonline.com/{auth_scheme.tenant_id}",
+      client_id=auth_scheme.agent_identity_id,
+      client_credential={
+        "client_assertion" : agent_identity_access_token
+      }
+    )
+
+    if isinstance(auth_scheme, AgentIdentityOnBehalfOfUserScheme):
+      # Request OBO token for the user
       user_credential_manager = CredentialManager(
         AuthConfig(
           auth_scheme=auth_scheme.user_auth_scheme
@@ -167,51 +195,40 @@ class AgentIdentityAuthProvider(BaseAuthProvider):
           f"Unsupported user credential scheme {type(user_credential)}"
         )
 
-      # Request a token for the agent identity
-      agent_identity_access_token = self.get_agent_identity_exchange_token(auth_scheme)
-
-      agent_identity_app = ConfidentialClientApplication(
-        authority=f"https://login.microsoftonline.com/{auth_scheme.tenant_id}",
-        client_id=auth_scheme.agent_identity_id,
-        client_credential={
-          "client_assertion" : agent_identity_access_token
-        }
-      )
-
-      # Perform OBO token exchange.
-      obo_token_response = agent_identity_app.acquire_token_on_behalf_of(
+      token_response = agent_identity_app.acquire_token_on_behalf_of(
         user_assertion=user_credential.oauth2.access_token,
         scopes=[auth_scheme.scope]
       )
-
-      if not obo_token_response:
-        raise ValueError(
-            f"The on-behalf-of token exchange failed"
-        )
-      elif "access_token" not in obo_token_response:
-        error = obo_token_response.get("error", "unknown_error")
-        error_description = obo_token_response.get("error_description", "")
-        raise ValueError(
-            f"The on-behalf-of token exchange failed: {error_description} ({error})"
-        )
-      else:
-        obo_access_token = obo_token_response["access_token"]
-        
-        logger.debug(
-          "Obtained OBO token for scope %s and agent identity %s",
-          auth_scheme.scope,
-          auth_scheme.agent_identity_id)
-
-        # Wrap OBO token as an AuthCredential.
-        return AuthCredential(
-            auth_type=AuthCredentialTypes.OAUTH2,
-            oauth2=OAuth2Auth(
-                access_token=obo_access_token
-            ),
-        )
-  
     else:
+      # Request token for agent identity
+
+      token_response = agent_identity_app.acquire_token_for_client(
+        scopes=[auth_scheme.scope]
+      )
+
+    if not token_response:
       raise ValueError(
-          f"Unsupported auth scheme {type(auth_scheme)}"
+          f"The Agent ID token exchange failed"
+      )
+    elif "access_token" not in token_response:
+      error = token_response.get("error", "unknown_error")
+      error_description = token_response.get("error_description", "")
+      raise ValueError(
+          f"The Agent ID token exchange failed: {error_description} ({error})"
+      )
+    else:
+      obo_access_token = token_response["access_token"]
+      
+      logger.debug(
+        "Obtained token for scope %s and agent identity %s",
+        auth_scheme.scope,
+        auth_scheme.agent_identity_id)
+
+      # Wrap token as an AuthCredential.
+      return AuthCredential(
+          auth_type=AuthCredentialTypes.OAUTH2,
+          oauth2=OAuth2Auth(
+              access_token=obo_access_token
+          ),
       )
 
