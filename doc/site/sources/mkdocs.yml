@@ -73,12 +73,13 @@ nav:
     - 'User authentication':
       - 'Gemini Enterprise (ADK)': adk-geminienterprise.md
       - 'Gemini Enterprise (A2A)': adk-geminienterprise-a2a.md
-      - 'Entra Agent ID': adk-entra-agentidentity.md
+      - 'Entra Agent ID OBO': adk-entra-agentidentity-obo.md
     - 'Service authentication':
       - 'Cloud Run': adk-cloudrun.md
       - 'IAP': adk-iap.md
       - 'Azure': adk-azure.md
       - 'AWS': adk-aws.md
+      - 'Entra Agent ID': adk-entra-agentidentity.md
   - 'AI Agent Authenticator':
     - 'Overview': aaauth.md
     - 'Deploy the service': aaauth-deployment.md
