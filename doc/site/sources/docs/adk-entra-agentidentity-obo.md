@@ -11,8 +11,9 @@ and other resources on behalf of Entra users.
 Follow the steps in this article if all of the following applies:
 
 *   [ ] Your agent is deployed on Agent Platform or Cloud Run
+*   [ ] Your agent is configured to use agent identity or has an attached service account
 *   [ ] You want to use Entra to govern the lifecycle of the agent
-*   [ ] Users access the agent by using the Gemini Enterprise web app.
+*   [ ] Users access the agent by using the Gemini Enterprise web app
 *   [ ] Users authenticate to Gemini Enterprise and other Google Cloud
         resources by using [workforce identity federation :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/workforce-identity-federation)
 
@@ -38,7 +39,7 @@ in the following way:
     let the agents act on behalf of users. This may include accessing
     Google Cloud resources such as BigQuery on behalf of the user.
 *   To authenticate to Entra Agent ID, agents use their Google Cloud agent 
-    identity, in a similar way to how agents deployed on Azure would use 
+    identity (or attached service account), in a similar way to how agents deployed on Azure would use 
     [Azure managed identity :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview).
 
 ## Authentication process
@@ -53,8 +54,8 @@ the user, obtain an Entra access token for them, and forward that token to the
 agent. 
 
 The agent, before being able to act on behalf of the user, must authenticate to Entra itself.
-To do that, it uses its Google Cloud agent identity to obtain an 
-[ID token](https://docs.cloud.google.com/docs/authentication/token-types#agent-identity-id-tokens)
+To do that, it uses its Google Cloud agent identity (or attached service account) to obtain an 
+[ID token :octicons-link-external-16:](https://docs.cloud.google.com/docs/authentication/token-types#agent-identity-id-tokens)
 and uses that as a federated credential.
 
 To access a resource on behalf of the user, the agent can now initiate 
@@ -72,7 +73,7 @@ agent identity for an ADK agent.
 Create an Agent ID blueprint by doing the following:
 
 1.  In Entra, follow the instructions to
-    [create an agent identity blueprint using code](https://learn.microsoft.com/en-us/entra/agent-id/create-blueprint?tabs=powershell#create-programmatically).
+    [create an agent identity blueprint using code :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/agent-id/create-blueprint?tabs=powershell#create-programmatically).
 
     In the output of the PowerShell command, find the attribute `id`, which is the
     blueprint App ID. You need this ID in a later step.
@@ -110,34 +111,46 @@ Create an Agent ID blueprint by doing the following:
 1.  In the Entra admin portal, use the search function to search for the blueprint App ID.
 1.  On the **Overview** page of the blueprint, click **Create blueprint principal**.
 1.  Go to **Credentials > Federated credentials**.
-1.  Click **Add credential** and configure a federated credential as follows:
+1.  Click **Add credential** and configure a federated credential. The configuration
+    differs based on whether your agent uses agent identity or an attached service account:
 
-    +   **Scenario**: **Other issuer**
-    +   **Issuer**: 
-    
-        ```
-        https://sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog
-        ```
-    
-        Replace `ORG_ID` with the organization ID of the Google Cloud organization that contains the agent.
-        
-    +   **Type**: **Explicit subject identifier**.
-    +   **Value**: 
-    
-        ```
-        spiffe://agents.global.org-ORG_ID.system.id.goog/resources/aiplatform/RESOURCE_NAME
-        ```
-    
-        Replace the following:
-        
-        +   `ORG_ID`: the organization ID of the Google Cloud organization that contains the agent
-        +   `RESOURCE_NAME`: the resource name of the Agent Runtime deployment as shown in the 
-            Cloud Console under **Agent Platform > Agents > Deployments**. 
-        
-            The resource name looks similar to `projects/1234567890/locations/asia-southeast1/reasoningEngines/5678901234567890`.        
+    === "Service account"
 
-    +   **Name**: `AgentIdentity`.
-    +   **Audience**: Keep `api://AzureADTokenExchange` or enter a custom audience.
+        +   **Scenario**: **Other issuer**
+        +   **Issuer**: `https://accounts.google.com`
+        +   **Type**: **Explicit subject identifier**.
+        +   **Value**: ID of the service account. The ID looks similar to the following: `102770123456789012345`.
+        +   **Name**: `GoogleServiceAccount`.
+        +   **Audience**: Keep `api://AzureADTokenExchange`.
+
+    === "Agent identity"
+
+        +   **Scenario**: **Other issuer**
+        +   **Issuer**: 
+        
+            ```
+            https://sts.googleapis.com/v1/organizations/ORG_ID/locations/global/workloadIdentityPools/agents.global.org-ORG_ID.system.id.goog
+            ```
+        
+            Replace `ORG_ID` with the organization ID of the Google Cloud organization that contains the agent.
+            
+        +   **Type**: **Explicit subject identifier**.
+        +   **Value**: 
+        
+            ```
+            spiffe://agents.global.org-ORG_ID.system.id.goog/resources/aiplatform/RESOURCE_NAME
+            ```
+        
+            Replace the following:
+            
+            +   `ORG_ID`: the organization ID of the Google Cloud organization that contains the agent
+            +   `RESOURCE_NAME`: the resource name of the Agent Runtime deployment as shown in the 
+                Cloud Console under **Agent Platform > Agents > Deployments**. 
+            
+                The resource name looks similar to `projects/1234567890/locations/asia-southeast1/reasoningEngines/5678901234567890`.        
+
+        +   **Name**: `AgentIdentity`.
+        +   **Audience**: Keep `api://AzureADTokenExchange`.
 
 1.  Click **Add**.
 
@@ -149,7 +162,7 @@ Use the Agent ID blueprint to create an agent identity by doing the following:
 1.  Click **New agent identity** and use the following settings:
 
     +   **Agent blueprint**: Select the blueprint that you just created.
-    +   **Agent identity name**: Specifiy a name that matches or resembles the name of 
+    +   **Agent identity name**: Specify a name that matches or resembles the name of 
         your agent on Agent Platform.
 
 1.  Click **Create**, and then **Go to agent identity**.
@@ -163,9 +176,6 @@ If you use Gemini Enterprise as frontend application, set up authentication
 by doing the following:
 
 1.  In Entra, create an app registration for Gemini Enterprise.
-
-    `https://vertexaisearch.cloud.google.com/oauth-redirect` (Type: Web)
-
 1.  Go to **Authentication** and add the following redirect URIs:
 
     +   `https://vertexaisearch.cloud.google.com/oauth-redirect` (Type: Web)
@@ -217,7 +227,7 @@ Agents can also use workforce identity federation to access Google Cloud
 on behalf of a user, but with two key differences:
 
 +   Agents can't use the browser-based authentication flow. Instead, they must
-    use the [Google STS :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/sts/rest/v1/TopLevel/token) endpoint to perform a token exchange programatically.
+    use the [Google STS :octicons-link-external-16:](https://docs.cloud.google.com/iam/docs/reference/sts/rest/v1/TopLevel/token) endpoint to perform a token exchange programmatically.
 +   Agents can't use an ID token for the token exchange because they don't
     possess the user's ID token and can't request ID tokens on behalf of the user.
     Instead, they must use an on-behalf-of access token for the Google STS 
@@ -231,9 +241,9 @@ To make access tokens compatible with workforce identity federation,
 do the following:
 
 1.  In Entra, open the app registration that you use for workforce 
-    identity federation. and go to **Manifest**.
-1.  In the mannifest, find the field
-    [`requestedAccessTokenVersion`](https://learn.microsoft.com/en-us/entra/identity-platform/reference-microsoft-graph-app-manifest#:~:text=require%20user%20consent.-,requestedAccessTokenVersion,-Int32)
+    identity federation and go to **Manifest**.
+1.  In the manifest, find the field
+    [`requestedAccessTokenVersion` :octicons-link-external-16:](https://learn.microsoft.com/en-us/entra/identity-platform/reference-microsoft-graph-app-manifest#:~:text=require%20user%20consent.-,requestedAccessTokenVersion,-Int32)
     and change it from `1` to `2`.
 
     This change causes Entra to issue access tokens using the newer `v2.0`
@@ -252,7 +262,7 @@ To enable agents to request suitable access tokens on behalf of the user,
 add an App ID URI and scope:
 
 1.  In Entra, open the app registration that you use for workforce 
-    identity federation. and go to **Expose an API**.
+    identity federation and go to **Expose an API**.
 1.  Next to **Application ID URI**, click **Add**.
 1.  Keep the suggested Application ID URI and click **Save**.
 1.  Click **Add a scope** and configure the following settings:
@@ -282,14 +292,15 @@ Replace the following:
 ## Use Entra Agent ID in the ADK
 
 To let your ADK agent use Entra Agent ID on-behalf-of authorization, you use
-a combination of 3 custom auth providers:
+the following custom authentication providers:
 
 +   [`GeminiEnterpriseDelegatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/geminienterprise_auth.py) 
     to authenticate the user.
 +   [`AgentIdentityAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/entra_auth.py) 
-    to interact with Entra agent identity.
-+   [`WorkforceIdentityFederatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/workforceidentity_auth.py)
-    to obtain temporary Google Cloud credentials.
+    to authenticate the agent with Entra Agent ID and obtain an on-behalf-of Entra access token.
++   [`IamFederatedAuthProvider`](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/adk/iam_federated_auth.py)
+    to exchange the Entra access token for short-lived Google Cloud credentials
+    using workforce identity federation.
 
 In your agent's source code, set up the providers as follows:
 
@@ -298,21 +309,26 @@ In your agent's source code, set up the providers as follows:
     the access token that the Gemini Enterprise web app obtains for the user:
 
     ```
+    from geminienterprise_auth import GeminiEnterpriseDelegatedAuthProvider, GeminiEnterpriseDelegatedAuthProviderScheme
+
     CredentialManager.register_auth_provider(GeminiEnterpriseDelegatedAuthProvider())
-    ge_auth_scheme=GeminiEnterpriseDelegatedAuthProviderScheme()
+    ge_auth_scheme = GeminiEnterpriseDelegatedAuthProviderScheme()
     ```
 
-1.  Register the `AgentIdentityAuthProvider` and initialize an instance of
+1.  Register the `AgentIdentityAuthProvider` and initialize an
     `AgentIdentityOnBehalfOfUserScheme`:
 
     ```
+    from entra_auth import AgentIdentityAuthProvider, AgentIdentityOnBehalfOfUserScheme
+
     CredentialManager.register_auth_provider(AgentIdentityAuthProvider())
-    msal_obo_scheme = AgentIdentityOnBehalfOfUserScheme(
+    agent_identity_scheme = AgentIdentityOnBehalfOfUserScheme(
         tenant_id="TENANT_ID",
         blueprint_id="BLUEPRINT_APP_ID",
         agent_identity_id="AGENT_IDENTITY_ID",
         scope="api://WFIF_APP_ID/GoogleCloud",
         user_auth_scheme=ge_auth_scheme
+    )
     ```
 
     Replace the following:
@@ -320,22 +336,28 @@ In your agent's source code, set up the providers as follows:
     +   `TENANT_ID`: your Entra tenant ID.
     +   `BLUEPRINT_APP_ID`: the Entra blueprint App ID.
     +   `AGENT_IDENTITY_ID`: the object ID of the Entra agent identity.
-    +   `WFIF_APP_ID`: the ID of the app registration used for workforce identity federation.
+    +   `WFIF_APP_ID`: the Application (client) ID of the Entra app registration used for workforce identity federation.
+        If you want to use `agent_identity_scheme` directly to access an Azure API or MCP server on behalf of the user instead of Google Cloud,
+        replace `api://WFIF_APP_ID/GoogleCloud` with the required Entra scope.
 
     The scheme configures the provider to obtain a credential using the
     `GeminiEnterpriseDelegatedAuthProviderScheme` and use it to 
     request an on-behalf-of token for the app registration used for 
     workforce identity federation.
 
-1.  Register the `WorkforceIdentityFederatedAuthProvider` and initialize an instance of
-    `WorkforceIdentityFederatedAuthProviderScheme`:
+1.  Register the `IamFederatedAuthProvider` and initialize a
+    `WorkforceIdentityScheme` that uses the credential from the
+    `AgentIdentityOnBehalfOfUserScheme` to obtain short-lived Google Cloud
+    credentials:
 
     ```
-    CredentialManager.register_auth_provider(WorkforceIdentityFederatedAuthProvider())
-    wfif_scheme = WorkforceIdentityFederatedAuthProviderScheme(
+    from iam_federated_auth import IamFederatedAuthProvider, WorkforceIdentityScheme
+
+    CredentialManager.register_auth_provider(IamFederatedAuthProvider())
+    wfif_scheme = WorkforceIdentityScheme(
         pool_id="POOL_ID",
         provider_id="PROVIDER_ID",
-        user_auth_scheme=msal_obo_scheme,
+        source_scheme=agent_identity_scheme,
     )
     ```
 
@@ -344,10 +366,22 @@ In your agent's source code, set up the providers as follows:
     +   `POOL_ID`: the workforce identity pool ID.
     +   `PROVIDER_ID`: the workforce identity provider ID.
 
-    The scheme configures the provider to obtain a credential using the
-    `AgentIdentityOnBehalfOfUserScheme` and perform an STS token exchange
-    to obtain temporary Google Cloud credentials.
+1.  Pass the `WorkforceIdentityScheme` (for Google Cloud resources) or `AgentIdentityOnBehalfOfUserScheme`
+    (for Azure resources) to the constructor of relevant MCP tool sets or use it to
+    initialize an `AuthConfig`. For example:
 
-1.  Pass the `WorkforceIdentityFederatedAuthProviderScheme` to the 
-    constructor of relevant MCP tool sets or use it to initialize an `AuthConfig`.
+    ```
+    # Tool set for Compute Engine
+    toolset = McpToolset(
+        connection_params=StreamableHTTPConnectionParams(url="https://compute.googleapis.com/mcp"),
+        auth_scheme=wfif_scheme
+    )
+    
+    # Tool set from the Agent registry
+    registry = AgentRegistry(project_id=PROJECT_ID, location=LOCATION)
+    toolset = registry.get_mcp_toolset(
+        f"projects/{PROJECT_ID}/locations/{LOCATION}/mcpServers/agentregistry-00000000-0000-0000-aaaa-aaaaaaaaaaaa",
+        wfif_scheme
+    )
+    ```
 
