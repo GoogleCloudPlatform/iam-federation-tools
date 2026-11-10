@@ -9,7 +9,7 @@ and act on their behalf:
 +   [Gemini Enterprise delegated authorization (A2A)](adk-geminienterprise-a2a.md) describes
     how to configure Gemini Enterprise and A2A agents built with the ADK to use
     delegated authorization.
-+   [Microsoft Entra Agent ID on-behalf-of authorization](adk-entra-agentidentity.md)
++   [Microsoft Entra Agent ID on-behalf-of authorization](adk-entra-agentidentity-obo.md)
     describes how you can use Microsoft Entra Agent ID to manage
     access for an ADK agent, and let ADK agents access Google Cloud resources
     and other resources on behalf of Entra users.
@@ -28,3 +28,6 @@ to let ADK agents authenticate to APIs and MCP servers on their own behalf:
     authenticate to Microsoft Azure by using workload identity federation.
 +   [AWS federation](adk-aws.md) describes how to authenticate to AWS 
     by assuming a role using `AssumeRoleWithWebIdentity`.
++   [Microsoft Entra Agent ID](adk-entra-agentidentity.md) describes how you can
+    use Microsoft Entra Agent ID to let ADK agents access resources across
+    Google Cloud and Microsoft Azure on their own behalf.
