@@ -19,10 +19,9 @@ and act on their behalf:
     that lets agents use Microsoft Entra Agent ID to authenticate users and
     obtain on-behalf-of access tokens.
 
-*   [`WorkforceIdentityFederatedAuthProvider`](workforceidentity_auth.py)) is an
-    ADK authentication provider that lets agents exchange external user
-    credentials for short-lived Google Cloud credentials using workforce
-    identity federation.
+*   [`IamFederatedAuthProvider`](iam_federated_auth.py) is an ADK authentication
+    provider that lets agents exchange external credentials for short-lived
+    Google Cloud credentials using workforce identity federation.
 
 ## Service authentication
 
