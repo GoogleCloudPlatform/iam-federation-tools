@@ -78,7 +78,7 @@ locals {
   #
   # Base image to use for the container, must use the right ASP.NET version.
   #
-  base_image      = "mcr.microsoft.com/dotnet/aspnet:8.0-jammy"
+  base_image      = "mcr.microsoft.com/dotnet/aspnet:10.0-resolute"
 }
 
 #
