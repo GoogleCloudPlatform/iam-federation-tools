@@ -91,17 +91,30 @@ class GeminiEnterpriseDelegatedAuthProvider(BaseAuthProvider):
           "GeminiEnterpriseDelegatedAuthProviderScheme requires a context with a valid session."
       )
 
-    if auth_scheme.name and auth_scheme.name in context.session.state:
-      # Use specific authorization.
-      token = context.session.state[auth_scheme.name]
-    elif len(context.session.state) == 1:
-      # Use the only authorization that is available.
-      token = list(context.session.state.values())[0]
+    state = context.session.state
+    if auth_scheme.name:
+      # Use specific authorization (with or without the ADK "temp:" prefix).
+      if f"temp:{auth_scheme.name}" in state:
+        token = state[f"temp:{auth_scheme.name}"]
+      elif auth_scheme.name in state:
+        token = state[auth_scheme.name]
+      else:
+        raise ValueError(
+            f"No matching Gemini Enterprise authorization '{auth_scheme.name}' found in session."
+        )
     else:
-      # There are multiple tokens, and we don't know which one to use.
-      raise ValueError(
-          f"No matching Gemini Enterprise authorization found in session."
-      )
+      temp_values = [v for k, v in state.items() if k.startswith("temp:")]
+      if len(temp_values) == 1:
+        # Use the only temp: authorization that is available.
+        token = temp_values[0]
+      elif not temp_values and len(state) == 1:
+        # Fallback for older ADK versions without the "temp:" prefix.
+        token = list(state.values())[0]
+      else:
+        # There are multiple tokens (or none), and we don't know which one to use.
+        raise ValueError(
+            "No matching Gemini Enterprise authorization found in session."
+        )
 
     # Wrap token as an AuthCredential.
     return AuthCredential(
