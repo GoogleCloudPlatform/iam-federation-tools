@@ -51,12 +51,19 @@ namespace Google.Solutions.AAAuth.Web
                     $"AuthorizedRedirectUris are missing or incomplete");
             }
 
+            var defaultAuthorizerKey = this.configuration["DefaultAuthorizer"];
+            if (string.IsNullOrEmpty(defaultAuthorizerKey))
+            {
+                defaultAuthorizerKey = GoogleIdentityAuthorizer.Key;
+            }
+
             //
             // Register services.
             //
             services.AddSingleton<IStsClient, StsClient>();
             services.AddSingleton(new OAuthController.Options(
-                new HashSet<Uri>(authorizedRedirectUris.Select(u => new Uri(u)))));
+                new HashSet<Uri>(authorizedRedirectUris.Select(u => new Uri(u))),
+                defaultAuthorizerKey));
 
             //
             // Register the Entra authorizer.

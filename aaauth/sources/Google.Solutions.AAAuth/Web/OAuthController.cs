@@ -60,6 +60,24 @@ namespace Google.Solutions.AAAuth.Web
             return new Uri($"https://{this.Request.Host}/{authorizerKey}/continue");
         }
 
+        private IAuthorizer GetAuthorizer(string authorizerKey)
+        {
+            if (string.Equals(
+                authorizerKey, 
+                "default",
+                StringComparison.Ordinal))
+            {
+                //
+                // Use the authorizer that has been configured
+                // as the default.
+                //
+                authorizerKey = this.options.DefaultAuthorizerKey;
+            }
+
+            return this.serviceProvider
+                .GetRequiredKeyedService<IAuthorizer>(authorizerKey);
+        }
+
         /// <summary>
         /// OIDC Discovery endpoint.
         /// </summary>
@@ -77,8 +95,7 @@ namespace Google.Solutions.AAAuth.Web
             IAuthorizer authorizer;
             try
             {
-                authorizer = this.serviceProvider
-                    .GetRequiredKeyedService<IAuthorizer>(authorizerKey);
+                authorizer = GetAuthorizer(authorizerKey);
             }
             catch (InvalidOperationException)
             {
@@ -145,8 +162,7 @@ namespace Google.Solutions.AAAuth.Web
             IAuthorizer authorizer;
             try
             {
-                authorizer = this.serviceProvider
-                    .GetRequiredKeyedService<IAuthorizer>(authorizerKey);
+                authorizer = GetAuthorizer(authorizerKey);
             }
             catch (InvalidOperationException)
             {
@@ -227,8 +243,7 @@ namespace Google.Solutions.AAAuth.Web
             //
             try
             {
-                _ = this.serviceProvider
-                    .GetRequiredKeyedService<IAuthorizer>(authorizerKey);
+                _ = GetAuthorizer(authorizerKey);
             }
             catch (InvalidOperationException)
             {
@@ -292,8 +307,7 @@ namespace Google.Solutions.AAAuth.Web
             IAuthorizer authorizer;
             try
             {
-                authorizer = this.serviceProvider
-                    .GetRequiredKeyedService<IAuthorizer>(authorizerKey);
+                authorizer = GetAuthorizer(authorizerKey);
             }
             catch (InvalidOperationException)
             {
@@ -376,7 +390,8 @@ namespace Google.Solutions.AAAuth.Web
         /// Options for the controller.
         /// </summary>
         public record Options(
-            ISet<Uri> AllowedRedirectUris)
+            ISet<Uri> AllowedRedirectUris,
+            string DefaultAuthorizerKey)
         { }
     }
 }
