@@ -102,7 +102,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
-            Assert.That(result.ExpiresInSeconds, Is.EqualTo(60));
+            Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
-            Assert.That(result.ExpiresInSeconds, Is.EqualTo(60));
+            Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
     }
 }

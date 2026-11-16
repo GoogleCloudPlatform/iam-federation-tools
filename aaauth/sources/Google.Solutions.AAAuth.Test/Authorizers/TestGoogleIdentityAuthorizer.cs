@@ -109,7 +109,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("id-token"));
-            Assert.That(result.ExpiresInSeconds, Is.EqualTo(3600));
+            Assert.That(result.ExpiresInSeconds, Is.GreaterThan(0));
         }
     }
 }

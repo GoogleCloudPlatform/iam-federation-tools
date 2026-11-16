@@ -292,7 +292,7 @@ namespace Google.Solutions.AAAuth.Web
         /// <see href="https://datatracker.ietf.org/doc/html/rfc6749#section-3.2"/>
         [HttpPost]
         [Route("{authorizerKey}/token")]
-        public async Task<IActionResult> RedeemAuthorizationCodeAsync(
+        public async Task<IActionResult> GetTokenAsync(
             [FromRoute(Name = "authorizerKey")] string authorizerKey,
             [FromForm(Name = "grant_type")] string grantType,
             [FromForm(Name = "code")] string? code,
@@ -358,16 +358,23 @@ namespace Google.Solutions.AAAuth.Web
             if (string.Equals(
                     grantType, 
                     "authorization_code", 
-                    StringComparison.Ordinal) &&
-                !string.IsNullOrWhiteSpace(code) &&
-                !string.IsNullOrWhiteSpace(clientRedirectUri))
+                    StringComparison.Ordinal))
             {
                 //
                 // Authorization code flow: Let the authorizer redeem the
                 // code against a set of tokens.
                 //
 
-                if (!this.options
+                if (string.IsNullOrWhiteSpace(code) ||
+                    string.IsNullOrWhiteSpace(clientRedirectUri))
+                {
+                    return BadRequest(new TokenErrorResponse()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = "Missing a required parameter",
+                    });
+                }
+                else if (!this.options
                     .AllowedRedirectUris
                     .Contains(new Uri(clientRedirectUri)))
                 {
@@ -401,12 +408,20 @@ namespace Google.Solutions.AAAuth.Web
             else if (string.Equals(
                     grantType,
                     "refresh_token",
-                    StringComparison.Ordinal) &&
-                !string.IsNullOrWhiteSpace(refreshToken))
+                    StringComparison.Ordinal))
             {
                 //
                 // Refresh token flow.
                 //
+
+                if (string.IsNullOrWhiteSpace(refreshToken))
+                {
+                    return BadRequest(new TokenErrorResponse()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = "Missing a required parameter",
+                    });
+                }
 
                 try
                 {

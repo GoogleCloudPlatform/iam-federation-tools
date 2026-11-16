@@ -44,6 +44,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         ILogger logger)
         : IAuthorizer
     {
+        private const string JsonMediaType = "application/json";
         private readonly HttpClient httpClient = new();
         private readonly ILogger logger = logger;
 
@@ -164,9 +165,10 @@ namespace Google.Solutions.AAAuth.Authorizers
 
                 return tokenResult;
             }
-            else if (await response.Content
-                .ReadFromJsonAsync<TokenError>(cancellationToken)
-                .ConfigureAwait(false) is TokenError errorDetails)
+            else if (response.Content.Headers.ContentType?.MediaType == JsonMediaType &&
+                await response.Content
+                    .ReadFromJsonAsync<TokenError>(cancellationToken)
+                    .ConfigureAwait(false) is TokenError errorDetails)
             { 
                 this.logger.LogWarning(
                     "Redeeming authorization code for client {client} failed: {error}",
@@ -223,9 +225,10 @@ namespace Google.Solutions.AAAuth.Authorizers
 
                 return tokenResult;
             }
-            else if (await response.Content
-                .ReadFromJsonAsync<TokenError>(cancellationToken)
-                .ConfigureAwait(false) is TokenError errorDetails)
+            else if (response.Content.Headers.ContentType?.MediaType == JsonMediaType && 
+                await response.Content
+                    .ReadFromJsonAsync<TokenError>(cancellationToken)
+                    .ConfigureAwait(false) is TokenError errorDetails)
             {
                 this.logger.LogWarning(
                     "Redeeming refresh token for client {client} failed: {error}",
