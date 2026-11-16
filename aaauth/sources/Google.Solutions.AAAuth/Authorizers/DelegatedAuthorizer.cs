@@ -24,6 +24,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.AAAuth.Iam;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +39,10 @@ namespace Google.Solutions.AAAuth.Authorizers
     /// this authorizer lets agents access Google resources
     /// on the user's behalf.
     /// </summary>
-    public abstract class DelegatedAuthorizerBase : IAuthorizer
+    public class DelegatedAuthorizer : IAuthorizer
     {
+        internal const string Key = "delegated";
+
         private readonly ILogger logger;
         private readonly WorkforceIdentityProviderName provider;
 
@@ -51,16 +54,42 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// </summary>
         protected IAuthorizer IdPAuthorizer { get; }
 
-        public DelegatedAuthorizerBase(
+        protected DelegatedAuthorizer(
+            IStsClient stsClient,
             WorkforceIdentityProviderName provider,
             IAuthorizer idpAuthorizer,
-            IStsClient stsClient,
             ILogger logger)
         {
             this.provider = provider;
             this.IdPAuthorizer = idpAuthorizer;
             this.StsClient = stsClient;
             this.logger = logger;
+        }
+
+        internal DelegatedAuthorizer(
+            IStsClient stsClient,
+            Options options,
+            IAuthorizer idpAuthorizer,
+            ILogger<DelegatedAuthorizer> logger) : this(
+                stsClient,
+                options.WorkforceIdentityProviderName,
+                idpAuthorizer,
+                logger)
+        {
+        }
+
+        public DelegatedAuthorizer(
+            IStsClient stsClient,
+            Options options,
+            ILogger<DelegatedAuthorizer> logger) : this(
+                stsClient,
+                options,
+                new OAuthAuthorizer(
+                    options.IssuerUri,
+                    new HashSet<string>(options.Scopes),
+                    logger),
+                logger)
+        {
         }
 
         /// <summary>
@@ -117,9 +146,22 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// <summary>
         /// Transform token result received from IdP.
         /// </summary>
-        protected abstract Task<TokenResult> TransformTokenResultAsync(
+        protected virtual async Task<TokenResult> TransformTokenResultAsync(
             TokenResult result,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(result.IdToken))
+            {
+                throw new ArgumentException(
+                    "The token result does not contain an ID token");
+            }
+
+            return await ExchangeTokenAsync(
+                    result.IdToken,
+                    result.RefreshToken,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
 
         //---------------------------------------------------------------------
         // IAuthorizer.
@@ -191,5 +233,20 @@ namespace Google.Solutions.AAAuth.Authorizers
                     cancellationToken)
                 .ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Options.
+        /// </summary>
+        /// <param name="TenantId">Entra tenant ID</param>
+        /// <param name="WorkforceIdentityProviderName">
+        /// Provider to use for token exchange, must be configured to
+        /// accept tokens from Entra.
+        /// </param>
+        /// <param name="Scopes">Entra scope to use, optional</param>
+        public record Options(
+            Uri IssuerUri,
+            WorkforceIdentityProviderName WorkforceIdentityProviderName,
+            ICollection<string> Scopes)
+        { }
     }
 }

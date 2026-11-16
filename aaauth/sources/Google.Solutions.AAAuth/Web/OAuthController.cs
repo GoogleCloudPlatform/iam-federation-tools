@@ -404,6 +404,14 @@ namespace Google.Solutions.AAAuth.Web
                     //
                     return BadRequest(e.ErrorDetails);
                 }
+                catch (ArgumentException e)
+                {
+                    return BadRequest(new TokenErrorResponse()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = e.Message,
+                    });
+                }
             }
             else if (string.Equals(
                     grantType,
@@ -442,6 +450,14 @@ namespace Google.Solutions.AAAuth.Web
                     // Propagate error details.
                     //
                     return BadRequest(e.ErrorDetails);
+                }
+                catch (ArgumentException e)
+                {
+                    return BadRequest(new TokenErrorResponse()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = e.Message,
+                    });
                 }
             }
             else

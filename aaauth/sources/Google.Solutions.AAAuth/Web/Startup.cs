@@ -66,21 +66,41 @@ namespace Google.Solutions.AAAuth.Web
                 defaultAuthorizerKey));
 
             //
-            // Register the Entra authorizer.
+            // Conditionally register the Entra authorizer.
             //
-            if (this.configuration.GetSection(EntraOptions.Key).Get<EntraOptions>() 
-                    is EntraOptions entraOptions &&
-                !string.IsNullOrWhiteSpace(entraOptions.TenantId) &&
+            if (this.configuration
+                .GetSection(EntraSection.Key)
+                .Get<EntraSection>() is EntraSection entraSection &&
+                !string.IsNullOrWhiteSpace(entraSection.TenantId) &&
                 WorkforceIdentityProviderName.TryParse(
-                    entraOptions.WorkforceIdentityProviderName,
+                    entraSection.WorkforceIdentityProviderName,
                     out var entraWorkforceProvider))
             {
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
-                    Guid.Parse(entraOptions.TenantId),
+                    Guid.Parse(entraSection.TenantId),
                     entraWorkforceProvider,
-                    entraOptions.Scopes ?? []));
+                    entraSection.Scopes ?? []));
                 services.AddKeyedTransient<IAuthorizer, EntraDelegatedAuthorizer>(
                     EntraDelegatedAuthorizer.Key);
+            }
+
+            //
+            // Conditionally register the generic delegated authorizer.
+            //
+            if (this.configuration
+                .GetSection(EntraSection.Key)
+                .Get<IdpSection>() is IdpSection idpSection &&
+                Uri.TryCreate(idpSection.IsserUri, UriKind.Absolute, out var issuerUri) &&
+                WorkforceIdentityProviderName.TryParse(
+                    idpSection.WorkforceIdentityProviderName,
+                    out var idpWorkforceProvider))
+            {
+                services.AddSingleton(new DelegatedAuthorizer.Options(
+                    issuerUri,
+                    idpWorkforceProvider,
+                    idpSection.Scopes ?? []));
+                services.AddKeyedTransient<IAuthorizer, DelegatedAuthorizer>(
+                    DelegatedAuthorizer.Key);
             }
 
             //
@@ -123,12 +143,12 @@ namespace Google.Solutions.AAAuth.Web
         }
 
         /// <summary>
-        /// Settings for the Entra app registration.
+        /// Section for Entra-specific settings.
         /// </summary>
-        public class EntraOptions
+        public class EntraSection
         {
             /// <summary>
-            /// Key used to identify the options.
+            /// Key used to identify the section.
             /// </summary>
             internal const string Key = "Entra";
 
@@ -139,6 +159,34 @@ namespace Google.Solutions.AAAuth.Web
 
             /// <summary>
             /// Scope to use for OBO flow.
+            /// </summary>
+            public List<string>? Scopes { get; set; }
+
+            /// <summary>
+            /// Name of the workforce identity provider to use for
+            /// token exchanges, in format
+            /// locations/global/workforcePools/POOL/providers/PROVIDER
+            /// </summary>
+            public string? WorkforceIdentityProviderName { get; set; }
+        }
+
+        /// <summary>
+        /// Section for generic IdP settings.
+        /// </summary>
+        public class IdpSection
+        {
+            /// <summary>
+            /// Key used to identify the section.
+            /// </summary>
+            internal const string Key = "Idp";
+
+            /// <summary>
+            /// Issuer IdP that identifies the IdP.
+            /// </summary>
+            public string? IsserUri { get; set; }
+
+            /// <summary>
+            /// Scope to use for OAuth flow.
             /// </summary>
             public List<string>? Scopes { get; set; }
 

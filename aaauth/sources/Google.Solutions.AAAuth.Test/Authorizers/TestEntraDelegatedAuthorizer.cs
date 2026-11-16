@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.AAAuth.Test.Authorizers
 {
     [TestFixture]
-    public class TestEntraInteractiveAuthorizer
+    public class TestEntraDelegatedAuthorizer
     {
         private static EntraDelegatedAuthorizer.Options CreateOptions(
             string? scope = null)

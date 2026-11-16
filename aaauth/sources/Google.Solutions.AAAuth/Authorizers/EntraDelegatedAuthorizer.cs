@@ -38,9 +38,9 @@ namespace Google.Solutions.AAAuth.Authorizers
     /// this authorizer lets agents access Google resources
     /// on the user's behalf.
     /// </summary>
-    public class EntraDelegatedAuthorizer : DelegatedAuthorizerBase
+    public class EntraDelegatedAuthorizer : DelegatedAuthorizer
     {
-        internal const string Key = "entra-delegated";
+        new internal const string Key = "entra-delegated";
         private readonly Options options;
         private readonly ILogger<EntraDelegatedAuthorizer> logger;
 
@@ -60,9 +60,9 @@ namespace Google.Solutions.AAAuth.Authorizers
             Options options,
             IAuthorizer entraAuthorizer,
             ILogger<EntraDelegatedAuthorizer> logger) : base(
+                stsClient,
                 options.WorkforceIdentityProviderName,
                 entraAuthorizer, 
-                stsClient, 
                 logger)
         {
             this.options = options;
@@ -121,7 +121,7 @@ namespace Google.Solutions.AAAuth.Authorizers
             }
             else
             {
-                throw new InvalidOperationException(
+                throw new ArgumentException(
                     "The token result contains neither an access token " +
                     "nor an ID token");
             }
@@ -142,7 +142,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// accept tokens from Entra.
         /// </param>
         /// <param name="Scopes">Entra scope to use, optional</param>
-        public record Options(
+        public new record Options(
             Guid TenantId,
             WorkforceIdentityProviderName WorkforceIdentityProviderName,
             ICollection<string> Scopes)
