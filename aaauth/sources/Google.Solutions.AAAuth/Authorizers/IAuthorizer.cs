@@ -56,12 +56,21 @@ namespace Google.Solutions.AAAuth.Authorizers
             CancellationToken cancellationToken); // contains original state
 
         /// <summary>
-        /// Redeem an authorization code and obtain tokens.
+        /// Redeem an authorization code.
         /// </summary>
-        Task<TokenResult> GetTokenAsync(
+        Task<TokenResult> RedeemAuthorizationCodeAsync(
             ClientSecrets clientCredentials,
             string authorizationCode,
             Uri redirectUri,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Redeem a refresh token.
+        /// </summary>
+        Task<TokenResult> RedeemRefreshTokenAsync(
+            ClientSecrets clientCredentials,
+            string refreshToken,
+            string? scope,
             CancellationToken cancellationToken);
     }
 

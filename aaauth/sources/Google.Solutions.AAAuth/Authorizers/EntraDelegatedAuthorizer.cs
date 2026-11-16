@@ -87,51 +87,13 @@ namespace Google.Solutions.AAAuth.Authorizers
         {
         }
 
-        //---------------------------------------------------------------------
-        // IAuthorizer.
-        //---------------------------------------------------------------------
-
-        /// <inheritdoc/>
-        public Task<Uri> CreateAuthorizeUriAsync(
-            string clientId,
-            string? scope,
-            string? passthroughState,
-            Uri redirectUri,
+        /// <summary>
+        /// Transform token result received from Entra.
+        /// </summary>
+        private async Task<TokenResult> TransformTokenResultAsync(
+            TokenResult result,
             CancellationToken cancellationToken)
         {
-            return this.oAuthAuthorizer.CreateAuthorizeUriAsync(
-                clientId,
-                scope,
-                passthroughState,
-                redirectUri,
-                cancellationToken);
-        }
-
-        /// <inheritdoc/>
-        public Task<AuthorizerMetadata> GetMetadataAsync(
-            CancellationToken cancellationToken)
-        {
-            return this.oAuthAuthorizer.GetMetadataAsync(cancellationToken);
-        }
-
-        /// <inheritdoc/>
-        public async Task<TokenResult> GetTokenAsync(
-            ClientSecrets clientCredentials,
-            string authorizationCode,
-            Uri redirectUri,
-            CancellationToken cancellationToken)
-        {
-            //
-            // Redeem code for an Entra tokens.
-            //
-            var result = await this.oAuthAuthorizer
-                .GetTokenAsync(
-                    clientCredentials,
-                    authorizationCode,
-                    redirectUri,
-                    cancellationToken)
-                .ConfigureAwait(false);
-
             //
             // Use the Entra ID token to obtain a federated token from
             // the workforce identity pool.
@@ -179,11 +141,24 @@ namespace Google.Solutions.AAAuth.Authorizers
 
                 return new TokenResult()
                 {
+                    //
+                    // Return the Entra refresh token...
+                    //
+                    RefreshToken = result.RefreshToken, 
+
+                    //
+                    // and the federated token as access token.
+                    //
                     AccessToken = exchangeResult.AccessToken,
-                    RefreshToken = "placeholder", // TODO: propagate Entra refresh token
                     IdToken = exchangeResult.IdToken,
                     Scope = exchangeResult.Scope,
+
+#if DEBUG
+                    ExpiresInSeconds = 300,
+#else
+
                     ExpiresInSeconds = exchangeResult.ExpiresInSeconds,
+#endif
                 };
             }
             catch (TokenResponseException e)
@@ -194,6 +169,71 @@ namespace Google.Solutions.AAAuth.Authorizers
 
                 throw;
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IAuthorizer.
+        //---------------------------------------------------------------------
+
+        /// <inheritdoc/>
+        public Task<Uri> CreateAuthorizeUriAsync(
+            string clientId,
+            string? scope,
+            string? passthroughState,
+            Uri redirectUri,
+            CancellationToken cancellationToken)
+        {
+            return this.oAuthAuthorizer.CreateAuthorizeUriAsync(
+                clientId,
+                scope,
+                passthroughState,
+                redirectUri,
+                cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public Task<AuthorizerMetadata> GetMetadataAsync(
+            CancellationToken cancellationToken)
+        {
+            return this.oAuthAuthorizer.GetMetadataAsync(cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TokenResult> RedeemAuthorizationCodeAsync(
+            ClientSecrets clientCredentials,
+            string authorizationCode,
+            Uri redirectUri,
+            CancellationToken cancellationToken)
+        {
+            var tokenResult = await this.oAuthAuthorizer
+                .RedeemAuthorizationCodeAsync(
+                    clientCredentials,
+                    authorizationCode,
+                    redirectUri,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            return await TransformTokenResultAsync(tokenResult, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TokenResult> RedeemRefreshTokenAsync(
+            ClientSecrets clientCredentials, 
+            string refreshToken,
+            string? scope,
+            CancellationToken cancellationToken)
+        {
+            var tokenResult = await this.oAuthAuthorizer
+                .RedeemRefreshTokenAsync(
+                    clientCredentials,
+                    refreshToken,
+                    scope,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            return await TransformTokenResultAsync(tokenResult, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         /// <summary>

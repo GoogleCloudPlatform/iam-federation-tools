@@ -69,11 +69,11 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
         }
 
         //---------------------------------------------------------------------
-        // GetToken.
+        // RedeemAuthorizationCode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetToken()
+        public async Task RedeemAuthorizationCode()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -85,7 +85,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             var oAuthAuthorizer = new Mock<IAuthorizer>();
             oAuthAuthorizer
-                .Setup(a => a.GetTokenAsync(
+                .Setup(a => a.RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,
@@ -100,7 +100,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                 new Mock<ILogger<GoogleIdentityAuthorizer>>().Object);
 
             var result = await authorizer
-                .GetTokenAsync(
+                .RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,
@@ -109,7 +109,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("id-token"));
-            Assert.That(result.ExpiresInSeconds, Is.EqualTo(3600));
+            Assert.That(result.ExpiresInSeconds, Is.GreaterThan(0));
         }
     }
 }

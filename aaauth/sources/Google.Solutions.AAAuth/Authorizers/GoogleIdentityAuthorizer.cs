@@ -48,7 +48,13 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// <summary>
         /// Immutable validity of Google ID tokens.
         /// </summary>
-        private static readonly TimeSpan IdTokenValidity = TimeSpan.FromHours(1);
+        private static readonly TimeSpan IdTokenValidity =
+#if DEBUG
+            TimeSpan.FromMinutes(5);
+#else
+
+            TimeSpan.FromHours(1);
+#endif
 
         /// <summary>
         /// Default scopes to use for an OpenID authorization.
@@ -73,6 +79,24 @@ namespace Google.Solutions.AAAuth.Authorizers
                       logger),
                   logger)
         {
+        }
+
+        /// <summary>
+        /// Transform token result received from Google.
+        /// </summary>
+        private static TokenResult TransformTokenResult(TokenResult result)
+        {
+            //
+            // Return the ID token as access token.
+            //
+            return new TokenResult()
+            {
+                TokenType = "bearer",
+                AccessToken = result.IdToken,
+                ExpiresInSeconds = (int)IdTokenValidity.TotalSeconds,
+                RefreshToken = result.RefreshToken,
+                Scope = result.Scope,
+            };
         }
 
         //---------------------------------------------------------------------
@@ -113,34 +137,37 @@ namespace Google.Solutions.AAAuth.Authorizers
         }
 
         /// <inheritdoc/>
-        public async Task<TokenResult> GetTokenAsync(
+        public async Task<TokenResult> RedeemAuthorizationCodeAsync(
             ClientSecrets clientCredentials,
             string authorizationCode,
             Uri redirectUri,
             CancellationToken cancellationToken)
         {
-            //
-            // Redeem code for an Google tokens.
-            //
-            var result = await this.oAuthAuthorizer
-                .GetTokenAsync(
-                    clientCredentials,
-                    authorizationCode,
-                    redirectUri,
-                    cancellationToken)
-                .ConfigureAwait(false);
+            return TransformTokenResult(
+                await this.oAuthAuthorizer
+                    .RedeemAuthorizationCodeAsync(
+                        clientCredentials,
+                        authorizationCode,
+                        redirectUri,
+                        cancellationToken)
+                    .ConfigureAwait(false));
+        }
 
-            //
-            // Return the ID token as access token.
-            //
-            return new TokenResult()
-            {
-                TokenType = "bearer",
-                AccessToken = result.IdToken,
-                ExpiresInSeconds = (int)IdTokenValidity.TotalSeconds,
-                RefreshToken = result.RefreshToken,
-                Scope = result.Scope,
-            };
+        /// <inheritdoc/>
+        public async Task<TokenResult> RedeemRefreshTokenAsync(
+            ClientSecrets clientCredentials,
+            string refreshToken,
+            string? scope,
+            CancellationToken cancellationToken)
+        {
+            return TransformTokenResult(
+                await this.oAuthAuthorizer
+                    .RedeemRefreshTokenAsync(
+                        clientCredentials,
+                        refreshToken,
+                        scope,
+                        cancellationToken)
+                    .ConfigureAwait(false));
         }
     }
 }
