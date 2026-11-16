@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.AAAuth.Iam;
 using Microsoft.Extensions.Logging;
 using System;
@@ -40,12 +38,9 @@ namespace Google.Solutions.AAAuth.Authorizers
     /// this authorizer lets agents access Google resources
     /// on the user's behalf.
     /// </summary>
-    public class EntraDelegatedAuthorizer : IAuthorizer
+    public class EntraDelegatedAuthorizer : DelegatedAuthorizerBase
     {
         internal const string Key = "entra-delegated";
-
-        private readonly IStsClient stsClient;
-        private readonly IAuthorizer oAuthAuthorizer;
         private readonly Options options;
         private readonly ILogger<EntraDelegatedAuthorizer> logger;
 
@@ -63,11 +58,13 @@ namespace Google.Solutions.AAAuth.Authorizers
         internal EntraDelegatedAuthorizer(
             IStsClient stsClient,
             Options options,
-            IAuthorizer oAuthAuthorizer,
-            ILogger<EntraDelegatedAuthorizer> logger)
+            IAuthorizer entraAuthorizer,
+            ILogger<EntraDelegatedAuthorizer> logger) : base(
+                options.WorkforceIdentityProviderName,
+                entraAuthorizer, 
+                stsClient, 
+                logger)
         {
-            this.stsClient = stsClient;
-            this.oAuthAuthorizer = oAuthAuthorizer;
             this.options = options;
             this.logger = logger;
         }
@@ -90,7 +87,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// <summary>
         /// Transform token result received from Entra.
         /// </summary>
-        private async Task<TokenResult> TransformTokenResultAsync(
+        protected override async Task<TokenResult> TransformTokenResultAsync(
             TokenResult result,
             CancellationToken cancellationToken)
         {
@@ -129,110 +126,10 @@ namespace Google.Solutions.AAAuth.Authorizers
                     "nor an ID token");
             }
 
-            try
-            {
-                var exchangeResult = await this.stsClient
-                    .ExchangeTokenAsync(
-                        this.options.WorkforceIdentityProviderName,
-                        tokenToExchange,
-                        [Scopes.CloudPlatform],
-                        cancellationToken)
-                    .ConfigureAwait(false);
-
-                return new TokenResult()
-                {
-                    //
-                    // Return the Entra refresh token...
-                    //
-                    RefreshToken = result.RefreshToken, 
-
-                    //
-                    // and the federated token as access token.
-                    //
-                    AccessToken = exchangeResult.AccessToken,
-                    IdToken = exchangeResult.IdToken,
-                    Scope = exchangeResult.Scope,
-
-#if DEBUG
-                    ExpiresInSeconds = 300,
-#else
-
-                    ExpiresInSeconds = exchangeResult.ExpiresInSeconds,
-#endif
-                };
-            }
-            catch (TokenResponseException e)
-            {
-                this.logger.LogError(
-                    "Token exchange failed: {details}",
-                    e.Error.ErrorDescription);
-
-                throw;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // IAuthorizer.
-        //---------------------------------------------------------------------
-
-        /// <inheritdoc/>
-        public Task<Uri> CreateAuthorizeUriAsync(
-            string clientId,
-            string? scope,
-            string? passthroughState,
-            Uri redirectUri,
-            CancellationToken cancellationToken)
-        {
-            return this.oAuthAuthorizer.CreateAuthorizeUriAsync(
-                clientId,
-                scope,
-                passthroughState,
-                redirectUri,
-                cancellationToken);
-        }
-
-        /// <inheritdoc/>
-        public Task<AuthorizerMetadata> GetMetadataAsync(
-            CancellationToken cancellationToken)
-        {
-            return this.oAuthAuthorizer.GetMetadataAsync(cancellationToken);
-        }
-
-        /// <inheritdoc/>
-        public async Task<TokenResult> RedeemAuthorizationCodeAsync(
-            ClientSecrets clientCredentials,
-            string authorizationCode,
-            Uri redirectUri,
-            CancellationToken cancellationToken)
-        {
-            var tokenResult = await this.oAuthAuthorizer
-                .RedeemAuthorizationCodeAsync(
-                    clientCredentials,
-                    authorizationCode,
-                    redirectUri,
+            return await ExchangeTokenAsync(
+                    tokenToExchange,
+                    result.RefreshToken,
                     cancellationToken)
-                .ConfigureAwait(false);
-
-            return await TransformTokenResultAsync(tokenResult, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        /// <inheritdoc/>
-        public async Task<TokenResult> RedeemRefreshTokenAsync(
-            ClientSecrets clientCredentials, 
-            string refreshToken,
-            string? scope,
-            CancellationToken cancellationToken)
-        {
-            var tokenResult = await this.oAuthAuthorizer
-                .RedeemRefreshTokenAsync(
-                    clientCredentials,
-                    refreshToken,
-                    scope,
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            return await TransformTokenResultAsync(tokenResult, cancellationToken)
                 .ConfigureAwait(false);
         }
 
