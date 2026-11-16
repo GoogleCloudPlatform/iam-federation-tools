@@ -79,7 +79,7 @@ namespace Google.Solutions.AAAuth.Web
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
                     Guid.Parse(entraSection.TenantId),
                     entraWorkforceProvider,
-                    entraSection.Scopes ?? []));
+                    entraSection.Scope?.Split(' ') ?? []));
                 services.AddKeyedTransient<IAuthorizer, EntraDelegatedAuthorizer>(
                     EntraDelegatedAuthorizer.Key);
             }
@@ -88,9 +88,9 @@ namespace Google.Solutions.AAAuth.Web
             // Conditionally register the generic delegated authorizer.
             //
             if (this.configuration
-                .GetSection(EntraSection.Key)
+                .GetSection(IdpSection.Key)
                 .Get<IdpSection>() is IdpSection idpSection &&
-                Uri.TryCreate(idpSection.IsserUri, UriKind.Absolute, out var issuerUri) &&
+                Uri.TryCreate(idpSection.Issuer, UriKind.Absolute, out var issuerUri) &&
                 WorkforceIdentityProviderName.TryParse(
                     idpSection.WorkforceIdentityProviderName,
                     out var idpWorkforceProvider))
@@ -98,7 +98,7 @@ namespace Google.Solutions.AAAuth.Web
                 services.AddSingleton(new DelegatedAuthorizer.Options(
                     issuerUri,
                     idpWorkforceProvider,
-                    idpSection.Scopes ?? []));
+                    idpSection.Scope?.Split(' ') ?? ["openid"]));
                 services.AddKeyedTransient<IAuthorizer, DelegatedAuthorizer>(
                     DelegatedAuthorizer.Key);
             }
@@ -158,9 +158,9 @@ namespace Google.Solutions.AAAuth.Web
             public string? TenantId { get; set; }
 
             /// <summary>
-            /// Scope to use for OBO flow.
+            /// Scopes to use for OBO flow, space-separated.
             /// </summary>
-            public List<string>? Scopes { get; set; }
+            public string? Scope { get; set; }
 
             /// <summary>
             /// Name of the workforce identity provider to use for
@@ -183,12 +183,12 @@ namespace Google.Solutions.AAAuth.Web
             /// <summary>
             /// Issuer IdP that identifies the IdP.
             /// </summary>
-            public string? IsserUri { get; set; }
+            public string? Issuer { get; set; }
 
             /// <summary>
-            /// Scope to use for OAuth flow.
+            /// Scope to use for OAuth flow, space-separated.
             /// </summary>
-            public List<string>? Scopes { get; set; }
+            public string? Scope { get; set; }
 
             /// <summary>
             /// Name of the workforce identity provider to use for

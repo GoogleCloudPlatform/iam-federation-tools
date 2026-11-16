@@ -85,7 +85,7 @@ namespace Google.Solutions.AAAuth.Authorizers
                 stsClient,
                 options,
                 new OAuthAuthorizer(
-                    options.IssuerUri,
+                    options.Issuer,
                     new HashSet<string>(options.Scopes),
                     logger),
                 logger)
@@ -244,7 +244,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// </param>
         /// <param name="Scopes">Entra scope to use, optional</param>
         public record Options(
-            Uri IssuerUri,
+            Uri Issuer,
             WorkforceIdentityProviderName WorkforceIdentityProviderName,
             ICollection<string> Scopes)
         { }
