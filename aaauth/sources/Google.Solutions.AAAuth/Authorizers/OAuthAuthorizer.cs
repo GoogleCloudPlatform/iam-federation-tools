@@ -129,7 +129,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         }
 
         /// <inheritdoc/>
-        public virtual async Task<TokenResult> GetTokenAsync(
+        public virtual async Task<TokenResult> RedeemAuthorizationCodeAsync(
             ClientSecrets clientCredentials,
             string authorizationCode,
             Uri redirectUri,
@@ -139,41 +139,110 @@ namespace Google.Solutions.AAAuth.Authorizers
                 GetProviderMetadataAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            try
-            {
-                var response = await this.httpClient
-                    .PostAsync(
-                        metadata.TokenEndpoint,
-                        new FormUrlEncodedContent(new Dictionary<string, string>
-                        {
-                            { "client_id", clientCredentials.ClientId },
-                            { "client_secret", clientCredentials.ClientSecret },
-                            { "redirect_uri", redirectUri.AbsoluteUri },
-                            { "grant_type", "authorization_code" },
-                            { "code", authorizationCode }
-                        }),
-                        cancellationToken)
-                    .ConfigureAwait(false);
+            var response = await this.httpClient
+                .PostAsync(
+                    metadata.TokenEndpoint,
+                    new FormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        { "client_id", clientCredentials.ClientId },
+                        { "client_secret", clientCredentials.ClientSecret },
+                        { "redirect_uri", redirectUri.AbsoluteUri },
+                        { "grant_type", "authorization_code" },
+                        { "code", authorizationCode }
+                    }),
+                    cancellationToken)
+                .ConfigureAwait(false);
 
-                response.EnsureSuccessStatusCode();
-
-                var tokenResult = await response.Content
+            if (response.IsSuccessStatusCode &&
+                await response.Content
                     .ReadFromJsonAsync<TokenResult>(cancellationToken)
-                    .ConfigureAwait(false);
-
+                    .ConfigureAwait(false) is TokenResult tokenResult)
+            {
                 this.logger.LogInformation(
                     "Successfully redeemed authorization code for client {client}",
                     clientCredentials.ClientId);
 
-                return tokenResult ??
-                    throw new InvalidOperationException(
-                        $"The token endpoint at {metadata.TokenEndpoint} " +
-                        $"returned an empty or malformed response");
+                return tokenResult;
             }
-            catch (HttpRequestException e)
+            else if (await response.Content
+                .ReadFromJsonAsync<TokenError>(cancellationToken)
+                .ConfigureAwait(false) is TokenError errorDetails)
+            { 
+                this.logger.LogWarning(
+                    "Redeeming authorization code for client {client} failed: {error}",
+                    clientCredentials.ClientId,
+                    errorDetails.Error);
+
+                throw new TokenException(errorDetails);
+            }
+            else
             {
-                this.logger.LogError(e, "Redeeming authorization code failed");
-                throw;
+                response.EnsureSuccessStatusCode();
+
+                var e = new InvalidOperationException(
+                    $"The token endpoint at {metadata.TokenEndpoint} " +
+                    $"returned an empty or malformed response");
+                this.logger.LogError(e, "Redeeming authorization failed");
+                throw e;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<TokenResult> RedeemRefreshTokenAsync(
+            ClientSecrets clientCredentials,
+            string refreshToken,
+            string? scope,
+            CancellationToken cancellationToken)
+        {
+            var metadata = await
+                GetProviderMetadataAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var response = await this.httpClient
+                .PostAsync(
+                    metadata.TokenEndpoint,
+                    new FormUrlEncodedContent(new Dictionary<string, string?>
+                    {
+                        { "client_id", clientCredentials.ClientId },
+                        { "client_secret", clientCredentials.ClientSecret },
+                        { "refresh_token", refreshToken },
+                        { "grant_type", "refresh_token" },
+                        { "scope", scope }
+                    }),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode &&
+                await response.Content
+                    .ReadFromJsonAsync<TokenResult>(cancellationToken)
+                    .ConfigureAwait(false) is TokenResult tokenResult)
+            {
+                this.logger.LogInformation(
+                    "Successfully redeemed refresh token code for client {client}",
+                    clientCredentials.ClientId);
+
+                return tokenResult;
+            }
+            else if (await response.Content
+                .ReadFromJsonAsync<TokenError>(cancellationToken)
+                .ConfigureAwait(false) is TokenError errorDetails)
+            {
+                this.logger.LogWarning(
+                    "Redeeming refresh token for client {client} failed: {error}",
+                    clientCredentials.ClientId,
+                    errorDetails.Error);
+
+                throw new TokenException(errorDetails);
+            }
+            else
+            {
+                response.EnsureSuccessStatusCode();
+
+                var e = new InvalidOperationException(
+                    $"The token endpoint at {metadata.TokenEndpoint} " +
+                    $"returned an empty or malformed response");
+                this.logger.LogError(e, "Redeeming refresh token failed");
+                throw e;
             }
         }
     }

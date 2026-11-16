@@ -46,11 +46,11 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
         }
 
         //---------------------------------------------------------------------
-        // GetToken.
+        // RedeemAuthorizationCode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetToken_WithoutScope_ExchangesIdToken()
+        public async Task RedeemAuthorizationCode_WithoutScope_ExchangesIdToken()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -62,7 +62,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             var oAuthAuthorizer = new Mock<IAuthorizer>();
             oAuthAuthorizer
-                .Setup(a => a.GetTokenAsync(
+                .Setup(a => a.RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,
@@ -93,7 +93,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                 new Mock<ILogger<EntraDelegatedAuthorizer>>().Object);
 
             var result = await authorizer
-                .GetTokenAsync(
+                .RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,
@@ -106,7 +106,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
         }
 
         [Test]
-        public async Task GetToken_WithScope_ExchangesAccessToken()
+        public async Task RedeemAuthorizationCode_WithScope_ExchangesAccessToken()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -118,7 +118,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             var oAuthAuthorizer = new Mock<IAuthorizer>();
             oAuthAuthorizer
-                .Setup(a => a.GetTokenAsync(
+                .Setup(a => a.RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,
@@ -151,7 +151,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                 new Mock<ILogger<EntraDelegatedAuthorizer>>().Object);
 
             var result = await authorizer
-                .GetTokenAsync(
+                .RedeemAuthorizationCodeAsync(
                     clientCredentials,
                     code,
                     redirectUri,

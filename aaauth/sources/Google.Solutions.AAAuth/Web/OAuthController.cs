@@ -295,8 +295,10 @@ namespace Google.Solutions.AAAuth.Web
         public async Task<IActionResult> RedeemAuthorizationCodeAsync(
             [FromRoute(Name = "authorizerKey")] string authorizerKey,
             [FromForm(Name = "grant_type")] string grantType,
-            [FromForm(Name = "code")] string code,
-            [FromForm(Name = "redirect_uri")] string clientRedirectUri,
+            [FromForm(Name = "code")] string? code,
+            [FromForm(Name = "redirect_uri")] string? clientRedirectUri,
+            [FromForm(Name = "refresh_token")] string? refreshToken,
+            [FromForm(Name = "scope")] string? scope,
             [FromForm(Name = "client_id")] string? clientId,
             [FromForm(Name = "client_secret")] string? clientSecret,
             CancellationToken cancellationToken)
@@ -312,26 +314,6 @@ namespace Google.Solutions.AAAuth.Web
             catch (InvalidOperationException)
             {
                 return NotFound();
-            }
-
-            //
-            // Validate parameters.
-            //
-            if (grantType != "authorization_code")
-            {
-                return BadRequest(new TokenErrorResponse()
-                {
-                    Error = "invalid_grant",
-                    ErrorDescription = "The grant type is invalid",
-                });
-            }
-            else if (!this.options.AllowedRedirectUris.Contains(new Uri(clientRedirectUri)))
-            {
-                return BadRequest(new TokenErrorResponse()
-                {
-                    Error = "invalid_request",
-                    ErrorDescription = "The redirect URI is invalid",
-                });
             }
 
             //
@@ -372,18 +354,90 @@ namespace Google.Solutions.AAAuth.Web
                 });
             }
 
-            //
-            // Let the authorizer redeem the code against a set of tokens.
-            //
-            var tokenResult = await authorizer
-                .GetTokenAsync(
-                    clientCredentials,
-                    code,
-                    CreateAuthorizeContinueUri(authorizerKey),
-                    cancellationToken)
-                .ConfigureAwait(false);
 
-            return Ok(tokenResult);
+            if (string.Equals(
+                    grantType, 
+                    "authorization_code", 
+                    StringComparison.Ordinal) &&
+                !string.IsNullOrWhiteSpace(code) &&
+                !string.IsNullOrWhiteSpace(clientRedirectUri))
+            {
+                //
+                // Authorization code flow: Let the authorizer redeem the
+                // code against a set of tokens.
+                //
+
+                if (!this.options
+                    .AllowedRedirectUris
+                    .Contains(new Uri(clientRedirectUri)))
+                {
+                    return BadRequest(new TokenErrorResponse()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = "The redirect URI is invalid",
+                    });
+                }
+
+                try
+                {
+                    var tokenResult = await authorizer
+                        .RedeemAuthorizationCodeAsync(
+                            clientCredentials,
+                            code,
+                            CreateAuthorizeContinueUri(authorizerKey),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    return Ok(tokenResult);
+                }
+                catch (TokenException e)
+                {
+                    //
+                    // Propagate error details.
+                    //
+                    return BadRequest(e.ErrorDetails);
+                }
+            }
+            else if (string.Equals(
+                    grantType,
+                    "refresh_token",
+                    StringComparison.Ordinal) &&
+                !string.IsNullOrWhiteSpace(refreshToken))
+            {
+                //
+                // Refresh token flow.
+                //
+
+                try
+                {
+                    var tokenResult = await authorizer
+                        .RedeemRefreshTokenAsync(
+                            clientCredentials,
+                            refreshToken,
+                            scope,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+
+                    return Ok(tokenResult);
+                }
+                catch (TokenException e)
+                {
+                    //
+                    // Propagate error details.
+                    //
+                    return BadRequest(e.ErrorDetails);
+                }
+            }
+            else
+            { 
+                return BadRequest(new TokenErrorResponse()
+                {
+                    Error = "invalid_grant",
+                    ErrorDescription = "The grant type is invalid",
+                });
+            }
+
         }
 
         /// <summary>

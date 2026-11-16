@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System;
 using System.Text.Json.Serialization;
 
 namespace Google.Solutions.AAAuth.Authorizers
@@ -62,5 +63,39 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// </summary>
         [JsonPropertyName("scope")]
         public string? Scope { get; set; }
+    }
+
+    public class TokenError
+    {
+        /// <summary>
+        /// Error code as specified in http://tools.ietf.org/html/rfc6749.
+        /// </summary>
+        [JsonPropertyName("error")]
+        public string Error { get; set; } = "invalid_request";
+
+        /// <summary>
+        /// Error description as specified in http://tools.ietf.org/html/rfc6749.
+        /// </summary>
+        [JsonPropertyName("error_description")]
+        public string? ErrorDescription { get; set; }
+
+        /// <summary>
+        /// Error URI as specified in http://tools.ietf.org/html/rfc6749.
+        /// </summary>
+        [JsonPropertyName("error_uri")]
+        public string? ErrorUri { get; set; }
+    }
+
+    public class TokenException : Exception 
+    {
+        /// <summary>
+        /// Error details as returned from token endpoint.
+        /// </summary>
+        public TokenError ErrorDetails { get; }
+
+        public TokenException(TokenError errorDetails)
+        {
+            this.ErrorDetails = errorDetails;   
+        }
     }
 }
