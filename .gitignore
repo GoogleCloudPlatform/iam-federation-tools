@@ -71,6 +71,7 @@ bld/
 coveragereport/
 opencovertests.xml
 sponge_log.xml
+launchSettings.json
 
 #------------------------------------------------------------------------------
 # Java projects.
