@@ -144,6 +144,10 @@ namespace Google.Solutions.AAAuth.Authorizers
                 HttpMethod.Post,
                 metadata.TokenEndpoint);
 
+            //
+            // NB. If the IdP supports multiple methods, prefer
+            //     client_secret_basic because that's what STS does too.
+            //
             if (metadata.TokenEndpointAuthMethodsSupported
                 .Contains("client_secret_basic"))
             {

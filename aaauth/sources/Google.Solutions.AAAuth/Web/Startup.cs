@@ -74,10 +74,11 @@ namespace Google.Solutions.AAAuth.Web
                 !string.IsNullOrWhiteSpace(entraSection.TenantId) &&
                 WorkforceIdentityProviderName.TryParse(
                     entraSection.WorkforceIdentityProviderName,
-                    out var entraWorkforceProvider))
+                    out var entraWorkforceProvider) &&
+                Guid.TryParse(entraSection.TenantId, out var tenantId))
             {
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
-                    Guid.Parse(entraSection.TenantId),
+                    tenantId,
                     entraWorkforceProvider,
                     entraSection.Scope?.Split(
                         ' ',
