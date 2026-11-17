@@ -50,5 +50,8 @@ namespace Google.Solutions.AAAuth.Web
 
         [JsonPropertyName("id_token_signing_alg_values_supported")]
         public required IReadOnlyList<string> IdTokenSigningAlgValuesSupported { get; init; }
+
+        [JsonPropertyName("token_endpoint_auth_methods_supported")]
+        public IReadOnlyList<string> TokenEndpointAuthMethodsSupported { get; init; } = ["client_secret_post"];
     }
 }

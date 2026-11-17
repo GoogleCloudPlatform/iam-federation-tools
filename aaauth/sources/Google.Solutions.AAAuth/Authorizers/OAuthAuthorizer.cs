@@ -25,8 +25,11 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -140,18 +143,42 @@ namespace Google.Solutions.AAAuth.Authorizers
                 GetProviderMetadataAsync(cancellationToken)
                 .ConfigureAwait(false);
 
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                metadata.TokenEndpoint);
+
+            var parameters = new Dictionary<string, string>
+            {
+                { "redirect_uri", redirectUri.AbsoluteUri },
+                { "grant_type", "authorization_code" },
+                { "code", authorizationCode }
+            };
+
+            if (metadata.TokenEndpointAuthMethodsSupported.Contains("client_secret_post"))
+            {
+                //
+                // Use client_secret_post authentication.
+                //
+                parameters["client_id"] = clientCredentials.ClientId;
+                parameters["client_secret"] = clientCredentials.ClientSecret;
+            }
+            else if (metadata.TokenEndpointAuthMethodsSupported.Contains("client_secret_basic"))
+            {
+                //
+                // Use client_secret_basic authentication.
+                //
+                var credentials = Convert.ToBase64String(
+                    Encoding.UTF8.GetBytes(
+                        $"{clientCredentials.ClientId}:{clientCredentials.ClientSecret}"));
+                request.Headers.Authorization = new AuthenticationHeaderValue(
+                    "Basic",
+                    credentials);
+            }
+
+            request.Content = new FormUrlEncodedContent(parameters);
+
             var response = await this.httpClient
-                .PostAsync(
-                    metadata.TokenEndpoint,
-                    new FormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "client_id", clientCredentials.ClientId },
-                        { "client_secret", clientCredentials.ClientSecret },
-                        { "redirect_uri", redirectUri.AbsoluteUri },
-                        { "grant_type", "authorization_code" },
-                        { "code", authorizationCode }
-                    }),
-                    cancellationToken)
+                .SendAsync(request, cancellationToken)
                 .ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode &&
