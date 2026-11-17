@@ -41,7 +41,6 @@ namespace Google.Solutions.AAAuth.Authorizers
     public class EntraDelegatedAuthorizer : DelegatedAuthorizer
     {
         new internal const string Key = "entra-delegated";
-        private readonly Options options;
         private readonly ILogger<EntraDelegatedAuthorizer> logger;
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// Gemini Enterprise requires a refresh token, so the 
         /// offline_access scope is always necessary.
         /// </remarks>
-        public static readonly IReadOnlyCollection<string> DefaultScopes =
+        public static new readonly IReadOnlyCollection<string> DefaultScopes =
             ["openid", "profile", "offline_access"];
 
         internal EntraDelegatedAuthorizer(
@@ -65,7 +64,6 @@ namespace Google.Solutions.AAAuth.Authorizers
                 entraAuthorizer, 
                 logger)
         {
-            this.options = options;
             this.logger = logger;
         }
 
@@ -97,7 +95,7 @@ namespace Google.Solutions.AAAuth.Authorizers
             //
 
             string tokenToExchange;
-            if (result.AccessToken != null &&
+            if (!string.IsNullOrEmpty(result.AccessToken) &&
                 result.Scope != null &&
                 result.Scope.Contains("api://"))
             {
@@ -112,7 +110,7 @@ namespace Google.Solutions.AAAuth.Authorizers
                     result.Scope);
                 tokenToExchange = result.AccessToken;
             }
-            else if (result.IdToken != null)
+            else if (!string.IsNullOrEmpty(result.IdToken))
             {
                 this.logger.LogInformation(
                     "Exchanging ID token with scope {scope}",

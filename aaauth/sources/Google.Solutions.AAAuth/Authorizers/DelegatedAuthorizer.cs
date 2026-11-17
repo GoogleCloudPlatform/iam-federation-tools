@@ -25,6 +25,7 @@ using Google.Solutions.AAAuth.Iam;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,6 +47,11 @@ namespace Google.Solutions.AAAuth.Authorizers
         private readonly ILogger logger;
         private readonly WorkforceIdentityProviderName provider;
 
+        /// <summary>
+        /// Default scopes to use for an OpenID authorization.
+        /// </summary>
+        public static readonly IReadOnlyCollection<string> DefaultScopes =
+            ["openid"];
 
         protected IStsClient StsClient { get; }
 
@@ -86,7 +92,7 @@ namespace Google.Solutions.AAAuth.Authorizers
                 options,
                 new OAuthAuthorizer(
                     options.Issuer,
-                    new HashSet<string>(options.Scopes),
+                    new HashSet<string>(options.Scopes.Concat(DefaultScopes)),
                     logger),
                 logger)
         {
@@ -155,6 +161,10 @@ namespace Google.Solutions.AAAuth.Authorizers
                 throw new ArgumentException(
                     "The token result does not contain an ID token");
             }
+
+            this.logger.LogInformation(
+                "Exchanging ID token with scope {scope}",
+                result.Scope);
 
             return await ExchangeTokenAsync(
                     result.IdToken,
@@ -237,12 +247,12 @@ namespace Google.Solutions.AAAuth.Authorizers
         /// <summary>
         /// Options.
         /// </summary>
-        /// <param name="TenantId">Entra tenant ID</param>
+        /// <param name="Issuer">Issuer URI of the OIDC provider</param>
         /// <param name="WorkforceIdentityProviderName">
         /// Provider to use for token exchange, must be configured to
-        /// accept tokens from Entra.
+        /// accept tokens from the IdP.
         /// </param>
-        /// <param name="Scopes">Entra scope to use, optional</param>
+        /// <param name="Scopes">Scopes to use, optional</param>
         public record Options(
             Uri Issuer,
             WorkforceIdentityProviderName WorkforceIdentityProviderName,

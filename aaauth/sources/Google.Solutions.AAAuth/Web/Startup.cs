@@ -79,7 +79,10 @@ namespace Google.Solutions.AAAuth.Web
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
                     Guid.Parse(entraSection.TenantId),
                     entraWorkforceProvider,
-                    entraSection.Scope?.Split(' ') ?? []));
+                    entraSection.Scope?.Split(
+                        ' ',
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        ?? []));
                 services.AddKeyedTransient<IAuthorizer, EntraDelegatedAuthorizer>(
                     EntraDelegatedAuthorizer.Key);
             }
@@ -98,7 +101,10 @@ namespace Google.Solutions.AAAuth.Web
                 services.AddSingleton(new DelegatedAuthorizer.Options(
                     issuerUri,
                     idpWorkforceProvider,
-                    idpSection.Scope?.Split(' ') ?? ["openid"]));
+                    idpSection.Scope?.Split(
+                        ' ',
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        ?? ["openid"]));
                 services.AddKeyedTransient<IAuthorizer, DelegatedAuthorizer>(
                     DelegatedAuthorizer.Key);
             }
@@ -181,7 +187,7 @@ namespace Google.Solutions.AAAuth.Web
             internal const string Key = "Idp";
 
             /// <summary>
-            /// Issuer IdP that identifies the IdP.
+            /// Issuer URI that identifies the IdP.
             /// </summary>
             public string? Issuer { get; set; }
 

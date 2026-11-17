@@ -66,7 +66,7 @@ namespace Google.Solutions.AAAuth.Authorizers
             // Fetch the IdP's discovery information.
             //
             var metadataEndpoint =
-                $"{this.Issuer.AbsoluteUri}/.well-known/openid-configuration";
+                $"{this.Issuer.AbsoluteUri.TrimEnd('/')}/.well-known/openid-configuration";
 
             var idpMetadata = await this.httpClient
                 .GetFromJsonAsync<OpenIdProviderMetadata>(

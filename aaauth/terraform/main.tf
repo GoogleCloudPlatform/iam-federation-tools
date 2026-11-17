@@ -51,6 +51,24 @@ variable "entra_provider" {
   default          = ""
 }
 
+variable "idp_issuer" {
+  description      = "Issuer URL of the OIDC identity provider"
+  type             = string
+  default          = ""
+}
+
+variable "idp_provider" {
+  description      = "Workforce identity provider, in format locations/global/workforcePools/POOL/providers/PROVIDER"
+  type             = string
+  default          = ""
+}
+
+variable "idp_scope" {
+  description      = "Scopes to request from the OIDC identity provider, space-separated"
+  type             = string
+  default          = ""
+}
+
 #------------------------------------------------------------------------------
 # Provider.
 #------------------------------------------------------------------------------
@@ -193,6 +211,18 @@ resource "google_cloud_run_v2_service" "service" {
       env {
         name = "Entra__WorkforceIdentityProviderName"
         value = var.entra_provider
+      }
+      env {
+        name = "Idp__Issuer"
+        value = var.idp_issuer
+      }
+      env {
+        name = "Idp__WorkforceIdentityProviderName"
+        value = var.idp_provider
+      }
+      env {
+        name = "Idp__Scope"
+        value = var.idp_scope
       }
     }
   }

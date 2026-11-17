@@ -69,7 +69,8 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TokenResult()
                 {
-                    IdToken = "id-token"
+                    IdToken = "id-token",
+                    RefreshToken = "refresh-token"
                 });
 
             var stsClient = new Mock<IStsClient>();
@@ -102,11 +103,12 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
+            Assert.That(result.RefreshToken, Is.EqualTo("refresh-token"));
             Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
 
         [Test]
-        public async Task RedeemAuthorizationCode_WhenIdTokenEmpty()
+        public void RedeemAuthorizationCode_WhenIdTokenEmpty()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -129,22 +131,8 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     IdToken = string.Empty,
                 });
 
-            var stsClient = new Mock<IStsClient>();
-            stsClient
-                .Setup(c => c.ExchangeTokenAsync(
-                    It.IsAny<WorkforceIdentityProviderName>(),
-                    "access-token",
-                    new string[] { Scopes.CloudPlatform },
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TokenResult()
-                {
-                    TokenType = "bearer",
-                    AccessToken = "sts-token",
-                    ExpiresInSeconds = 60
-                });
-
             var authorizer = new DelegatedAuthorizer(
-                stsClient.Object,
+                new Mock<IStsClient>().Object,
                 CreateOptions(),
                 oAuthAuthorizer.Object,
                 new Mock<ILogger<DelegatedAuthorizer>>().Object);
@@ -180,7 +168,8 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TokenResult()
                 {
-                    IdToken = "id-token"
+                    IdToken = "id-token",
+                    RefreshToken = "new-refresh-token"
                 });
 
             var stsClient = new Mock<IStsClient>();
@@ -213,6 +202,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
+            Assert.That(result.RefreshToken, Is.EqualTo("new-refresh-token"));
             Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
 
