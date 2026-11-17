@@ -144,7 +144,6 @@ namespace Google.Solutions.AAAuth.Authorizers
                 HttpMethod.Post,
                 metadata.TokenEndpoint);
 
-
             if (metadata.TokenEndpointAuthMethodsSupported
                 .Contains("client_secret_basic"))
             {
@@ -204,7 +203,7 @@ namespace Google.Solutions.AAAuth.Authorizers
                 var e = new InvalidOperationException(
                     $"The token endpoint at {metadata.TokenEndpoint} " +
                     $"returned an empty or malformed response");
-                this.logger.LogError(e, "Redeeming authorization failed");
+                this.logger.LogError(e, "Obtaining token failed");
                 throw e;
             }
         }
