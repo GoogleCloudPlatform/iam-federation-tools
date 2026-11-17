@@ -58,6 +58,13 @@ create an  authorization resource:
         *   `client-secret`: the client secret that you created when you 
             [deployed AAAuth](aaauth-deployment.md).
 
+    === "Other OIDC IdP"
+
+        *   `client-id`: the client ID of the OAuth client registration used by your 
+            workforce identity provider.
+        *   `client-secret`: the client secret that you obtained when you 
+            [deployed AAAuth](aaauth-deployment.md).
+
 1.  Initialize another variable that selects the [authorizer](https://github.com/GoogleCloudPlatform/iam-federation-tools/blob/master/aaauth/sources/Google.Solutions.AAAuth/Authorizers/IAuthorizer.cs) for AAAuth to use.
 
     === "Google Identity"
@@ -81,6 +88,16 @@ create an  authorization resource:
         === "PowerShell"
 
                 $Authorizer = "entra-delegated"
+
+    === "Other OIDC IdP"
+
+        === "bash"
+
+                AUTHORIZER=delegated
+
+        === "PowerShell"
+
+                $Authorizer = "delegated"
 
 1.  Create the authorization resource:
 
@@ -242,6 +259,16 @@ To let an agent use AAAuth for authorization, do the following:
         === "PowerShell"
 
                 $Authorizer = "entra-delegated"
+
+    === "Other OIDC IdP"
+
+        === "bash"
+
+                AUTHORIZER=delegated
+
+        === "PowerShell"
+
+                $Authorizer = "delegated"
             
 1.  Link the agent to the authorization resource:
 

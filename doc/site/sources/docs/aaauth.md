@@ -45,7 +45,7 @@ AAAuth lets you implement delegated authorization for a number of additional sce
 
 | Scenario                                                                | Google identity         | Workforce identity (Entra) | Workforce identity (other) |
 | ------------------------------------------------------------------------| ------------------------| ---------------------------| ---------------------------|
-| Access Google APIs on behalf of the user <br>(requires an access token) | :material-check:        | :material-check-circle:    | :material-close:           |
+| Access Google APIs on behalf of the user <br>(requires an access token) | :material-check:        | :material-check-circle:    | :material-check-circle:    |
 | Access other Cloud Run services          <br>(requires an ID token)     | :material-check-circle: | :material-close:           | :material-close:           |
 | Access other IAP-protected services      <br>(requires an ID token)     | :material-check-circle: | :material-close:           | :material-close:           |
 | Access Azure, M365 on behalf of the user <br>(requires an access token) | :material-close:        | :material-check:           | :material-close:           |
@@ -57,7 +57,7 @@ AAAuth works by acting as an intermediary between Gemini Enterprise and your ide
 
 *   When you set up agent authorization, you configure AAAuth as identity provider.
 *   AAAuth redirects the user to your actual identity provider, which might be
-    Google or an external identity such as Microsoft Entra.
+    Google or an OIDC-compliant external identity provider such as Microsoft Entra or Okta.
 *   Before returning to Gemini Enterprise, AAAuth performs an additional
     token exchange to ensure that Gemini Enterprise receives the right
     token for the scenario you're implementing.
@@ -66,11 +66,11 @@ AAAuth works by acting as an intermediary between Gemini Enterprise and your ide
 
 That way, AAAuth lets you implement delegated authorization for a number of additional scenarios:
 
-*   If you use Gemini Enterprise with workforce identity federation, you can use
-    AAAuth to let users delegate their access to ADK and A2A agents so that agents 
-    can access resources on the users' behalf.
+*   If you use Gemini Enterprise with workforce identity federation and an OIDC-compliant
+    identity provider, you can use AAAuth to let users delegate their access to ADK and A2A
+    agents so that agents can access resources on the users' behalf.
 
-    In this scenatio, AAAuth authenticates the user using your external identity provider,
+    In this scenario, AAAuth authenticates the user using your external identity provider,
     obtains an ID token and exchanges it against a federated access token by using 
     [workforce identity federation](https://cloud.google.com/iam/docs/workforce-identity-federation),
     and lets Gemini Enterprise forward the resulting access token to the agent.
@@ -79,7 +79,7 @@ That way, AAAuth lets you implement delegated authorization for a number of addi
     to let a users delegate their identity to ADK and A2A agents in a way that enables
     agents to make calls to IAP- and Cloud Run-hosted tool servers on users' behalf.
 
-    In this scenatio, AAAuth obtains a Google ID token for the user, and lets
+    In this scenario, AAAuth obtains a Google ID token for the user, and lets
     Gemini Enterprise forward the ID token to the agent.
 
 ## Implementation
