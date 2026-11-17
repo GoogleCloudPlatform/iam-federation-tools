@@ -26,7 +26,6 @@ serve: $(VENV)\Scripts\mkdocs.exe
 	@echo "========================================================"
 	@echo "=== Serving site                                     ==="
 	@echo "========================================================"
-
 	cd $(MAKEDIR)\sources
 	"$(PYTHON)" -m mkdocs serve --livereload
 	cd $(MAKEDIR)
@@ -35,7 +34,6 @@ install:
 	@echo "========================================================"
 	@echo "=== Install mkdocs                                   ==="
 	@echo "========================================================"
-
 	if not exist "$(VENV)" python -m venv "$(VENV)"
 	"$(PYTHON)" -m pip install --upgrade --force-reinstall git+https://github.com/jpassing/mkdocs-material-smallscreen.git
 
