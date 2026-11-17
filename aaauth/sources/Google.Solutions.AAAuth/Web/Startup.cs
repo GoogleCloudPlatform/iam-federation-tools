@@ -66,21 +66,48 @@ namespace Google.Solutions.AAAuth.Web
                 defaultAuthorizerKey));
 
             //
-            // Register the Entra authorizer.
+            // Conditionally register the Entra authorizer.
             //
-            if (this.configuration.GetSection(EntraOptions.Key).Get<EntraOptions>() 
-                    is EntraOptions entraOptions &&
-                !string.IsNullOrWhiteSpace(entraOptions.TenantId) &&
+            if (this.configuration
+                .GetSection(EntraSection.Key)
+                .Get<EntraSection>() is EntraSection entraSection &&
+                !string.IsNullOrWhiteSpace(entraSection.TenantId) &&
                 WorkforceIdentityProviderName.TryParse(
-                    entraOptions.WorkforceIdentityProviderName,
-                    out var entraWorkforceProvider))
+                    entraSection.WorkforceIdentityProviderName,
+                    out var entraWorkforceProvider) &&
+                Guid.TryParse(entraSection.TenantId, out var tenantId))
             {
                 services.AddSingleton(new EntraDelegatedAuthorizer.Options(
-                    Guid.Parse(entraOptions.TenantId),
+                    tenantId,
                     entraWorkforceProvider,
-                    entraOptions.Scopes ?? []));
+                    entraSection.Scope?.Split(
+                        ' ',
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        ?? []));
                 services.AddKeyedTransient<IAuthorizer, EntraDelegatedAuthorizer>(
                     EntraDelegatedAuthorizer.Key);
+            }
+
+            //
+            // Conditionally register the generic delegated authorizer.
+            //
+            if (this.configuration
+                .GetSection(IdpSection.Key)
+                .Get<IdpSection>() is IdpSection idpSection &&
+                Uri.TryCreate(idpSection.Issuer, UriKind.Absolute, out var issuerUri) &&
+                WorkforceIdentityProviderName.TryParse(
+                    idpSection.WorkforceIdentityProviderName,
+                    out var idpWorkforceProvider))
+            {
+                services.AddSingleton(new DelegatedAuthorizer.Options(
+                    issuerUri,
+                    idpWorkforceProvider,
+                    idpSection.Scope?.Split(
+                        ' ',
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        ?? ["openid"]));
+                services.AddKeyedTransient<IAuthorizer, DelegatedAuthorizer>(
+                    DelegatedAuthorizer.Key);
             }
 
             //
@@ -123,12 +150,12 @@ namespace Google.Solutions.AAAuth.Web
         }
 
         /// <summary>
-        /// Settings for the Entra app registration.
+        /// Section for Entra-specific settings.
         /// </summary>
-        public class EntraOptions
+        public class EntraSection
         {
             /// <summary>
-            /// Key used to identify the options.
+            /// Key used to identify the section.
             /// </summary>
             internal const string Key = "Entra";
 
@@ -138,9 +165,37 @@ namespace Google.Solutions.AAAuth.Web
             public string? TenantId { get; set; }
 
             /// <summary>
-            /// Scope to use for OBO flow.
+            /// Scopes to use for OBO flow, space-separated.
             /// </summary>
-            public List<string>? Scopes { get; set; }
+            public string? Scope { get; set; }
+
+            /// <summary>
+            /// Name of the workforce identity provider to use for
+            /// token exchanges, in format
+            /// locations/global/workforcePools/POOL/providers/PROVIDER
+            /// </summary>
+            public string? WorkforceIdentityProviderName { get; set; }
+        }
+
+        /// <summary>
+        /// Section for generic IdP settings.
+        /// </summary>
+        public class IdpSection
+        {
+            /// <summary>
+            /// Key used to identify the section.
+            /// </summary>
+            internal const string Key = "Idp";
+
+            /// <summary>
+            /// Issuer URI that identifies the IdP.
+            /// </summary>
+            public string? Issuer { get; set; }
+
+            /// <summary>
+            /// Scope to use for OAuth flow, space-separated.
+            /// </summary>
+            public string? Scope { get; set; }
 
             /// <summary>
             /// Name of the workforce identity provider to use for

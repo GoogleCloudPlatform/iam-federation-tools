@@ -25,8 +25,11 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,7 +69,7 @@ namespace Google.Solutions.AAAuth.Authorizers
             // Fetch the IdP's discovery information.
             //
             var metadataEndpoint =
-                $"{this.Issuer.AbsoluteUri}/.well-known/openid-configuration";
+                $"{this.Issuer.AbsoluteUri.TrimEnd('/')}/.well-known/openid-configuration";
 
             var idpMetadata = await this.httpClient
                 .GetFromJsonAsync<OpenIdProviderMetadata>(
@@ -129,29 +132,49 @@ namespace Google.Solutions.AAAuth.Authorizers
                 }));
         }
 
-        /// <inheritdoc/>
-        public virtual async Task<TokenResult> RedeemAuthorizationCodeAsync(
+        private async Task<TokenResult> GetTokenAsync(
             ClientSecrets clientCredentials,
-            string authorizationCode,
-            Uri redirectUri,
+            IDictionary<string, string?> parameters,
             CancellationToken cancellationToken)
         {
-            var metadata = await
-                GetProviderMetadataAsync(cancellationToken)
+            var metadata = await GetProviderMetadataAsync(cancellationToken)
                 .ConfigureAwait(false);
 
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                metadata.TokenEndpoint);
+
+            //
+            // NB. If the IdP supports multiple methods, prefer
+            //     client_secret_basic because that's what STS does too.
+            //
+            if (metadata.TokenEndpointAuthMethodsSupported
+                .Contains("client_secret_basic"))
+            {
+                //
+                // Use client_secret_basic authentication.
+                //
+                var credentials = Convert.ToBase64String(
+                    Encoding.UTF8.GetBytes(
+                        $"{clientCredentials.ClientId}:{clientCredentials.ClientSecret}"));
+                request.Headers.Authorization = new AuthenticationHeaderValue(
+                    "Basic",
+                    credentials);
+            }
+            else if (metadata.TokenEndpointAuthMethodsSupported
+                .Contains("client_secret_post"))
+            {
+                //
+                // Use client_secret_post authentication.
+                //
+                parameters["client_id"] = clientCredentials.ClientId;
+                parameters["client_secret"] = clientCredentials.ClientSecret;
+            }
+
+            request.Content = new FormUrlEncodedContent(parameters);
+
             var response = await this.httpClient
-                .PostAsync(
-                    metadata.TokenEndpoint,
-                    new FormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "client_id", clientCredentials.ClientId },
-                        { "client_secret", clientCredentials.ClientSecret },
-                        { "redirect_uri", redirectUri.AbsoluteUri },
-                        { "grant_type", "authorization_code" },
-                        { "code", authorizationCode }
-                    }),
-                    cancellationToken)
+                .SendAsync(request, cancellationToken)
                 .ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode &&
@@ -160,7 +183,7 @@ namespace Google.Solutions.AAAuth.Authorizers
                     .ConfigureAwait(false) is TokenResult tokenResult)
             {
                 this.logger.LogInformation(
-                    "Successfully redeemed authorization code for client {client}",
+                    "Successfully obtained token for client {client}",
                     clientCredentials.ClientId);
 
                 return tokenResult;
@@ -169,9 +192,9 @@ namespace Google.Solutions.AAAuth.Authorizers
                 await response.Content
                     .ReadFromJsonAsync<TokenError>(cancellationToken)
                     .ConfigureAwait(false) is TokenError errorDetails)
-            { 
+            {
                 this.logger.LogWarning(
-                    "Redeeming authorization code for client {client} failed: {error}",
+                    "Obtaining token for client {client} failed: {error}",
                     clientCredentials.ClientId,
                     errorDetails.Error);
 
@@ -184,9 +207,28 @@ namespace Google.Solutions.AAAuth.Authorizers
                 var e = new InvalidOperationException(
                     $"The token endpoint at {metadata.TokenEndpoint} " +
                     $"returned an empty or malformed response");
-                this.logger.LogError(e, "Redeeming authorization failed");
+                this.logger.LogError(e, "Obtaining token failed");
                 throw e;
             }
+        }
+
+        /// <inheritdoc/>
+        public virtual async Task<TokenResult> RedeemAuthorizationCodeAsync(
+            ClientSecrets clientCredentials,
+            string authorizationCode,
+            Uri redirectUri,
+            CancellationToken cancellationToken)
+        {
+            return await GetTokenAsync(
+                    clientCredentials,
+                    new Dictionary<string, string?>
+                    {
+                        { "redirect_uri", redirectUri.AbsoluteUri },
+                        { "grant_type", "authorization_code" },
+                        { "code", authorizationCode }
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -196,57 +238,16 @@ namespace Google.Solutions.AAAuth.Authorizers
             string? scope,
             CancellationToken cancellationToken)
         {
-            var metadata = await
-                GetProviderMetadataAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            var response = await this.httpClient
-                .PostAsync(
-                    metadata.TokenEndpoint,
-                    new FormUrlEncodedContent(new Dictionary<string, string?>
+            return await GetTokenAsync(
+                    clientCredentials,
+                    new Dictionary<string, string?>
                     {
-                        { "client_id", clientCredentials.ClientId },
-                        { "client_secret", clientCredentials.ClientSecret },
                         { "refresh_token", refreshToken },
                         { "grant_type", "refresh_token" },
                         { "scope", scope }
-                    }),
+                    },
                     cancellationToken)
                 .ConfigureAwait(false);
-
-            if (response.IsSuccessStatusCode &&
-                await response.Content
-                    .ReadFromJsonAsync<TokenResult>(cancellationToken)
-                    .ConfigureAwait(false) is TokenResult tokenResult)
-            {
-                this.logger.LogInformation(
-                    "Successfully redeemed refresh token code for client {client}",
-                    clientCredentials.ClientId);
-
-                return tokenResult;
-            }
-            else if (response.Content.Headers.ContentType?.MediaType == JsonMediaType && 
-                await response.Content
-                    .ReadFromJsonAsync<TokenError>(cancellationToken)
-                    .ConfigureAwait(false) is TokenError errorDetails)
-            {
-                this.logger.LogWarning(
-                    "Redeeming refresh token for client {client} failed: {error}",
-                    clientCredentials.ClientId,
-                    errorDetails.Error);
-
-                throw new TokenException(errorDetails);
-            }
-            else
-            {
-                response.EnsureSuccessStatusCode();
-
-                var e = new InvalidOperationException(
-                    $"The token endpoint at {metadata.TokenEndpoint} " +
-                    $"returned an empty or malformed response");
-                this.logger.LogError(e, "Redeeming refresh token failed");
-                throw e;
-            }
         }
     }
 }

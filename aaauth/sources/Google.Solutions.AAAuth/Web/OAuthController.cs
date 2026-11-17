@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.AAAuth.Authorizers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -348,7 +347,7 @@ namespace Google.Solutions.AAAuth.Web
             }
             else
             {
-                return BadRequest(new TokenErrorResponse()
+                return BadRequest(new TokenError()
                 {
                     Error = "unauthorized_client"
                 });
@@ -368,7 +367,7 @@ namespace Google.Solutions.AAAuth.Web
                 if (string.IsNullOrWhiteSpace(code) ||
                     string.IsNullOrWhiteSpace(clientRedirectUri))
                 {
-                    return BadRequest(new TokenErrorResponse()
+                    return BadRequest(new TokenError()
                     {
                         Error = "invalid_request",
                         ErrorDescription = "Missing a required parameter",
@@ -378,7 +377,7 @@ namespace Google.Solutions.AAAuth.Web
                     .AllowedRedirectUris
                     .Contains(new Uri(clientRedirectUri)))
                 {
-                    return BadRequest(new TokenErrorResponse()
+                    return BadRequest(new TokenError()
                     {
                         Error = "invalid_request",
                         ErrorDescription = "The redirect URI is invalid",
@@ -404,6 +403,14 @@ namespace Google.Solutions.AAAuth.Web
                     //
                     return BadRequest(e.ErrorDetails);
                 }
+                catch (ArgumentException e)
+                {
+                    return BadRequest(new TokenError()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = e.Message,
+                    });
+                }
             }
             else if (string.Equals(
                     grantType,
@@ -416,7 +423,7 @@ namespace Google.Solutions.AAAuth.Web
 
                 if (string.IsNullOrWhiteSpace(refreshToken))
                 {
-                    return BadRequest(new TokenErrorResponse()
+                    return BadRequest(new TokenError()
                     {
                         Error = "invalid_request",
                         ErrorDescription = "Missing a required parameter",
@@ -443,10 +450,18 @@ namespace Google.Solutions.AAAuth.Web
                     //
                     return BadRequest(e.ErrorDetails);
                 }
+                catch (ArgumentException e)
+                {
+                    return BadRequest(new TokenError()
+                    {
+                        Error = "invalid_request",
+                        ErrorDescription = e.Message,
+                    });
+                }
             }
             else
             { 
-                return BadRequest(new TokenErrorResponse()
+                return BadRequest(new TokenError()
                 {
                     Error = "invalid_grant",
                     ErrorDescription = "The grant type is invalid",

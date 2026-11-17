@@ -32,13 +32,13 @@ using System.Threading.Tasks;
 namespace Google.Solutions.AAAuth.Test.Authorizers
 {
     [TestFixture]
-    public class TestEntraInteractiveAuthorizer
+    public class TestDelegatedAuthorizer
     {
-        private static EntraDelegatedAuthorizer.Options CreateOptions(
+        private static DelegatedAuthorizer.Options CreateOptions(
             string? scope = null)
         {
-            return new EntraDelegatedAuthorizer.Options(
-                Guid.NewGuid(),
+            return new DelegatedAuthorizer.Options(
+                new Uri("https://idp/"),
                 new WorkforceIdentityProviderName("pool-1", "provider-1"),
                 scope != null
                     ? [scope] :
@@ -50,7 +50,7 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task RedeemAuthorizationCode_WithoutScope_ExchangesIdToken()
+        public async Task RedeemAuthorizationCode_ExchangesIdToken()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -69,7 +69,8 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TokenResult()
                 {
-                    IdToken = "id-token"
+                    IdToken = "id-token",
+                    RefreshToken = "refresh-token"
                 });
 
             var stsClient = new Mock<IStsClient>();
@@ -86,11 +87,11 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     ExpiresInSeconds = 60
                 });
 
-            var authorizer = new EntraDelegatedAuthorizer(
+            var authorizer = new DelegatedAuthorizer(
                 stsClient.Object,
                 CreateOptions(),
                 oAuthAuthorizer.Object,
-                new Mock<ILogger<EntraDelegatedAuthorizer>>().Object);
+                new Mock<ILogger<DelegatedAuthorizer>>().Object);
 
             var result = await authorizer
                 .RedeemAuthorizationCodeAsync(
@@ -102,11 +103,12 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
+            Assert.That(result.RefreshToken, Is.EqualTo("refresh-token"));
             Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
 
         [Test]
-        public async Task RedeemAuthorizationCode_WithScope_ExchangesAccessToken()
+        public void RedeemAuthorizationCode_WhenIdTokenEmpty()
         {
             var clientCredentials = new ClientSecrets()
             {
@@ -126,15 +128,55 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                 .ReturnsAsync(new TokenResult()
                 {
                     AccessToken = "access-token",
+                    IdToken = string.Empty,
+                });
+
+            var authorizer = new DelegatedAuthorizer(
+                new Mock<IStsClient>().Object,
+                CreateOptions(),
+                oAuthAuthorizer.Object,
+                new Mock<ILogger<DelegatedAuthorizer>>().Object);
+
+            Assert.That(async () => await authorizer
+                .RedeemAuthorizationCodeAsync(
+                    clientCredentials,
+                    code,
+                    redirectUri,
+                    CancellationToken.None),
+                Throws.TypeOf<ArgumentException>());
+        }
+
+        //---------------------------------------------------------------------
+        // RedeemRefreshToken.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task RedeemRefreshToken_ExchangesIdToken()
+        {
+            var clientCredentials = new ClientSecrets()
+            {
+                ClientId = "client-id"
+            };
+
+            var refreshToken = "refresh-token";
+            var oAuthAuthorizer = new Mock<IAuthorizer>();
+            oAuthAuthorizer
+                .Setup(a => a.RedeemRefreshTokenAsync(
+                    clientCredentials,
+                    refreshToken,
+                    null,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResult()
+                {
                     IdToken = "id-token",
-                    Scope = "api://some/scope"
+                    RefreshToken = "new-refresh-token"
                 });
 
             var stsClient = new Mock<IStsClient>();
             stsClient
                 .Setup(c => c.ExchangeTokenAsync(
                     It.IsAny<WorkforceIdentityProviderName>(),
-                    "access-token",
+                    "id-token",
                     new string[] { Scopes.CloudPlatform },
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TokenResult()
@@ -144,23 +186,25 @@ namespace Google.Solutions.AAAuth.Test.Authorizers
                     ExpiresInSeconds = 60
                 });
 
-            var authorizer = new EntraDelegatedAuthorizer(
+            var authorizer = new DelegatedAuthorizer(
                 stsClient.Object,
                 CreateOptions(),
                 oAuthAuthorizer.Object,
-                new Mock<ILogger<EntraDelegatedAuthorizer>>().Object);
+                new Mock<ILogger<DelegatedAuthorizer>>().Object);
 
             var result = await authorizer
-                .RedeemAuthorizationCodeAsync(
+                .RedeemRefreshTokenAsync(
                     clientCredentials,
-                    code,
-                    redirectUri,
+                    refreshToken,
+                    null,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.That(result.TokenType, Is.EqualTo("bearer"));
             Assert.That(result.AccessToken, Is.EqualTo("sts-token"));
+            Assert.That(result.RefreshToken, Is.EqualTo("new-refresh-token"));
             Assert.That(result.ExpiresInSeconds, Is.GreaterThanOrEqualTo(60));
         }
+
     }
 }
