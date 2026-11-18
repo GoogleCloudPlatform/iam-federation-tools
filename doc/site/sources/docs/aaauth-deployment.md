@@ -10,10 +10,13 @@ This article describes how you can deploy the AI Agent Authenticator (AAAuth) by
             for deploying AAAuth.
 
     If you're using Gemini Enterprise 
-    [with workforce identity federation and Microsoft Entra :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/configure-identity-provider),
+    [with workforce identity federation :octicons-link-external-16:](https://docs.cloud.google.com/gemini/enterprise/docs/configure-identity-provider),
     you also need:
 
-    *   [ ] Permission to modify the Entra App registration used by workforce identity federation.
+    *   [ ] An OIDC-compliant identity provider that supports 
+            [OpenID Connect Discovery :octicons-link-external-16:](https://openid.net/specs/openid-connect-discovery-1_0.html)
+            (such as Microsoft Entra or Okta).
+    *   [ ] Permission to modify the OAuth client or Entra App registration used by workforce identity federation.
 
 Deploying AAAuth requires the following billable components of Google Cloud:
 
@@ -111,6 +114,31 @@ To deploy AAAuth to Cloud Run by using Terraform, do the following:
             This must be the same workforce identity provider as the one you use for
             Gemini Enterprise.
 
+    === "Other OIDC IdP"
+
+            cat << EOF > terraform.tfvars
+            project_id = "$PROJECT_ID"
+            region = "$REGION"
+            idp_issuer = "ISSUER"
+            idp_provider = "PROVIDER"
+            idp_scope = "SCOPES"
+            EOF
+
+        Open the file `terraform.tfvars` and replace the following:
+
+        +   `ISSUER`: the issuer URL of your OIDC identity provider.
+        +   `PROVIDER`: resource name of your workforce identity provider, in the format
+            `locations/global/workforcePools/POOL/providers/PROVIDER`.
+
+            This must be the same workforce identity provider as the one you use for
+            Gemini Enterprise.
+        +   `SCOPES`: space-separated list of OAuth scopes to request from your identity provider,
+            for example `openid profile offline_access`.
+
+            Include any scopes required by your identity provider to issue a refresh token
+            (such as `offline_access`) and to populate the claims referenced by your workforce
+            identity provider's attribute mappings.
+
 
 1.  Set up authentication for Artifact Registry:
 
@@ -186,6 +214,27 @@ differ depending on the identity provider you use for Gemini Enterprise:
     1.  Click **New client secret** and add an additional secret.
 
         Note down the secret, you need it when you [configure Gemini Enterprise](aaauth-configure-gemini-enterprise.md). 
+
+=== "Other OIDC IdP"
+
+    If you've configured Gemini Enterprise to use workforce identity federation
+    with another OIDC-compliant identity provider, you must update the OAuth client
+    registration used by your workforce identity provider.
+
+    1.  In your identity provider's admin console, open the OAuth client
+        registration used by your workforce identity provider.
+    1.  Add the following URL as an allowed redirect URI:
+
+            https://SERVICE/delegated/continue
+
+        Replace `SERVICE` with the domain name of the Cloud Run service -- for example, `service-xxxxxx-as.a.run.app`.
+
+    1.  Ensure that the OAuth client is configured to allow the `authorization_code` and
+        `refresh_token` grant types.
+    1.  Create or obtain a client secret for the OAuth client.
+
+        Note down the client ID and client secret, you need them when you 
+        [configure Gemini Enterprise](aaauth-configure-gemini-enterprise.md). 
     
 
 ## What's next
