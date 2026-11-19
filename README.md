@@ -26,17 +26,10 @@ The application is designed to run on Cloud Run and uses
 
 [<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iam-federation-tools/aaauth/)
 
-## Workload Authenticator for Windows
+## ADK Authentication Providers
 
-_Workload Authenticator for Windows (WWAuth)_ lets Windows applications authenticate to Google Cloud using their 
-Active Directory Kerberos credentials. The tool automates the process of using Kerberos credentials to authenticate
-to Active Directory Federation Services (AD FS), and using the resulting AD FS credential to authenticate to Google Cloud.
-
-Using WWAuth is an alternative to using service account keys
-and doesn't require you to manage and store any secrets or keys.
-
-[<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iam-federation-tools/wwauth/)
-[<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iam-windows-authenticator/releases/latest/download/wwauth.exe)
+A [collection of example authentication providers](https://googlecloudplatform.github.io/iam-federation-tools/adk/) 
+that let ADK agents authenticate in ways the ADK doesn't provide built-in support for.
 
 --- 
 

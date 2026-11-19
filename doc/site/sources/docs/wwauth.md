@@ -1,5 +1,10 @@
 # Workload Authenticator for Windows
 
+
+!!! warning
+
+    The Workload Authenticator for Windows has been archived and is no longer being maintained.
+
 Workload Authenticator for Windows (WWAuth) lets Windows applications authenticate to Google Cloud using their 
 Active Directory Kerberos credentials. Using WWAuth is an alternative to using service account keys
 and doesn't require you to manage and store any secrets or keys.
