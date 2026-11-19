@@ -86,9 +86,9 @@ nav:
     - 'Configure Gemini Enterprise': aaauth-configure-gemini-enterprise.md
     - 'Access credentials in ADK': aaauth-adk-credentials.md 
     - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/aaauth
-  - 'Workload Authenticator': 
+  - 'Workload Authenticator (archived)': 
     - 'Overview': wwauth.md
-    - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/master/wwauth
+    - 'Browse source code': https://github.com/GoogleCloudPlatform/iam-federation-tools/tree/archive/wwauth/wwauth
   - 'Token Service (archived)':
     - 'Overview': token-service.md
     - 'Deploy the service': token-service-deployment.md
