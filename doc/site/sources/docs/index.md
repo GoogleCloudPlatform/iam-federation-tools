@@ -34,7 +34,7 @@ The tool worked by chaining two token exchanges:
     exchanges it against short-lived Google credentials by using workload identity federation.
     
 Using WWAuth was an alternative to using service account keys
-and did't require you to manage and store any secrets or keys.
+and didn't require you to manage and store any secrets or keys.
 
 The project has been archived and is no longer being maintained.
 
